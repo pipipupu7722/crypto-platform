@@ -1,0 +1,32 @@
+{
+    "useTabs": false,
+    "quoteProps": "as-needed",
+    "semi": false,
+    "singleQuote": false,
+    "tabWidth": 4,
+    "bracketSpacing": true,
+    "arrowParens": "always",
+    "endOfLine": "lf",
+    "trailingComma": "es5",
+    "printWidth": 120,
+    "importOrder": [
+        "<THIRD_PARTY_MODULES>",
+        "^@(?!/)",
+        "^(@mui|antd)",
+        "module$",
+        "service$",
+        "middleware$",
+        "controller$",
+        "entity$",
+        "(decorator|guard|strategy|filter|interceptor)$",
+        "^(components|pages)/",
+        "^(actions|utils|styles|hooks|lib)/",
+        "^(error|type|interface|dto)s?$",
+        "^(assets|public|locales)/",
+        "^(config|conf)$",
+        "^(@/*|[./]|src/|../)"
+    ],
+    "importOrderSeparation": true,
+    "importOrderSortSpecifiers": true,
+    "plugins": ["@trivago/prettier-plugin-sort-imports"]
+}

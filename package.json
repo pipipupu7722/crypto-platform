@@ -1,24 +1,42 @@
 {
-  "name": "platform",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "react": "19.0.0-rc-66855b96-20241106",
-    "react-dom": "19.0.0-rc-66855b96-20241106",
-    "next": "15.0.3"
-  },
-  "devDependencies": {
-    "typescript": "^5",
-    "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
-    "eslint": "^8",
-    "eslint-config-next": "15.0.3"
-  }
+    "name": "platform",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "build": "next build",
+        "start": "next start",
+        "start:dev": "next dev",
+        "lint": "next lint"
+    },
+    "dependencies": {
+        "@ant-design/nextjs-registry": "^1.0.1",
+        "@prisma/client": "^5.22.0",
+        "antd": "^5.21.6",
+        "antd-phone-input": "^0.3.10",
+        "antd-zod": "^6.0.0",
+        "bcrypt": "^5.1.1",
+        "jose": "^5.9.6",
+        "next": "15.0.3",
+        "pg": "^8.13.1",
+        "react": "19.0.0-rc-66855b96-20241106",
+        "react-dom": "19.0.0-rc-66855b96-20241106",
+        "react-hook": "^0.0.1",
+        "react-hook-form": "^7.53.2",
+        "winston": "^3.17.0",
+        "winston-daily-rotate-file": "^5.0.0",
+        "zod": "^3.23.8"
+    },
+    "devDependencies": {
+        "@trivago/prettier-plugin-sort-imports": "^4.3.0",
+        "@types/bcrypt": "^5.0.2",
+        "@types/node": "^20",
+        "@types/pg": "^8.11.10",
+        "@types/react": "^18",
+        "@types/react-dom": "^18",
+        "eslint": "^8",
+        "eslint-config-next": "15.0.3",
+        "prettier": "^3.3.3",
+        "prisma": "^5.22.0",
+        "typescript": "^5"
+    }
 }
