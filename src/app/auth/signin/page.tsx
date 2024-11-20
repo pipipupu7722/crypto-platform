@@ -15,8 +15,10 @@ const SignIn: React.FC = () => {
 
     const handleSignIn = async (values: SignInSchemaType) => {
         setError(null)
+        setLoading(true)
         const res = await signIn(values)
         if (res.error) {
+            setLoading(false)
             setError(res.error)
         } else {
             redirect("/dashboard")

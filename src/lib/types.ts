@@ -1,4 +1,11 @@
-import { UserRoles, UserStatuses } from "@prisma/client"
+import { Session, User, UserRoles, UserStatuses } from "@prisma/client"
+
+export const InternalSessionDataHeader = "x-session-data"
+
+export enum NodeEnvs {
+    Prod = "production",
+    Dev = "development",
+}
 
 export enum CookieKeys {
     UserAccessToken = "UAT",
@@ -20,4 +27,8 @@ export type UserAccessTokenPayload = {
 
 export type UserRefreshTokenPayload = {
     uid: string
+}
+
+export type UserSession = Session & {
+    user: User
 }

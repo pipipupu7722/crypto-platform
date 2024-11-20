@@ -11,8 +11,7 @@
     "printWidth": 120,
     "importOrder": [
         "<THIRD_PARTY_MODULES>",
-        "^@(?!/)",
-        "^(@mui|antd)",
+        "^(@mui|antd|@ant-design)",
         "module$",
         "service$",
         "middleware$",

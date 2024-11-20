@@ -1,25 +1,9 @@
-import { ResponseCookie } from "next/dist/compiled/@edge-runtime/cookies"
+import { NextResponse } from "next/server"
 import "server-only"
 
-import { CookieKeys } from "../types"
 import { appconf } from "@/appconf"
 
-type CookieStore = {
-    set: (...args: [key: string, value: string, cookie?: Partial<ResponseCookie>]) => any
-}
-
-const setAuthTokensCookies = (cookieStore: CookieStore, accessToken: string, refreshToken: string) => {
-    cookieStore.set(CookieKeys.UserAccessToken, accessToken, {
-        ...appconf.defaultSecureCookieOptions,
-        maxAge: 60 * 60 * 24 * 7,
-    })
-    cookieStore.set(CookieKeys.UserRefreshToken, refreshToken, {
-        ...appconf.defaultSecureCookieOptions,
-        maxAge: 60 * 60,
-    })
-}
-
-const isProtectedUrl = (urlPath: string) => {
+export const isProtectedUrl = (urlPath: string) => {
     for (const path of appconf.routes.protected) {
         if (urlPath.startsWith(path)) {
             return true
@@ -27,10 +11,10 @@ const isProtectedUrl = (urlPath: string) => {
     }
     return false
 }
-const isPublicUrl = (urlPath: string) => {
+export const isPublicUrl = (urlPath: string) => {
     return !isProtectedUrl(urlPath)
 }
-const isGuestUrl = (urlPath: string) => {
+export const isGuestUrl = (urlPath: string) => {
     for (const path of appconf.routes.guest) {
         if (urlPath.startsWith(path)) {
             return true
@@ -39,4 +23,12 @@ const isGuestUrl = (urlPath: string) => {
     return false
 }
 
-export { setAuthTokensCookies, isProtectedUrl, isPublicUrl, isGuestUrl }
+// export const errorResponse = (message: string, status: number = 500) =>
+//     NextResponse.json(
+//         {
+//             success: false,
+//             message: "",
+//             error: "",
+//         },
+//         { status }
+//     )

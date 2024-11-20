@@ -1,12 +1,10 @@
 "use server"
 
-import { cookies } from "next/headers"
-
 import { sessionsService } from "@/lib/server/services/sessions.service"
 import { usersService } from "@/lib/server/services/users.service"
 
 import { appconf } from "@/appconf"
-import { setAuthTokensCookies } from "@/lib/server/helpers"
+import { getCookies, setAuthCookies } from "@/lib/server/cookies"
 import { logger } from "@/lib/server/logger"
 import { CookieKeys } from "@/lib/types"
 import { SignUpSchema, SignUpSchemaType } from "@/schemas/auth.schemas"
@@ -24,8 +22,8 @@ const signUp = async (data: SignUpSchemaType) => {
         const user = await usersService.create(userData)
         const { accessToken, refreshToken } = await sessionsService.create(user)
 
-        const cookieStore = await cookies()
-        setAuthTokensCookies(cookieStore, accessToken, refreshToken)
+        await setAuthCookies(accessToken, refreshToken)
+        const cookieStore = await getCookies()
         cookieStore.set(CookieKeys.MustSetupProfile, "true", appconf.defaultSecureCookieOptions)
 
         return { success: true }

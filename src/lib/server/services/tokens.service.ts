@@ -13,14 +13,14 @@ enum TokenTypes {
 class TokensService {
     private jwtSecret: Uint8Array
 
-    constructor(secret: string) {
-        this.jwtSecret = new TextEncoder().encode(secret)
+    constructor() {
+        this.jwtSecret = new TextEncoder().encode(appconf.jwtSecret)
     }
 
     public async issueUserAccessToken(payload: UserAccessTokenPayload): Promise<string> {
         return await new SignJWT({ tt: TokenTypes.UserAccessToken, ...payload })
             .setProtectedHeader({ alg: "HS256" })
-            .setExpirationTime("10m")
+            .setExpirationTime((Date.now() + appconf.jwtUserAccessTokenExpirationMs) / 1000)
             .sign(this.jwtSecret)
     }
     public async verifyUserAccessToken(token: string): Promise<UserAccessTokenPayload> {
@@ -30,7 +30,7 @@ class TokensService {
     public async issueUserRefreshToken(payload: UserRefreshTokenPayload): Promise<string> {
         return await new SignJWT({ tt: TokenTypes.UserRefreshToken, ...payload })
             .setProtectedHeader({ alg: "HS256" })
-            .setExpirationTime("7d")
+            .setExpirationTime((Date.now() + appconf.jwtUserRefreshTokenExpirationMs) / 1000)
             .sign(this.jwtSecret)
     }
     public async verifyUserRefreshToken(token: string): Promise<UserRefreshTokenPayload> {
@@ -63,4 +63,4 @@ class TokensService {
     }
 }
 
-export const tokensService = new TokensService(appconf.JWT_SECRET)
+export const tokensService = new TokensService()

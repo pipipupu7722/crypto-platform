@@ -11,13 +11,15 @@ import { signUp } from "@/app/actions/auth/signup"
 import { SignUpSchemaRule, SignUpSchemaType } from "@/schemas/auth.schemas"
 
 const SignUp: React.FC = () => {
-    const { pending } = useFormStatus()
+    const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
 
     const handleSignUp = async (values: SignUpSchemaType) => {
         setError(null)
+        setLoading(true)
         const res = await signUp(values)
         if (res.error) {
+            setLoading(false)
             setError(res.error)
         } else {
             redirect("/auth/setup")
@@ -67,7 +69,7 @@ const SignUp: React.FC = () => {
                 </Form.Item>
 
                 <Form.Item style={{ marginTop: "2rem", marginBottom: "1rem" }}>
-                    <Button style={{ width: "100%" }} size="large" type="primary" htmlType="submit" loading={pending}>
+                    <Button style={{ width: "100%" }} size="large" type="primary" htmlType="submit" loading={loading}>
                         Sign Up
                     </Button>
                 </Form.Item>

@@ -1,24 +1,30 @@
 import { Metadata } from "next"
+import { PropsWithChildren } from "react"
 
-import { GlobalWrapper } from "../components/global.wrapper"
-import "./global.css"
+import { AntdProvider } from "./providers/AntdProvider"
+import { NotificationProvider } from "./providers/NotificationProvider"
 
 export const metadata: Metadata = {
     title: "Crypto Platform",
     description: "",
 }
 
-export default function RootLayout({
-    children,
-}: Readonly<{
-    children: React.ReactNode
-}>) {
+export default async function RootLayout({ children }: PropsWithChildren) {
     return (
         <html lang="en">
-            <body>
-                <GlobalWrapper>
-                    <>{children}</>
-                </GlobalWrapper>
+            <body
+                style={{
+                    padding: 0,
+                    margin: 0,
+                    background: "#131313",
+                    color: "#dcdcdc",
+                }}
+            >
+                <AntdProvider>
+                    <NotificationProvider>
+                        <>{children}</>
+                    </NotificationProvider>
+                </AntdProvider>
             </body>
         </html>
     )

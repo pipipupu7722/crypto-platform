@@ -22,6 +22,7 @@ class SessionsService {
             data: {
                 userId: user.id,
                 refreshToken: refreshToken,
+                expiresAt: new Date(Date.now() + appconf.jwtUserRefreshTokenExpirationMs),
             },
         })
 
@@ -35,17 +36,34 @@ class SessionsService {
         return { accessToken, refreshToken }
     }
 
+    public async revoke(sessionId: string) {
+        return await prisma.session.update({
+            where: { id: sessionId },
+            data: {
+                revokedAt: new Date(),
+            },
+        })
+    }
+
     public async refresh(refreshToken: string, uidFromVerifiedRefreshToken?: string): Promise<AuthTokenPair> {
         const userId = uidFromVerifiedRefreshToken ?? (await tokensService.verifyUserRefreshToken(refreshToken)).uid
 
         const session = await prisma.session.findUnique({ where: { refreshToken }, include: { user: true } })
         if (!session) {
             throw new BadSessionError("Session not found")
+        } else if (session.revokedAt) {
+            throw new BadSessionError("Session revoked")
         }
 
         const newRefreshToken = await tokensService.issueUserRefreshToken({ uid: userId })
 
-        await prisma.session.update({ where: { id: session.id }, data: { refreshToken: newRefreshToken } })
+        await prisma.session.update({
+            where: { id: session.id },
+            data: {
+                refreshToken: newRefreshToken,
+                expiresAt: new Date(Date.now() + appconf.jwtUserRefreshTokenExpirationMs),
+            },
+        })
 
         const accessToken = await tokensService.issueUserAccessToken({
             sid: session.id,
@@ -59,9 +77,9 @@ class SessionsService {
 
     public async refreshOnEdgeRuntime(refreshToken: string): Promise<AuthTokenPair> {
         if (refreshToken) {
-            const newTokenPairResult = await fetch(new URL("/actions/auth/refresh", appconf.APP_HOST), {
+            const newTokenPairResult = await fetch(new URL("/auth/refresh", appconf.appHost), {
                 method: "POST",
-                body: JSON.stringify({ refreshToken: refreshToken }),
+                body: JSON.stringify({ refreshToken }),
             })
             const newTokenPair = await newTokenPairResult.json()
 

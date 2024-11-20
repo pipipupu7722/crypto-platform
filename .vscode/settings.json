@@ -10,7 +10,23 @@
         "next-env.d.ts": true,
         "node_modules": true,
         ".next": true,
-        ".eslintrc.json": true
+        ".eslintrc.json": true,
+        ".gitignore": true,
+        ".prettierrc": true,
+        "next.config.ts": true,
+        "README.md": true,
+        "tsconfig.json": true
     },
-    "hide-files.files": ["yarn.lock", "next-env.d.ts", "node_modules", ".next", ".eslintrc.json"]
+    "hide-files.files": [
+        "yarn.lock",
+        "next-env.d.ts",
+        "node_modules",
+        ".next",
+        ".eslintrc.json",
+        ".gitignore",
+        ".prettierrc",
+        "next.config.ts",
+        "README.md",
+        "tsconfig.json"
+    ]
 }

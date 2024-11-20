@@ -1,16 +1,14 @@
-export default function AuthLayout({
-    children,
-}: Readonly<{
-    children: React.ReactNode
-}>) {
+import { PropsWithChildren } from "react"
+
+export default function AuthLayout({ children }: PropsWithChildren) {
     return (
         <div
             style={{
-                height: "100vh",
+                minHeight: "100vh",
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                backgroundImage: `url(/assets/authbg.png)`,
+                backgroundImage: `url(/assets/img/auth-bg.png)`,
                 backgroundRepeat: "no-repeat",
                 backgroundSize: "contain",
             }}

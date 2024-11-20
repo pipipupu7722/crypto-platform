@@ -8,10 +8,6 @@ import { logger } from "@/lib/server/logger"
 
 // endpoint required for SessionsService.refreshOnEdgeRuntime
 export const POST = async (req: NextRequest) => {
-    if (req.method !== "POST") {
-        return NextResponse.json({ error: "Method Not Allowed" }, { status: 405 })
-    }
-
     const { refreshToken } = await req.json()
     if (!refreshToken) {
         return NextResponse.json({ error: "Bad Request" }, { status: 400 })

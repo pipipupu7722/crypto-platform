@@ -1,11 +1,14 @@
 "use client"
 
+import React from "react"
+
 import { theme } from "antd"
 import { Content } from "antd/es/layout/layout"
 
+import TransactionsTable from "@/components/dashboard/TransactionsTable"
 import UserTradeStats from "@/components/dashboard/UserTradeStats"
 
-const Dashboard: React.FC = () => {
+const Transactions: React.FC = () => {
     const { token } = theme.useToken()
 
     return (
@@ -20,10 +23,10 @@ const Dashboard: React.FC = () => {
                     borderRadius: token.borderRadiusLG,
                 }}
             >
-                <h1>Dashboard</h1>
+                <TransactionsTable />
             </Content>
         </Content>
     )
 }
 
-export default Dashboard
+export default Transactions

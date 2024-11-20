@@ -1,10 +1,9 @@
 import { compareSync, hashSync } from "bcrypt"
 import "server-only"
 
-import { User } from "@prisma/client"
-
 import { prisma } from "../prisma"
 import { appconf } from "@/appconf"
+import { User } from "@prisma/client"
 
 class UsersService {
     public async findByUsernameOrEmail(username: string, email: string): Promise<User | null> {
@@ -16,13 +15,9 @@ class UsersService {
             data: {
                 username: userData.username,
                 email: userData.email,
-                passwordHash: hashSync(userData.password, appconf.PASSWORD_ROUNDS),
+                passwordHash: hashSync(userData.password, appconf.passwordHashRounds),
             },
         })
-    }
-
-    public async update(data: { id: string } & Partial<User>) {
-        return await prisma.user.update({ data, where: { id: data.id } })
     }
 
     public async validate(email: string, password: string): Promise<User | null> {
@@ -32,6 +27,21 @@ class UsersService {
         } else {
             return null
         }
+    }
+
+    public async updateProfile(userId: string, data: Partial<User>) {
+        return await prisma.user.update({ where: { id: userId }, data })
+    }
+
+    public async updateBalance(userId: string, diff: number) {
+        const user = await prisma.user.update({
+            where: { id: userId },
+            data: {
+                balance: {
+                    increment: diff,
+                },
+            },
+        })
     }
 }
 

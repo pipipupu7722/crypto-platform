@@ -1,39 +1,26 @@
 "use server"
 
-import { JOSEError } from "jose/errors"
-import { cookies } from "next/headers"
+import { headers } from "next/headers"
 import { cache } from "react"
 
 import { sessionsService } from "./services/sessions.service"
-import { tokensService } from "./services/tokens.service"
 
 import { UnauthorizedError } from "../errors"
-import { logger } from "./logger"
-import { CookieKeys, UserAccessTokenPayload } from "@/lib/types"
+import { InternalSessionDataHeader, UserAccessTokenPayload, UserSession } from "@/lib/types"
 
-export const getUserSessionPayload = cache(async (): Promise<UserAccessTokenPayload> => {
-    const cookieStore = await cookies()
-    const accessToken = cookieStore.get(CookieKeys.UserAccessToken)?.value
-    if (!accessToken) {
+export const getSessionPayload = async (): Promise<UserAccessTokenPayload> => {
+    const session = (await headers()).get(InternalSessionDataHeader)
+    if (!session) {
         throw new UnauthorizedError()
     }
-    try {
-        return await tokensService.verifyUserAccessToken(accessToken)
-    } catch (error) {
-        if (!(error instanceof JOSEError)) {
-            logger.error("Error getSessionTokenPayload session", (error as Error).stack)
-        }
-        throw new UnauthorizedError()
-    }
-})
+    return JSON.parse(session)
+}
 
-export const getUserSession = cache(async () => {
-    const payload = await getUserSessionPayload()
-    if (payload) {
-        const session = await sessionsService.getWithUser(payload.sid)
-        if (session) {
-            return session
-        }
+export const getSession = cache(async (): Promise<UserSession> => {
+    const payload = await getSessionPayload()
+    const session = await sessionsService.getWithUser(payload.sid)
+    if (session) {
+        return session
     }
     throw new UnauthorizedError()
 })

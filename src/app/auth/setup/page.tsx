@@ -14,10 +14,11 @@ const Setup: React.FC = () => {
     const [error, setError] = useState<string | null>(null)
 
     const handleFirstLogin = async (values: ProfileSetupSchemaType) => {
-        console.log(values)
         setError(null)
+        setLoading(true)
         const res = await profileSetup(values)
         if (res.error) {
+            setLoading(false)
             setError(res.error)
         } else {
             redirect("/dashboard")

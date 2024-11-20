@@ -4,9 +4,6 @@ CREATE TYPE "UserRoles" AS ENUM ('ADMIN', 'MANAGER', 'USER');
 -- CreateEnum
 CREATE TYPE "UserStatuses" AS ENUM ('ACTIVE', 'PENDING', 'BANNED');
 
--- CreateEnum
-CREATE TYPE "SessionStatuses" AS ENUM ('ACTIVE', 'REVOKED');
-
 -- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
@@ -31,7 +28,8 @@ CREATE TABLE "Session" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "refreshToken" TEXT NOT NULL,
-    "sessionStatus" "SessionStatuses" NOT NULL DEFAULT 'ACTIVE',
+    "revokedAt" TIMESTAMP(3),
+    "expiresAt" TIMESTAMP(3) NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 

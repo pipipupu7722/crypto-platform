@@ -1,25 +1,31 @@
-const env = {
-    APP_HOST: process.env.APP_HOST,
+import ms from "ms"
 
-    NODE_ENV: process.env.NODE_ENV as string,
+import { NodeEnvs } from "./lib/types"
 
-    PASSWORD_ROUNDS: 10 as number,
+const dotEnv = {
+    appHost: process.env.APP_HOST,
 
-    JWT_SECRET: process.env.JWT_SECRET as string,
+    env: process.env.NODE_ENV as NodeEnvs,
 
-    DATABASE_URL: process.env.DATABASE_URL as string,
+    passwordHashRounds: 10 as number,
+
+    jwtUserAccessTokenExpirationMs: ms(process.env.JWT_USER_ACCESS_TOKEN_EXPIRATION as string),
+    jwtUserRefreshTokenExpirationMs: ms(process.env.JWT_USER_REFRESH_TOKEN_EXPIRATION as string),
+    jwtSecret: process.env.JWT_SECRET as string,
+
+    databaseUrl: process.env.DATABASE_URL as string,
 }
 
 const appconf = {
-    ...env,
+    ...dotEnv,
 
     routes: {
-        protected: ["/dashboard", "/auth/setup", "/auth/pending"],
+        protected: ["/api", "/dashboard", "/auth/setup", "/auth/pending"],
         guest: ["/auth/signin", "/auth/signup"],
     },
     defaultSecureCookieOptions: {
         httpOnly: true,
-        secure: env.NODE_ENV === "production",
+        secure: dotEnv.env === "production",
         path: "/",
         maxAge: 60 * 60 * 24 * 365 * 100,
     },
