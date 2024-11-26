@@ -1,3 +1,3 @@
 import { redirect } from "next/navigation"
 
-export const GET = () => redirect("/dashboard")
+export const GET = () => redirect("/cabinet")

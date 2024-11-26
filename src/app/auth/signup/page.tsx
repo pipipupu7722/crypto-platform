@@ -1,13 +1,11 @@
 "use client"
 
+import { Alert, Button, Card, Form, Input, Space } from "antd"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 import React, { useState } from "react"
-import { useFormStatus } from "react-dom"
 
-import { Alert, Button, Card, Form, Input, Space } from "antd"
-
-import { signUp } from "@/app/actions/auth/signup"
+import { signUp } from "@/actions/auth/signup"
 import { SignUpSchemaRule, SignUpSchemaType } from "@/schemas/auth.schemas"
 
 const SignUp: React.FC = () => {
@@ -18,16 +16,16 @@ const SignUp: React.FC = () => {
         setError(null)
         setLoading(true)
         const res = await signUp(values)
-        if (res.error) {
+        if (res.success) {
+            redirect("/auth/setup")
+        } else {
             setLoading(false)
             setError(res.error)
-        } else {
-            redirect("/auth/setup")
         }
     }
 
     return (
-        <Card title="Sign Up" style={{ maxWidth: 400, margin: "auto", textAlign: "center" }}>
+        <Card title="Регистрация" style={{ maxWidth: 400, margin: "auto", textAlign: "center" }}>
             {error && <Alert message={error} type="error" showIcon style={{ marginBottom: "1rem" }} />}
 
             <Form
@@ -39,7 +37,7 @@ const SignUp: React.FC = () => {
                 onFinish={handleSignUp}
             >
                 <Form.Item<SignUpSchemaType> name="username" style={{ textAlign: "left" }} rules={[SignUpSchemaRule]}>
-                    <Input size="large" placeholder="Username" />
+                    <Input size="large" placeholder="Имя пользователя" />
                 </Form.Item>
 
                 <Form.Item<SignUpSchemaType> name="email" style={{ textAlign: "left" }} rules={[SignUpSchemaRule]}>
@@ -47,7 +45,7 @@ const SignUp: React.FC = () => {
                 </Form.Item>
 
                 <Form.Item<SignUpSchemaType> name="password" style={{ textAlign: "left" }} rules={[SignUpSchemaRule]}>
-                    <Input.Password size="large" placeholder="Password" />
+                    <Input.Password size="large" placeholder="Пароль" />
                 </Form.Item>
 
                 <Form.Item<SignUpSchemaType>
@@ -60,24 +58,24 @@ const SignUp: React.FC = () => {
                                 if (!value || getFieldValue("password") === value) {
                                     return Promise.resolve()
                                 }
-                                return Promise.reject(new Error("Passwords don't match"))
+                                return Promise.reject(new Error("Пароли не совпадают"))
                             },
                         }),
                     ]}
                 >
-                    <Input.Password size="large" placeholder="Confirm password" />
+                    <Input.Password size="large" placeholder="Подтверждение пароля" />
                 </Form.Item>
 
                 <Form.Item style={{ marginTop: "2rem", marginBottom: "1rem" }}>
                     <Button style={{ width: "100%" }} size="large" type="primary" htmlType="submit" loading={loading}>
-                        Sign Up
+                        Зарегистрироваться
                     </Button>
                 </Form.Item>
 
                 <Form.Item style={{ textAlign: "center", marginBottom: 0 }}>
                     <Space>
-                        <span>Already have an account?</span>
-                        <Link href="/auth/signin">Sign In</Link>
+                        <span>Уже есть аккаунт?</span>
+                        <Link href="/auth/signin">Авторизируйтесь</Link>
                     </Space>
                 </Form.Item>
             </Form>

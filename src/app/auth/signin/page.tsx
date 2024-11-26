@@ -1,12 +1,11 @@
 "use client"
 
+import { Alert, Button, Card, Form, Input, Space } from "antd"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 import React, { useState } from "react"
 
-import { Alert, Button, Card, Form, Input, Space } from "antd"
-
-import { signIn } from "@/app/actions/auth/signin"
+import { signIn } from "@/actions/auth/signin"
 import { SignInSchemaRule, SignInSchemaType } from "@/schemas/auth.schemas"
 
 const SignIn: React.FC = () => {
@@ -17,16 +16,16 @@ const SignIn: React.FC = () => {
         setError(null)
         setLoading(true)
         const res = await signIn(values)
-        if (res.error) {
+        if (res.success) {
+            redirect("/cabinet")
+        } else {
             setLoading(false)
             setError(res.error)
-        } else {
-            redirect("/dashboard")
         }
     }
 
     return (
-        <Card title="Sign In" style={{ maxWidth: 400, margin: "auto", textAlign: "center" }}>
+        <Card title="Авторизация" style={{ maxWidth: 400, margin: "auto", textAlign: "center" }}>
             {error && <Alert message={error} type="error" showIcon style={{ marginBottom: "1rem" }} />}
 
             <Form
@@ -42,19 +41,19 @@ const SignIn: React.FC = () => {
                 </Form.Item>
 
                 <Form.Item<SignInSchemaType> name="password" style={{ textAlign: "left" }} rules={[SignInSchemaRule]}>
-                    <Input.Password size="large" placeholder="Password" />
+                    <Input.Password size="large" placeholder="Пароль" />
                 </Form.Item>
 
                 <Form.Item style={{ marginTop: "2rem", marginBottom: "1rem" }}>
                     <Button style={{ width: "100%" }} size="large" type="primary" htmlType="submit" loading={loading}>
-                        Sign In
+                        Войти
                     </Button>
                 </Form.Item>
 
                 <Form.Item style={{ textAlign: "center", marginBottom: 0 }}>
                     <Space>
-                        <span>Don&apos;t have an account?</span>
-                        <Link href="/auth/signup">Sign Up</Link>
+                        <span>Нет аккаунта?</span>
+                        <Link href="/auth/signup">Зарегистрируйтесь</Link>
                     </Space>
                 </Form.Item>
             </Form>

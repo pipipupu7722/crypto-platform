@@ -1,13 +1,12 @@
 "use server"
 
-import React from "react"
-
 import { Card } from "antd"
+import React from "react"
 
 const Pending: React.FC = async () => {
     return (
-        <Card title="Pending" style={{ maxWidth: 400, margin: "auto", textAlign: "center" }}>
-            Please wait until our managers approve your registration request
+        <Card title="Регистрация завершена" style={{ maxWidth: 400, margin: "auto", textAlign: "center" }}>
+            Пожалуйста, ожидайте проверки ваших данных
         </Card>
     )
 }

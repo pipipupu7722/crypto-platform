@@ -8,7 +8,7 @@ import { appconf } from "@/appconf"
 
 export const getCookies = cache(async () => await cookies())
 
-export const setAuthCookies = async (accessToken: string | null, refreshToken: string | null) => {
+export const setAuthCookies = async (accessToken?: string | null, refreshToken?: string | null) => {
     const cookieStore = await getCookies()
     if (accessToken) {
         cookieStore.set(CookieKeys.UserAccessToken, accessToken, {

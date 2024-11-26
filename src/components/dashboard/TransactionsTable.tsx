@@ -1,102 +1,78 @@
+"use client"
+
+import { Transaction } from "@prisma/client"
+import { Button, Table, TableProps } from "antd"
 import { format } from "date-fns"
-import { useEffect, useState } from "react"
 
-import {
-    ArrowDownOutlined,
-    ArrowUpOutlined,
-    CheckCircleOutlined,
-    CloseCircleOutlined,
-    SyncOutlined,
-} from "@ant-design/icons"
-import { Table, TableProps, Tag } from "antd"
+import ClickToCopy from "../misc/ClickToCopy"
+import { TransactionStatusTag, TransactionTypeTag } from "../misc/Tags"
+import { useNotify } from "@/providers/NotificationProvider"
 
-import { useNotificationContext } from "@/app/providers/NotificationProvider"
-import { fetchTransactions } from "@/lib/client/fetchTransactions"
-import { Transaction, TransactionStatus, TransactionType } from "@prisma/client"
+const TransactionsTable = ({
+    transactions,
+    action,
+}: {
+    transactions: Transaction[]
+    action?: (transaction: Transaction) => void
+}) => {
+    const { notify } = useNotify()
 
-const columns: TableProps<Transaction>["columns"] = [
-    {
-        title: "Id",
-        key: "id",
-        render: (_, rec) => <a>{rec.id}</a>,
-    },
-    {
-        title: "Amount",
-        key: "amount",
-        render: (_, rec) => (rec.amount ? rec.amount.toFixed(2) + " $" : "-"),
-    },
-    {
-        title: "Type",
-        key: "type",
-        render: (_, rec) => (
-            <>
-                {rec.type === TransactionType.DEPOSIT ? (
-                    <Tag color="gold">
-                        <ArrowDownOutlined /> Депозит
-                    </Tag>
-                ) : (
-                    <Tag color="green">
-                        <ArrowUpOutlined /> Вывод
-                    </Tag>
-                )}
-            </>
-        ),
-    },
-    {
-        title: "Status",
-        key: "status",
-        render: (_, rec) => {
-            if (rec.status === TransactionStatus.PENDING) {
-                return (
-                    <Tag icon={<SyncOutlined spin />} color="processing">
-                        В обработке
-                    </Tag>
-                )
-            } else if (rec.status === TransactionStatus.COMPLETE) {
-                return (
-                    <Tag icon={<CheckCircleOutlined />} color="success">
-                        Выполнен
-                    </Tag>
-                )
-            } else if (rec.status === TransactionStatus.CANCELLED) {
-                return (
-                    <Tag icon={<CloseCircleOutlined />} color="error">
-                        Отменен
-                    </Tag>
-                )
-            }
+    const columns: TableProps<Transaction>["columns"] = [
+        {
+            title: "Адрес кошелька",
+            key: "txHash",
+            render: (_, rec) => (
+                <>
+                    <span>{rec.crypto} </span>
+                    <ClickToCopy text={rec.wallet}>{rec.wallet ?? "N/A"}</ClickToCopy>
+                </>
+            ),
         },
-    },
-    {
-        title: "Date",
-        key: "date",
-        render: (_, rec) => <>{format(rec.createdAt, "yyyy-MM-dd HH:mm:ss")}</>,
-    },
-]
+        {
+            title: "Сумма $",
+            key: "amountUsd",
+            render: (_, rec) => (rec.amountUsd ? rec.amountUsd.toFixed(2) + " $" : "-"),
+            sorter: (a, b) => a.amountUsd - b.amountUsd,
+        },
+        {
+            title: "Тип",
+            key: "type",
+            render: (_, rec) => <TransactionTypeTag type={rec.type} />,
+            sorter: (a, b) => a.type.localeCompare(b.type),
+        },
+        {
+            title: "Статус",
+            key: "status",
+            render: (_, rec) => <TransactionStatusTag status={rec.status} />,
+            sorter: (a, b) => a.status.localeCompare(b.status),
+        },
+        {
+            title: "Дата",
+            key: "date",
+            render: (_, rec) => <>{format(rec.createdAt, "dd-MM-yyyy HH:mm:ss")}</>,
+            sorter: (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+        },
+    ]
 
-const TransactionsTable: React.FC = () => {
-    const [transactions, setTransactions] = useState<Transaction[] | undefined>(undefined)
-    const [loading, setLoading] = useState(true)
-
-    const { notify } = useNotificationContext()
-
-    useEffect(() => {
-        fetchTransactions()
-            .then(setTransactions)
-            .catch((error) => notify.error({ message: error.message }))
-            .finally(() => setLoading(false))
-    }, [])
+    if (action) {
+        columns.push({
+            title: "Действия",
+            key: "actions",
+            render: (_, rec) => (
+                <Button type="primary" size="small" onClick={() => action(rec)}>
+                    Управление
+                </Button>
+            ),
+        })
+    }
 
     return (
         <Table<Transaction>
             columns={columns}
+            pagination={false}
             rowKey={(trx) => trx.id}
             dataSource={transactions}
-            pagination={false}
-            loading={loading}
-            style={{
-                height: "100%",
-            }}
+            style={{ height: "100%" }}
         />
     )
 }

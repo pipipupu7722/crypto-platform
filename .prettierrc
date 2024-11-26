@@ -9,22 +9,7 @@
     "endOfLine": "lf",
     "trailingComma": "es5",
     "printWidth": 120,
-    "importOrder": [
-        "<THIRD_PARTY_MODULES>",
-        "^(@mui|antd|@ant-design)",
-        "module$",
-        "service$",
-        "middleware$",
-        "controller$",
-        "entity$",
-        "(decorator|guard|strategy|filter|interceptor)$",
-        "^(components|pages)/",
-        "^(actions|utils|styles|hooks|lib)/",
-        "^(error|type|interface|dto)s?$",
-        "^(assets|public|locales)/",
-        "^(config|conf)$",
-        "^(@/*|[./]|src/|../)"
-    ],
+    "importOrder": ["<THIRD_PARTY_MODULES>", "^(@/.*|[./]|src/|../)"],
     "importOrderSeparation": true,
     "importOrderSortSpecifiers": true,
     "plugins": ["@trivago/prettier-plugin-sort-imports"]

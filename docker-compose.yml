@@ -7,10 +7,13 @@ services:
             - "3000:3000"
         environment:
             NODE_ENV: production
+            REDIS_URL: "redis://:6E8eLf6ygHHStmSW1s3Z5WrQ14yrHr7KEz2lrLrD77DXLh0gPXWe6d5f1W3ZlMef@redis:6379"
             DATABASE_URL: "postgresql://crypto-platform:crypto-platform@postgres:5432/crypto-platform"
         depends_on:
             postgres:
                 condition: service_healthy
+            redis:
+                condition: service_started
 
     postgres:
         image: postgres:15
@@ -25,6 +28,12 @@ services:
             interval: 10s
             timeout: 3s
             retries: 5
+
+    redis:
+        image: redis:7
+        command: ["redis-server", "--requirepass", "6E8eLf6ygHHStmSW1s3Z5WrQ14yrHr7KEz2lrLrD77DXLh0gPXWe6d5f1W3ZlMef"]
+        ports:
+            - "6379:6379"
 
 volumes:
     postgres_data:

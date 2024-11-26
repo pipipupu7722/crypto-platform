@@ -9,3 +9,9 @@ export class UnauthorizedError extends Error {
         super(message, options)
     }
 }
+
+export class ServerActionError extends Error {
+    constructor(message?: string, options?: { cause?: unknown }) {
+        super(message, options)
+    }
+}

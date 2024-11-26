@@ -1,12 +1,11 @@
 "use client"
 
+import { Alert, Button, Card, Form, Input } from "antd"
+import PhoneInput from "antd-phone-input"
 import { redirect } from "next/navigation"
 import React, { useState } from "react"
 
-import { Alert, Button, Card, Form, Input } from "antd"
-import PhoneInput from "antd-phone-input"
-
-import { profileSetup } from "@/app/actions/auth/profileSetup"
+import { setupProfile } from "@/actions/auth/setupProfile"
 import { ProfileSetupSchemaRule, ProfileSetupSchemaType } from "@/schemas/auth.schemas"
 
 const Setup: React.FC = () => {
@@ -16,17 +15,17 @@ const Setup: React.FC = () => {
     const handleFirstLogin = async (values: ProfileSetupSchemaType) => {
         setError(null)
         setLoading(true)
-        const res = await profileSetup(values)
-        if (res.error) {
+        const res = await setupProfile(values)
+        if (res.success) {
+            redirect("/cabinet")
+        } else {
             setLoading(false)
             setError(res.error)
-        } else {
-            redirect("/dashboard")
         }
     }
 
     return (
-        <Card title="Additional info" style={{ maxWidth: 400, margin: "auto", textAlign: "center" }}>
+        <Card title="Дополнительные данные" style={{ maxWidth: 400, margin: "auto", textAlign: "center" }}>
             {error && <Alert message={error} type="error" showIcon style={{ marginBottom: "1rem" }} />}
 
             <Form
@@ -42,7 +41,7 @@ const Setup: React.FC = () => {
                     style={{ textAlign: "left" }}
                     rules={[ProfileSetupSchemaRule]}
                 >
-                    <Input size="large" placeholder="First name" />
+                    <Input size="large" placeholder="Имя" />
                 </Form.Item>
 
                 <Form.Item<ProfileSetupSchemaType>
@@ -50,7 +49,7 @@ const Setup: React.FC = () => {
                     style={{ textAlign: "left" }}
                     rules={[ProfileSetupSchemaRule]}
                 >
-                    <Input size="large" placeholder="Last name" />
+                    <Input size="large" placeholder="Фамилия" />
                 </Form.Item>
 
                 <Form.Item<ProfileSetupSchemaType>
@@ -60,7 +59,7 @@ const Setup: React.FC = () => {
                         {
                             validator: (_, { valid }) => {
                                 if (valid(true)) return Promise.resolve()
-                                return Promise.reject("Invalid phone number")
+                                return Promise.reject("Неправильный номер")
                             },
                         },
                     ]}
@@ -70,7 +69,7 @@ const Setup: React.FC = () => {
 
                 <Form.Item style={{ marginTop: "2rem", marginBottom: "1rem" }}>
                     <Button style={{ width: "100%" }} size="large" type="primary" htmlType="submit" loading={loading}>
-                        Proceed
+                        Продолжить
                     </Button>
                 </Form.Item>
             </Form>

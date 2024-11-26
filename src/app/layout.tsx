@@ -1,8 +1,8 @@
 import { Metadata } from "next"
 import { PropsWithChildren } from "react"
 
-import { AntdProvider } from "./providers/AntdProvider"
-import { NotificationProvider } from "./providers/NotificationProvider"
+import { AntdProvider } from "../providers/AntdProvider"
+import { NotificationProvider } from "../providers/NotificationProvider"
 
 export const metadata: Metadata = {
     title: "Crypto Platform",

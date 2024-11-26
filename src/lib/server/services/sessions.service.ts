@@ -1,18 +1,16 @@
+import { User } from "@prisma/client"
 import { JWTInvalid } from "jose/errors"
 import "server-only"
 
-import { User } from "@prisma/client"
-
+import { prisma } from "../providers/prisma"
 import { tokensService } from "./tokens.service"
-
-import { prisma } from "../prisma"
 import { appconf } from "@/appconf"
 import { BadSessionError } from "@/lib/errors"
 import { AuthTokenPair } from "@/lib/types"
 
 class SessionsService {
     public async getWithUser(sessionId: string) {
-        return prisma.session.findUnique({ where: { id: sessionId }, include: { user: true } })
+        return prisma.session.findUnique({ where: { id: sessionId }, include: { User: true } })
     }
 
     public async create(user: User): Promise<AuthTokenPair> {
@@ -48,7 +46,7 @@ class SessionsService {
     public async refresh(refreshToken: string, uidFromVerifiedRefreshToken?: string): Promise<AuthTokenPair> {
         const userId = uidFromVerifiedRefreshToken ?? (await tokensService.verifyUserRefreshToken(refreshToken)).uid
 
-        const session = await prisma.session.findUnique({ where: { refreshToken }, include: { user: true } })
+        const session = await prisma.session.findUnique({ where: { refreshToken }, include: { User: true } })
         if (!session) {
             throw new BadSessionError("Session not found")
         } else if (session.revokedAt) {
@@ -68,16 +66,16 @@ class SessionsService {
         const accessToken = await tokensService.issueUserAccessToken({
             sid: session.id,
             uid: userId,
-            sts: session.user.status,
-            rls: session.user.roles,
+            sts: session.User.status,
+            rls: session.User.roles,
         })
 
         return { accessToken, refreshToken: newRefreshToken }
     }
 
-    public async refreshOnEdgeRuntime(refreshToken: string): Promise<AuthTokenPair> {
+    public async refreshInEdgeRuntime(refreshToken: string): Promise<AuthTokenPair> {
         if (refreshToken) {
-            const newTokenPairResult = await fetch(new URL("/auth/refresh", appconf.appHost), {
+            const newTokenPairResult = await fetch(new URL("/api/auth/refresh", appconf.appHost), {
                 method: "POST",
                 body: JSON.stringify({ refreshToken }),
             })

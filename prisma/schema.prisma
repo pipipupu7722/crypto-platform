@@ -14,52 +14,32 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-enum UserRoles {
+enum UserRole {
     ADMIN
     MANAGER
     USER
+
+    @@map("UserRoles")
 }
 
-enum UserStatuses {
+enum UserStatus {
     ACTIVE
-    PENDING
     BANNED
+    PENDING
+    REJECTED
+
+    @@map("UserStatuses")
 }
 
-model User {
-    id              String       @id @default(cuid())
-    username        String       @unique
-    email           String       @unique
-    emailVerifiedAt DateTime?
-    passwordHash    String?
-    roles           UserRoles[]  @default([USER])
-    status          UserStatuses @default(PENDING)
-    balance         Float        @default(0)
-
-    firstName String?
-    lastName  String?
-    country   String?
-    phone     String?
-
-    updatedAt DateTime @updatedAt
-    createdAt DateTime @default(now())
-
-    sessions    Session[]
-    // strategy    Strategy[]
-    transaction Transaction[]
+enum CryptocurrencyType {
+    COIN
+    TOKEN
 }
 
-model Session {
-    id           String @id @default(cuid())
-    userId       String
-    refreshToken String @unique
-
-    revokedAt DateTime?
-    expiresAt DateTime
-    updatedAt DateTime  @updatedAt
-    createdAt DateTime  @default(now())
-
-    user User @relation(references: [id], fields: [userId], onDelete: Cascade)
+enum CryptocurrencyStatus {
+    ACTIVE
+    INACTIVE
+    ARCHIVED
 }
 
 enum TransactionType {
@@ -73,17 +53,105 @@ enum TransactionStatus {
     CANCELLED
 }
 
-model Transaction {
-    id     String            @id @default(cuid())
-    userId String
-    amount Float?
-    type   TransactionType
-    status TransactionStatus @default(PENDING)
+enum DepositWalletStatus {
+    ACTIVE
+    INACTIVE
+    ARCHIVED
+
+    @@map("DepositAddressStatus")
+}
+
+model User {
+    id              String     @id @default(cuid())
+    username        String     @unique
+    email           String     @unique
+    emailVerifiedAt DateTime?
+    passwordHash    String?
+    roles           UserRole[] @default([USER])
+    status          UserStatus @default(PENDING)
+    balance         Float      @default(0)
+    tradingBalance  Float      @default(0)
+    withdrawnFunds  Float      @default(0)
+
+    firstName String?
+    lastName  String?
+    country   String?
+    phone     String?
 
     updatedAt DateTime @updatedAt
     createdAt DateTime @default(now())
 
-    user User @relation(fields: [userId], references: [id])
+    Sessions       Session[]
+    // Strategy    Strategy[]
+    Transactions   Transaction[]
+    DepositWallets DepositWallet[]
+}
+
+model Session {
+    id           String @id @default(cuid())
+    userId       String
+    refreshToken String @unique
+
+    revokedAt DateTime?
+    expiresAt DateTime
+    updatedAt DateTime  @updatedAt
+    createdAt DateTime  @default(now())
+
+    User User @relation(references: [id], fields: [userId], onDelete: Cascade)
+}
+
+model Cryptocurrency {
+    id                 String               @id @default(cuid())
+    name               String
+    symbol             String               @unique
+    decimals           Int
+    type               CryptocurrencyType
+    status             CryptocurrencyStatus @default(ACTIVE)
+    withdrawalLimitUsd Float                @default(0) @map("withdrawalLimit")
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    Transactions   Transaction[]
+    DepositWallets DepositWallet[]
+}
+
+model Transaction {
+    id        String            @id @default(cuid())
+    userId    String
+    crypto    String
+    wallet    String
+    amount    Float
+    amountUsd Float
+    type      TransactionType
+    status    TransactionStatus @default(PENDING)
+
+    txHash      String?
+    description String?
+
+    updatedAt DateTime @updatedAt
+    createdAt DateTime @default(now())
+
+    User   User           @relation(fields: [userId], references: [id])
+    Crypto Cryptocurrency @relation(fields: [crypto], references: [symbol])
+}
+
+model DepositWallet {
+    id          String              @id @default(cuid())
+    userId      String
+    crypto      String
+    wallet      String
+    status      DepositWalletStatus @default(ACTIVE)
+    description String?
+
+    updatedAt DateTime @updatedAt
+    createdAt DateTime @default(now())
+
+    User   User           @relation(fields: [userId], references: [id])
+    Crypto Cryptocurrency @relation(fields: [crypto], references: [symbol])
+
+    @@unique([userId, crypto, wallet, status])
+    @@map("DepositAddress")
 }
 
 // model Strategy {
@@ -97,5 +165,5 @@ model Transaction {
 //     updatedAt DateTime @updatedAt
 //     createdAt DateTime @default(now())
 // 
-//     user User @relation(fields: [userId], references: [id])
+//     User User @relation(fields: [userId], references: [id])
 // }
