@@ -7,13 +7,13 @@ import { sessionsService } from "@/lib/server/services/sessions.service"
 
 // endpoint required for SessionsService.refreshOnEdgeRuntime
 export const POST = async (req: NextRequest) => {
-    const { refreshToken } = await req.json()
+    const { refreshToken, ipAddress } = await req.json()
     if (!refreshToken) {
         return NextResponse.json({ error: "Bad Request" }, { status: 400 })
     }
 
     try {
-        const tokens = await sessionsService.refresh(refreshToken)
+        const tokens = await sessionsService.refresh(ipAddress, refreshToken)
         return NextResponse.json(tokens, { status: 200 })
     } catch (error) {
         if (error instanceof JOSEError || error instanceof BadSessionError) {

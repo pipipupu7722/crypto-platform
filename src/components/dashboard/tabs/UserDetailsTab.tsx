@@ -10,7 +10,7 @@ import { useState } from "react"
 
 import CountryFlag from "../../misc/CountryFlag"
 import { UserStatusTag } from "../../misc/Tags"
-import { approveUserRegistration, banUser, unbanUser } from "@/actions/dashboard/user"
+import { approveUserRegistration, banUser, rejectUserRegistration, unbanUser } from "@/actions/dashboard/user"
 import { ServerActionResponse } from "@/lib/types"
 import { useNotify } from "@/providers/NotificationProvider"
 import { UserDetailsSchemaRule, UserDetailsSchemaType } from "@/schemas/dashboard/user.schemas"
@@ -143,7 +143,7 @@ const UserDetailsTab = ({ initialUser }: { initialUser: User }) => {
                     </>
                 ) : (
                     <>
-                        {user.status === UserStatus.PENDING && (
+                        {(user.status === UserStatus.PENDING || user.status === UserStatus.REJECTED) && (
                             <Button
                                 color="primary"
                                 variant="outlined"
@@ -154,6 +154,17 @@ const UserDetailsTab = ({ initialUser }: { initialUser: User }) => {
                                 Подтвердить регистрацию
                             </Button>
                         )}
+                        {user.status === UserStatus.PENDING && (
+                            <Button
+                                danger
+                                loading={isActionPending}
+                                style={{ marginRight: 8 }}
+                                onClick={() => wrap(() => rejectUserRegistration(user.id))}
+                            >
+                                Отклонить регистрацию
+                            </Button>
+                        )}
+
                         {user.status === UserStatus.ACTIVE && (
                             <Button
                                 danger
@@ -164,6 +175,7 @@ const UserDetailsTab = ({ initialUser }: { initialUser: User }) => {
                                 Заблокировать
                             </Button>
                         )}
+
                         {user.status === UserStatus.BANNED && (
                             <Button
                                 danger
@@ -175,6 +187,7 @@ const UserDetailsTab = ({ initialUser }: { initialUser: User }) => {
                                 Разблокировать
                             </Button>
                         )}
+
                         <Button type="default" onClick={toggleEditMode}>
                             Редактировать
                         </Button>

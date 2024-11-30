@@ -35,7 +35,8 @@ const prisma = new PrismaClient()
                 decimals: 6,
                 type: CryptocurrencyType.TOKEN,
                 status: CryptocurrencyStatus.ACTIVE,
-                withdrawalLimitUsd: 100,
+                withdrawalMinUsd: 10,
+                withdrawalMaxUsd: 100,
             },
         ],
     })

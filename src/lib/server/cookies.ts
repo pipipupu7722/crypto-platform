@@ -28,3 +28,5 @@ export const setAuthCookies = async (accessToken?: string | null, refreshToken?:
         cookieStore.delete(CookieKeys.UserRefreshToken)
     }
 }
+
+export const dropAuthAccessToken = async () => (await getCookies()).delete(CookieKeys.UserAccessToken)

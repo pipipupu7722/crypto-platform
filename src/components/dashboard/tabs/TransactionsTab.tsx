@@ -37,7 +37,7 @@ export default function TransactionsTab({
                 }}
             />
 
-            <div style={{ width: "100%", marginTop: 10, display: "flex", justifyContent: "end" }}>
+            <div style={{ width: "100%", marginTop: 24, display: "flex", justifyContent: "end" }}>
                 <Button type="primary" onClick={() => setIsModalOpen(true)} style={{ marginBottom: 16 }}>
                     Добавить депозит
                 </Button>
@@ -72,7 +72,7 @@ export default function TransactionsTab({
                     setIsModalLoading(true)
                     const res = await createDepositTransaction(userId, values)
                     if (res.success) {
-                        window.location.reload()
+                        setTransactions([res, ...transactions])
                     } else {
                         notify.error({ message: res.error })
                         setIsModalLoading(false)

@@ -2,8 +2,9 @@ import { UserStatus } from "@prisma/client"
 import { createSchemaFieldRule } from "antd-zod"
 import { z } from "zod"
 
+//
 export const UserDetailsSchema = z.object({
-    username: z.string({ message: "Введите имя пользователя" }),
+    username: z.string({ message: "Введите юзернейм" }),
     email: z.string({ message: "Введите email" }).email({ message: "Неправильный email" }),
     firstName: z.string({ message: "Введите имя" }),
     lastName: z.string({ message: "Введите фамилию" }),

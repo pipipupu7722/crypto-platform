@@ -1,4 +1,4 @@
-import { Session, User, UserRole, UserStatus } from "@prisma/client"
+import { Session, User, UserAuthLog, UserRole, UserStatus } from "@prisma/client"
 
 export const InternalSessionDataHeader = "x-session-data"
 
@@ -37,7 +37,7 @@ export type UserRefreshTokenPayload = {
     uid: string
 }
 
-export type UserSession = Session & { User: User }
-
 export type ServerAction<T> = (...args: any[]) => Promise<T>
 export type ServerActionResponse<T> = ({ success: true } & Awaited<T>) | { success: false; error: string }
+
+export type UserSession = Session & { User: User }

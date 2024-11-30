@@ -26,6 +26,9 @@ export default function Sidebar({ items }: { items: MenuProps["items"] }) {
             collapsible
             collapsed={collapsed}
             onCollapse={setCollapsed}
+            onBreakpoint={setCollapsed}
+            collapsedWidth={50}
+            breakpoint="lg"
             style={{ background: token.colorBgContainer }}
         >
             <div

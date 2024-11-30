@@ -7,8 +7,18 @@ import {
     ContainerOutlined,
     SyncOutlined,
 } from "@ant-design/icons"
-import { DepositWalletStatus, TransactionStatus, TransactionType, UserStatus } from "@prisma/client"
+import {
+    DepositWalletStatus,
+    TransactionStatus,
+    TransactionType,
+    UserAuthLog,
+    UserAuthLogType,
+    UserRole,
+    UserStatus,
+} from "@prisma/client"
 import { Tag } from "antd"
+
+import { hasRole } from "@/lib/helpers"
 
 export const UserStatusTag = ({ status }: { status: UserStatus }) => {
     if (status === UserStatus.PENDING) {
@@ -33,6 +43,44 @@ export const UserStatusTag = ({ status }: { status: UserStatus }) => {
         return (
             <Tag icon={<CloseCircleOutlined />} color="error" style={{ width: "fit-content" }}>
                 Отклонен
+            </Tag>
+        )
+    }
+}
+
+export const UserRolesTags = ({ roles }: { roles: UserRole[] }) => {
+    return (
+        <>
+            {roles.includes(UserRole.ADMIN) && (
+                <Tag color="volcano" style={{ width: "fit-content" }}>
+                    Админ
+                </Tag>
+            )}
+            {roles.includes(UserRole.MANAGER) && (
+                <Tag color="lime" style={{ width: "fit-content" }}>
+                    Менеджер
+                </Tag>
+            )}
+            {roles.includes(UserRole.USER) && (
+                <Tag color="blue" style={{ width: "fit-content" }}>
+                    Пользователь
+                </Tag>
+            )}
+        </>
+    )
+}
+
+export const UserAuthLogTypeTag = ({ type }: { type: UserAuthLogType }) => {
+    if (type === UserAuthLogType.LOGIN) {
+        return (
+            <Tag color="cyan" style={{ width: "fit-content" }}>
+                Вход
+            </Tag>
+        )
+    } else if (type === UserAuthLogType.REFRESH) {
+        return (
+            <Tag color="gold" style={{ width: "fit-content" }}>
+                Доступ
             </Tag>
         )
     }

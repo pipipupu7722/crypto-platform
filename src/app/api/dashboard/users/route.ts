@@ -17,7 +17,7 @@ export const GET = async (req: Request) => {
             sortOrder: params.get("sortOrder") ?? undefined,
             searchQuery: params.get("searchQuery") ?? undefined,
         })
-        const result = await usersService.findMany(query)
+        const result = await usersService.getUsers(query)
 
         return NextResponse.json(result)
     } catch (error) {

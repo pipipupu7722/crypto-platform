@@ -31,6 +31,7 @@ export const getSession = cache(async (): Promise<UserSession> => {
 const recentlyRefreshedTokens = new Map<string, AuthTokenPair>()
 
 export const verifyOrRefreshInEdgeRuntime = async (
+    ipAddress?: string,
     accessToken?: string,
     refreshToken?: string
 ): Promise<UserAccessTokenPayload | null> => {
@@ -50,7 +51,7 @@ export const verifyOrRefreshInEdgeRuntime = async (
             }
 
             try {
-                const newTokenPair = await sessionsService.refreshInEdgeRuntime(refreshToken)
+                const newTokenPair = await sessionsService.refreshInEdgeRuntime(ipAddress as string, refreshToken)
 
                 recentlyRefreshedTokens.set(refreshToken, newTokenPair)
                 setTimeout(() => recentlyRefreshedTokens.delete(refreshToken), 30000)

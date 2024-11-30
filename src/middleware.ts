@@ -5,8 +5,8 @@ import { NextResponse } from "next/server"
 import { NextRequest } from "next/server"
 
 import { appconf } from "./appconf"
-import { getCookies } from "./lib/server/cookies"
-import { hasRouteRole, isGuestUrl, isProtectedUrl } from "./lib/server/helpers"
+import { dropAuthAccessToken, getCookies } from "./lib/server/cookies"
+import { GetRealIp, hasRouteRole, isGuestUrl, isProtectedUrl } from "./lib/server/helpers"
 import { tokensService } from "./lib/server/services/tokens.service"
 import { verifyOrRefreshInEdgeRuntime } from "./lib/server/session"
 import { CookieKeys, InternalSessionDataHeader } from "./lib/types"
@@ -16,6 +16,7 @@ const middleware = async (req: NextRequest) => {
         return NextResponse.json({ error: "Bad Request" }, { status: 400 })
     }
 
+    const ipAddress = await GetRealIp(req.headers)
     const urlPath = req.nextUrl.pathname
     const cookieStore = await getCookies()
     const accessToken = cookieStore.get(CookieKeys.UserAccessToken)?.value
@@ -38,7 +39,7 @@ const middleware = async (req: NextRequest) => {
             }
         }
 
-        const sessionPayload = await verifyOrRefreshInEdgeRuntime(accessToken, refreshToken)
+        const sessionPayload = await verifyOrRefreshInEdgeRuntime(ipAddress, accessToken, refreshToken)
 
         if (!sessionPayload) {
             return urlPath.startsWith("/api")
@@ -73,7 +74,8 @@ const middleware = async (req: NextRequest) => {
         if (urlPath.startsWith("/auth/pending") && sessionPayload.sts !== UserStatus.PENDING) {
             return NextResponse.redirect(new URL("/cabinet", appconf.appHost))
         } else if (sessionPayload.sts === UserStatus.PENDING) {
-            cookieStore.delete(CookieKeys.UserAccessToken)
+            await dropAuthAccessToken()
+
             if (urlPath.startsWith("/auth/pending")) {
                 return NextWithAuth()
             } else {

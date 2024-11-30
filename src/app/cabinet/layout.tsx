@@ -9,10 +9,13 @@ import { SseProvider } from "../../providers/SseProvider"
 import Loader from "@/components/layout/Loader"
 import CabinetHeader from "@/components/layout/cabinet/CabinetHeader"
 import CabinetSidebar from "@/components/layout/cabinet/CabinetSidebar"
+import { depositWalletsService } from "@/lib/server/services/depositWallets.service"
 import { getSession } from "@/lib/server/session"
 
 export default async function CabinetLayout({ children }: PropsWithChildren) {
     const session = await getSession()
+
+    const wallets = await depositWalletsService.getActiveByUser(session.userId)
 
     return (
         <SseProvider>
@@ -23,7 +26,7 @@ export default async function CabinetLayout({ children }: PropsWithChildren) {
                     <CabinetSidebar />
 
                     <Layout>
-                        <CabinetHeader />
+                        <CabinetHeader wallets={wallets} />
 
                         <Layout
                             style={{

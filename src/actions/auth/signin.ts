@@ -3,7 +3,7 @@
 import { appconf } from "@/appconf"
 import { ServerActionError } from "@/lib/errors"
 import { getCookies, setAuthCookies } from "@/lib/server/cookies"
-import { wrapsa } from "@/lib/server/helpers"
+import { GetRealIp, wrapsa } from "@/lib/server/helpers"
 import { sessionsService } from "@/lib/server/services/sessions.service"
 import { usersService } from "@/lib/server/services/users.service"
 import { CookieKeys } from "@/lib/types"
@@ -14,7 +14,7 @@ const signIn = wrapsa(async (data: SignInSchemaType) => {
     const user = await usersService.validate(userData.email, userData.password)
 
     if (user) {
-        const { accessToken, refreshToken } = await sessionsService.create(user)
+        const { accessToken, refreshToken } = await sessionsService.create(user, await GetRealIp())
 
         await setAuthCookies(accessToken, refreshToken)
         if (!user.firstName && !user.phone) {

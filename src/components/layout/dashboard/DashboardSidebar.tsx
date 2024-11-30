@@ -1,6 +1,6 @@
 "use client"
 
-import { LineChartOutlined, LockOutlined, UserOutlined } from "@ant-design/icons"
+import { LockOutlined, UserOutlined } from "@ant-design/icons"
 import { UserRole } from "@prisma/client"
 import { MenuProps } from "antd"
 import { redirect } from "next/navigation"
@@ -12,21 +12,26 @@ import { useSession } from "@/providers/SessionProvider"
 export default function DashboardSidebar() {
     const { session } = useSession()
 
-    const menuItems: MenuProps["items"] = [
-        {
-            key: "/dashboard",
-            label: "/dashboard",
-            icon: <LineChartOutlined />,
-            onClick: () => redirect("/dashboard"),
-        },
-        {
+    const menuItems: MenuProps["items"] = []
+
+    if (hasRole(session.User.roles, [UserRole.ADMIN])) {
+        menuItems.push({
+            key: "/dashboard/managers",
+            label: "Менеджеры",
+            icon: <LockOutlined />,
+            onClick: () => redirect("/dashboard/managers"),
+        })
+    }
+
+    if (hasRole(session.User.roles, [UserRole.MANAGER])) {
+        menuItems.push({
             key: "/dashboard/users",
             label: "Пользователи",
             icon: <UserOutlined />,
             onClick: () => redirect("/dashboard/users"),
-        },
-        { type: "divider" },
-    ]
+        })
+        menuItems.push({ type: "divider" })
+    }
 
     if (hasRole(session.User.roles, [UserRole.USER])) {
         menuItems.push({

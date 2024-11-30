@@ -1,4 +1,4 @@
-import { User, UserStatus } from "@prisma/client"
+import { User, UserRole, UserStatus } from "@prisma/client"
 import { compareSync, hashSync } from "bcrypt"
 import "server-only"
 
@@ -19,50 +19,13 @@ class UsersService {
         })
     }
 
-    public async findByUsernameOrEmail(username: string, email: string): Promise<User | null> {
-        return await prisma.user.findFirst({ where: { OR: [{ username }, { email }] } })
-    }
-
-    public async findById(userId: string): Promise<User | null> {
-        return await prisma.user.findUnique({ where: { id: userId } })
-    }
-
-    public async findMany({ searchQuery, page, pageSize, sortBy, sortOrder }: GetUsersSchemaType) {
-        const where: any = {}
-        if (searchQuery) {
-            where.OR = [
-                { email: { contains: searchQuery, mode: "insensitive" } },
-                { firstName: { contains: searchQuery, mode: "insensitive" } },
-                { lastName: { contains: searchQuery, mode: "insensitive" } },
-            ]
-        }
-
-        const users = await prisma.user.findMany({
-            where,
-            orderBy: { [sortBy]: sortOrder || "asc" },
-            skip: (page - 1) * pageSize,
-            take: pageSize,
-        })
-
-        const totalCount = await prisma.user.count({ where })
-        const usersCount = users.length
-        const pagesCount = Math.ceil(totalCount / pageSize)
-
-        return { users, usersCount, totalCount, page, pageSize, pagesCount }
-    }
-
-    public async validate(email: string, password: string): Promise<User | null> {
-        const user = await prisma.user.findUnique({ where: { email } })
-        if (user && user.passwordHash && compareSync(password, user.passwordHash)) {
-            return user
-        } else {
-            return null
-        }
-    }
-
-    public async update(userId: string, data: Partial<User>) {
+    public async update(userId: string, data: { password?: string } & Partial<User>) {
         if (data.country) {
             data.country = data.country.toUpperCase()
+        }
+        if (data.password) {
+            data.passwordHash = hashSync(data.password, appconf.passwordHashRounds)
+            data.password = undefined
         }
         return await prisma.user.update({ where: { id: userId }, data })
     }
@@ -79,10 +42,61 @@ class UsersService {
         eventEmitter.emit(AppEvents.BalanceChanged, { userId, balance: user.balance, diff })
     }
 
+    public async validate(email: string, password: string): Promise<User | null> {
+        const user = await prisma.user.findUnique({ where: { email } })
+        if (user && user.passwordHash && compareSync(password, user.passwordHash)) {
+            return user
+        } else {
+            return null
+        }
+    }
+
+    public async getByUsernameOrEmail(username: string, email: string): Promise<User | null> {
+        return await prisma.user.findFirst({ where: { OR: [{ username }, { email }] } })
+    }
+
+    public async getById(userId: string): Promise<User | null> {
+        return await prisma.user.findUnique({ where: { id: userId } })
+    }
+
+    public async getAllManagers() {
+        return await prisma.user.findMany({ where: { roles: { has: UserRole.MANAGER } } })
+    }
+
+    public async getUsers({ searchQuery, page, pageSize, sortBy, sortOrder }: GetUsersSchemaType) {
+        const where: any = {}
+        if (searchQuery) {
+            where.OR = [
+                { email: { contains: searchQuery, mode: "insensitive" } },
+                { firstName: { contains: searchQuery, mode: "insensitive" } },
+                { lastName: { contains: searchQuery, mode: "insensitive" } },
+            ]
+        }
+
+        const users = await prisma.user.findMany({
+            where: { ...where, roles: { has: UserRole.USER } },
+            orderBy: { [sortBy]: sortOrder || "asc" },
+            skip: (page - 1) * pageSize,
+            take: pageSize,
+        })
+
+        const totalCount = await prisma.user.count({ where })
+        const usersCount = users.length
+        const pagesCount = Math.ceil(totalCount / pageSize)
+
+        return { users, usersCount, totalCount, page, pageSize, pagesCount }
+    }
+
     public async approveRegistration(userId: string) {
         return await prisma.user.update({
             where: { id: userId, status: UserStatus.PENDING },
             data: { status: UserStatus.ACTIVE },
+        })
+    }
+    public async rejectRegistration(userId: string) {
+        return await prisma.user.update({
+            where: { id: userId, status: UserStatus.PENDING },
+            data: { status: UserStatus.REJECTED },
         })
     }
     public async ban(userId: string) {

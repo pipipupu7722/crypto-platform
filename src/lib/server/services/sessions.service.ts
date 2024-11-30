@@ -1,4 +1,4 @@
-import { User } from "@prisma/client"
+import { User, UserAuthLogType } from "@prisma/client"
 import { JWTInvalid } from "jose/errors"
 import "server-only"
 
@@ -10,10 +10,14 @@ import { AuthTokenPair } from "@/lib/types"
 
 class SessionsService {
     public async getWithUser(sessionId: string) {
-        return prisma.session.findUnique({ where: { id: sessionId }, include: { User: true } })
+        return await prisma.session.findUnique({ where: { id: sessionId }, include: { User: true } })
     }
 
-    public async create(user: User): Promise<AuthTokenPair> {
+    public async getUserAuthLogs(userId: string) {
+        return await prisma.userAuthLog.findMany({ where: { userId }, orderBy: { createdAt: "desc" } })
+    }
+
+    public async create(user: User, ipAddress: string): Promise<AuthTokenPair> {
         const refreshToken = await tokensService.issueUserRefreshToken({ uid: user.id })
 
         const session = await prisma.session.create({
@@ -31,6 +35,15 @@ class SessionsService {
             rls: user.roles,
         })
 
+        await prisma.userAuthLog.create({
+            data: {
+                userId: user.id,
+                sessionId: session.id,
+                type: UserAuthLogType.LOGIN,
+                ipAddress,
+            },
+        })
+
         return { accessToken, refreshToken }
     }
 
@@ -43,7 +56,11 @@ class SessionsService {
         })
     }
 
-    public async refresh(refreshToken: string, uidFromVerifiedRefreshToken?: string): Promise<AuthTokenPair> {
+    public async refresh(
+        ipAddress: string,
+        refreshToken: string,
+        uidFromVerifiedRefreshToken?: string
+    ): Promise<AuthTokenPair> {
         const userId = uidFromVerifiedRefreshToken ?? (await tokensService.verifyUserRefreshToken(refreshToken)).uid
 
         const session = await prisma.session.findUnique({ where: { refreshToken }, include: { User: true } })
@@ -70,14 +87,23 @@ class SessionsService {
             rls: session.User.roles,
         })
 
+        await prisma.userAuthLog.create({
+            data: {
+                userId,
+                sessionId: session.id,
+                type: UserAuthLogType.REFRESH,
+                ipAddress,
+            },
+        })
+
         return { accessToken, refreshToken: newRefreshToken }
     }
 
-    public async refreshInEdgeRuntime(refreshToken: string): Promise<AuthTokenPair> {
+    public async refreshInEdgeRuntime(ipAddress: string, refreshToken: string): Promise<AuthTokenPair> {
         if (refreshToken) {
             const newTokenPairResult = await fetch(new URL("/api/auth/refresh", appconf.appHost), {
                 method: "POST",
-                body: JSON.stringify({ refreshToken }),
+                body: JSON.stringify({ refreshToken, ipAddress }),
             })
             const newTokenPair = await newTokenPairResult.json()
 

@@ -1,9 +1,9 @@
 import mitt from "mitt"
 import "server-only"
 
-import { AppEvents, EventMap } from "../../types"
 import { logger } from "./logger"
 import { sseEmitter } from "./sse.emitter"
+import { AppEvents, EventMap } from "@/lib/types"
 
 export const eventEmitter = mitt<EventMap>()
 

@@ -7,16 +7,21 @@ import { Content } from "antd/es/layout/layout"
 import DepositCard from "@/components/cabinet/DepositCard"
 import TransactionsTable from "@/components/cabinet/TransactionsTable"
 import UserTradeStats from "@/components/cabinet/UserTradeStats"
+import WithdrawalCard from "@/components/cabinet/WithdrawalCard"
 import PageContent from "@/components/layout/PageContent"
+import { cryptocurrenciesService } from "@/lib/server/services/cryptocurrencies.service"
 import { depositWalletsService } from "@/lib/server/services/depositWallets.service"
 import { transactionService } from "@/lib/server/services/transactions.service"
 import { getSessionPayload } from "@/lib/server/session"
 
-const Cabinet: React.FC = async () => {
+const Cabinet = async ({ searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }) => {
+    const initialTab = (await searchParams).tab ?? "deposit"
+
     const session = await getSessionPayload()
 
     const transactions = await transactionService.getUserTransactions(session.uid)
-    const depositWallets = await depositWalletsService.getAll()
+    const depositWallets = await depositWalletsService.getActiveByUser(session.uid)
+    const withdrawableCryptos = await cryptocurrenciesService.getWithdrawable()
 
     return (
         <Content style={{ minHeight: "100%", display: "flex", flexDirection: "column" }}>
@@ -24,6 +29,7 @@ const Cabinet: React.FC = async () => {
 
             <PageContent>
                 <Tabs
+                    defaultActiveKey={initialTab}
                     type="card"
                     items={[
                         {
@@ -56,7 +62,7 @@ const Cabinet: React.FC = async () => {
                                         />
                                     </div>
 
-                                    <DepositCard wallets={depositWallets} />
+                                    <WithdrawalCard cryptos={withdrawableCryptos} />
                                 </div>
                             ),
                         },

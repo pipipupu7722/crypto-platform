@@ -13,6 +13,7 @@ export default function Header({ children }: PropsWithChildren) {
     return (
         <Layout.Header
             style={{
+                padding: 0,
                 display: "flex",
                 justifyContent: "space-around",
                 backgroundColor: token.colorBgContainer,

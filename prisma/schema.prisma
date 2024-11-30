@@ -31,6 +31,11 @@ enum UserStatus {
     @@map("UserStatuses")
 }
 
+enum UserAuthLogType {
+    LOGIN
+    REFRESH
+}
+
 enum CryptocurrencyType {
     COIN
     TOKEN
@@ -85,6 +90,22 @@ model User {
     // Strategy    Strategy[]
     Transactions   Transaction[]
     DepositWallets DepositWallet[]
+    UserAuthLog    UserAuthLog[]
+}
+
+model UserAuthLog {
+    id        String          @id @default(cuid())
+    userId    String
+    sessionId String
+    type      UserAuthLogType
+
+    ipAddress String
+
+    updatedAt DateTime @updatedAt
+    createdAt DateTime @default(now())
+
+    User    User    @relation(references: [id], fields: [userId], onDelete: Cascade)
+    Session Session @relation(references: [id], fields: [sessionId], onDelete: Cascade)
 }
 
 model Session {
@@ -97,17 +118,19 @@ model Session {
     updatedAt DateTime  @updatedAt
     createdAt DateTime  @default(now())
 
-    User User @relation(references: [id], fields: [userId], onDelete: Cascade)
+    User        User          @relation(references: [id], fields: [userId], onDelete: Cascade)
+    UserAuthLog UserAuthLog[]
 }
 
 model Cryptocurrency {
-    id                 String               @id @default(cuid())
-    name               String
-    symbol             String               @unique
-    decimals           Int
-    type               CryptocurrencyType
-    status             CryptocurrencyStatus @default(ACTIVE)
-    withdrawalLimitUsd Float                @default(0) @map("withdrawalLimit")
+    id               String               @id @default(cuid())
+    name             String
+    symbol           String               @unique
+    decimals         Int
+    type             CryptocurrencyType
+    status           CryptocurrencyStatus @default(ACTIVE)
+    withdrawalMinUsd Float                @default(0)
+    withdrawalMaxUsd Float                @default(0)
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt

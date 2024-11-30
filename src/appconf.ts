@@ -34,8 +34,9 @@ const appconf = {
             { path: "/api/cabinet", roles: [UserRole.USER] },
             { path: "/api" },
 
-            { path: "/cabinet", roles: [UserRole.USER] },
+            { path: "/dashboard/managers", roles: [UserRole.ADMIN] },
             { path: "/dashboard", roles: [UserRole.ADMIN, UserRole.MANAGER] },
+            { path: "/cabinet", roles: [UserRole.USER] },
         ],
     },
 

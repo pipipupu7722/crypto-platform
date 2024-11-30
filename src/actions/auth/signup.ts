@@ -2,7 +2,7 @@
 
 import { appconf } from "@/appconf"
 import { getCookies, setAuthCookies } from "@/lib/server/cookies"
-import { wrapsa } from "@/lib/server/helpers"
+import { GetRealIp, wrapsa } from "@/lib/server/helpers"
 import { sessionsService } from "@/lib/server/services/sessions.service"
 import { usersService } from "@/lib/server/services/users.service"
 import { CookieKeys } from "@/lib/types"
@@ -10,7 +10,7 @@ import { SignUpSchema, SignUpSchemaType } from "@/schemas/auth.schemas"
 
 const signUp = wrapsa(async (data: SignUpSchemaType) => {
     const userData = SignUpSchema.parse(data)
-    const alreadyRegisteredUser = await usersService.findByUsernameOrEmail(userData.username, userData.email)
+    const alreadyRegisteredUser = await usersService.getByUsernameOrEmail(userData.username, userData.email)
     if (alreadyRegisteredUser?.username === userData.username) {
         return { error: "Username already taken" }
     } else if (alreadyRegisteredUser?.email === userData.email) {
@@ -18,7 +18,7 @@ const signUp = wrapsa(async (data: SignUpSchemaType) => {
     }
 
     const user = await usersService.create(userData)
-    const { accessToken, refreshToken } = await sessionsService.create(user)
+    const { accessToken, refreshToken } = await sessionsService.create(user, await GetRealIp())
 
     await setAuthCookies(accessToken, refreshToken)
     const cookieStore = await getCookies()
