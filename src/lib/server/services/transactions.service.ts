@@ -5,7 +5,7 @@ import { cryptocurrenciesService } from "./cryptocurrencies.service"
 import { depositWalletsService } from "./depositWallets.service"
 import { usersService } from "./users.service"
 import { round } from "@/lib/helpers"
-import { WithdrawalTransactionSchemaType } from "@/schemas/cabinet/transaction.schema"
+import { WithdrawalTransactionSchemaType } from "@/schemas/cabinet/transaction.schemas"
 import { DepositTransactionSchemaType } from "@/schemas/dashboard/transaction.schemas"
 
 class TransactionsService {

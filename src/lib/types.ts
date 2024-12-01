@@ -15,10 +15,12 @@ export enum CookieKeys {
 
 export enum AppEvents {
     BalanceChanged = "BalanceChanged",
+    StrategiesPnlUpdated = "StrategiesPnlUpdated",
 }
 
 export type EventMap = {
     BalanceChanged: { userId: string; balance: number; tradingBalance: number; withdrawnFunds: number }
+    StrategiesPnlUpdated: { userId: string; totalPnl: number; strategies: { id: string; profit: number }[] }
 }
 
 export type AuthTokenPair = {

@@ -1,6 +1,6 @@
 "use client"
 
-import { BarChartOutlined, LockOutlined, TransactionOutlined } from "@ant-design/icons"
+import { BarChartOutlined, LineChartOutlined, LockOutlined, TransactionOutlined } from "@ant-design/icons"
 import { UserRole } from "@prisma/client"
 import { MenuProps } from "antd"
 import { redirect } from "next/navigation"
@@ -19,12 +19,12 @@ export default function CabinetSidebar() {
             icon: <TransactionOutlined />,
             onClick: () => redirect("/cabinet"),
         },
-        // {
-        //     key: "/cabinet/transactions",
-        //     label: "Транзакции",
-        //     icon: <LineChartOutlined />,
-        //     onClick: () => redirect("/cabinet/transactions"),
-        // },
+        {
+            key: "/cabinet/strategies",
+            label: "Стратегии",
+            icon: <LineChartOutlined />,
+            onClick: () => redirect("/cabinet/strategies"),
+        },
         {
             key: "/cabinet/market",
             label: "Онлайн-рынок",

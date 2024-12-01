@@ -5,13 +5,14 @@ import {
     ClockCircleOutlined,
     CloseCircleOutlined,
     ContainerOutlined,
+    PlusCircleOutlined,
     SyncOutlined,
 } from "@ant-design/icons"
 import {
     DepositWalletStatus,
+    StrategyStatus,
     TransactionStatus,
     TransactionType,
-    UserAuthLog,
     UserAuthLogType,
     UserRole,
     UserStatus,
@@ -141,6 +142,28 @@ export const DepositWalletStatusTag = ({ status }: { status: DepositWalletStatus
         return (
             <Tag icon={<ContainerOutlined />} color="default" style={{ width: "fit-content" }}>
                 Архивирован
+            </Tag>
+        )
+    }
+}
+
+export const StrategyStatusTag = ({ status }: { status: StrategyStatus }) => {
+    if (status === StrategyStatus.ACTIVE) {
+        return (
+            <Tag icon={<SyncOutlined spin />} color="processing" style={{ width: "fit-content" }}>
+                В работе
+            </Tag>
+        )
+    } else if (status === StrategyStatus.AVAILABLE) {
+        return (
+            <Tag icon={<PlusCircleOutlined />} color="gold" style={{ width: "fit-content" }}>
+                Доступна
+            </Tag>
+        )
+    } else if (status === StrategyStatus.CLOSED) {
+        return (
+            <Tag icon={<CheckCircleOutlined />} color="success" style={{ width: "fit-content" }}>
+                Закрыта
             </Tag>
         )
     }

@@ -5,7 +5,7 @@
     "scripts": {
         "build": "IS_BUILDING=true next build",
         "start": "npx prisma migrate deploy && npx prisma db seed && next start",
-        "start:dev": "next dev",
+        "start:dev": "next dev | npx pino-pretty --colorize --ignore \"hostname,pid\" --translateTime \"SYS:dd-mm-yyyy HH:MM:ss\"",
         "lint": "next lint"
     },
     "prisma": {

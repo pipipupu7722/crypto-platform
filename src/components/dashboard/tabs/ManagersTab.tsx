@@ -53,18 +53,21 @@ export default function ManagersTab({ initial }: { initial: User[] }) {
         {
             title: "Статус",
             key: "status",
+            width: 1,
             sorter: true,
             render: (_, rec) => <UserStatusTag status={rec.status} />,
         },
         {
             title: "Дата регистрации",
             key: "date",
+            width: 175,
             sorter: true,
             render: (_, rec) => <>{format(rec.createdAt, "dd-MM-yyyy HH:mm:ss")}</>,
         },
         {
             title: "Действия",
             key: "actions",
+            width: 1,
             render: (_, rec) => (
                 <Button
                     type="primary"
@@ -108,6 +111,7 @@ export default function ManagersTab({ initial }: { initial: User[] }) {
                         notify.error({ message: res.error })
                     }
                     setIsModalLoading(false)
+                    setIsModalOpen(false)
                 }}
                 onUpdate={async (values: ManagerDetailsSchemaType) => {
                     if (!selectedManager) return
@@ -115,11 +119,11 @@ export default function ManagersTab({ initial }: { initial: User[] }) {
                     const res = await updateManagerDetails(selectedManager.id, values)
                     if (res.success) {
                         setManagers(managers.map((wallet) => (wallet.id === selectedManager.id ? res : wallet)))
-                        setIsModalOpen(false)
                     } else {
                         notify.error({ message: res.error })
                     }
                     setIsModalLoading(false)
+                    setIsModalOpen(false)
                 }}
             />
         </>

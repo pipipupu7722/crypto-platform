@@ -37,18 +37,21 @@ const TransactionsTable = ({
         {
             title: "Тип",
             key: "type",
+            width: 1,
             render: (_, rec) => <TransactionTypeTag type={rec.type} />,
             sorter: (a, b) => a.type.localeCompare(b.type),
         },
         {
             title: "Статус",
             key: "status",
+            width: 1,
             render: (_, rec) => <TransactionStatusTag status={rec.status} />,
             sorter: (a, b) => a.status.localeCompare(b.status),
         },
         {
             title: "Дата",
             key: "date",
+            width: 175,
             render: (_, rec) => <>{format(rec.createdAt, "dd-MM-yyyy HH:mm:ss")}</>,
             sorter: (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
         },
@@ -58,6 +61,7 @@ const TransactionsTable = ({
         columns.push({
             title: "Действия",
             key: "actions",
+            width: 1,
             render: (_, rec) => (
                 <Button type="primary" size="small" onClick={() => action(rec)}>
                     Управление

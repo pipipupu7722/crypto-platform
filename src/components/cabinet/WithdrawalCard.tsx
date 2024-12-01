@@ -6,7 +6,7 @@ import { useState } from "react"
 
 import { createWithdrawalRequest } from "@/actions/cabinet/withdrawal"
 import { useSession } from "@/providers/SessionProvider"
-import { WithdrawalTransactionSchemaRule, WithdrawalTransactionSchemaType } from "@/schemas/cabinet/transaction.schema"
+import { WithdrawalTransactionSchemaRule, WithdrawalTransactionSchemaType } from "@/schemas/cabinet/transaction.schemas"
 
 export default function WithdrawalCard({ cryptos }: { cryptos: Cryptocurrency[] }) {
     const [loading, setLoading] = useState(false)

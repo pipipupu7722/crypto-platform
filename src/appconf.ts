@@ -12,9 +12,11 @@ const dotEnv = {
     env: process.env.NODE_ENV as NodeEnvs,
 
     passwordHashRounds: 10 as number,
+    strategyIntervalMs: 30000 as number,
 
     jwtUserAccessTokenExpirationMs: ms(process.env.JWT_USER_ACCESS_TOKEN_EXPIRATION as string),
     jwtUserRefreshTokenExpirationMs: ms(process.env.JWT_USER_REFRESH_TOKEN_EXPIRATION as string),
+    jwtServiceAccessTokenExpirationMs: ms(process.env.JWT_SERVICE_ACCESS_TOKEN_EXPIRATION as string),
     jwtSecret: process.env.JWT_SECRET as string,
 
     redisUrl: process.env.REDIS_URL as string,
@@ -32,7 +34,8 @@ const appconf = {
 
             { path: "/api/dashboard", roles: [UserRole.ADMIN, UserRole.MANAGER] },
             { path: "/api/cabinet", roles: [UserRole.USER] },
-            { path: "/api" },
+            { path: "/api/events" },
+            { path: "/api/auth" },
 
             { path: "/dashboard/managers", roles: [UserRole.ADMIN] },
             { path: "/dashboard", roles: [UserRole.ADMIN, UserRole.MANAGER] },

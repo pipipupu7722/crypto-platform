@@ -69,18 +69,21 @@ const UsersTable: React.FC = () => {
         {
             title: "Статус",
             key: "status",
+            width: 1,
             sorter: true,
             render: (_, rec) => <UserStatusTag status={rec.status} />,
         },
         {
             title: "Дата регистрации",
             key: "date",
+            width: 175,
             sorter: true,
             render: (_, rec) => <>{format(rec.createdAt, "dd-MM-yyyy HH:mm:ss")}</>,
         },
         {
             title: "Действия",
             key: "actions",
+            width: 1,
             render: (_, rec) => (
                 <Link href={`/dashboard/users/${rec.id}`}>
                     <Button type="primary" size="small">

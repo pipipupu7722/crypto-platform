@@ -8,6 +8,7 @@ import { UserAccessTokenPayload, UserRefreshTokenPayload } from "@/lib/types"
 enum TokenTypes {
     UserAccessToken = "uat",
     UserRefreshToken = "urt",
+    ServiceAccessToken = "sat",
 }
 
 class TokensService {
@@ -35,6 +36,16 @@ class TokensService {
     }
     public async verifyUserRefreshToken(token: string): Promise<UserRefreshTokenPayload> {
         return this.verifyToken(token, TokenTypes.UserRefreshToken)
+    }
+
+    public async issueServiceAccessToken(): Promise<string> {
+        return await new SignJWT({ tt: TokenTypes.ServiceAccessToken })
+            .setProtectedHeader({ alg: "HS256" })
+            .setExpirationTime((Date.now() + appconf.jwtServiceAccessTokenExpirationMs) / 1000)
+            .sign(this.jwtSecret)
+    }
+    public async verifyServiceAccessToken(token: string): Promise<{}> {
+        return this.verifyToken(token, TokenTypes.ServiceAccessToken)
     }
 
     public async isExpired(token: string): Promise<boolean> {

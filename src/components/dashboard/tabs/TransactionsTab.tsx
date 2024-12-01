@@ -75,8 +75,9 @@ export default function TransactionsTab({
                         setTransactions([res, ...transactions])
                     } else {
                         notify.error({ message: res.error })
-                        setIsModalLoading(false)
                     }
+                    setIsModalLoading(false)
+                    setIsModalOpen(false)
                 }}
             />
         </>

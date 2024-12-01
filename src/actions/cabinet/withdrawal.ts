@@ -2,7 +2,7 @@
 
 import { wrapsa } from "@/lib/server/helpers"
 import { transactionService } from "@/lib/server/services/transactions.service"
-import { WithdrawalTransactionSchema, WithdrawalTransactionSchemaType } from "@/schemas/cabinet/transaction.schema"
+import { WithdrawalTransactionSchema, WithdrawalTransactionSchemaType } from "@/schemas/cabinet/transaction.schemas"
 
 export const createWithdrawalRequest = wrapsa(
     async (userId: string, payload: WithdrawalTransactionSchemaType) =>

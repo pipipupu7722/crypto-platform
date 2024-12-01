@@ -61,6 +61,8 @@ export const GetRealIp = async (headers?: ReadonlyHeaders): Promise<string> => {
     return "127.0.0.1"
 }
 
+export const getRandomFloat = (min: number, max: number) => Math.random() * (min - max) + max
+
 export const isProtectedUrl = (urlPath: string) => {
     for (const route of appconf.routes.protected) {
         if (urlPath.startsWith(route.path)) {
