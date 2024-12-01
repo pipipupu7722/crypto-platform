@@ -7,7 +7,6 @@ import { redirect, usePathname } from "next/navigation"
 import { useState } from "react"
 
 import { logout } from "@/actions/auth/logout"
-import { breakpoints } from "@/theme"
 
 export default function Sidebar({ items }: { items: MenuProps["items"] }) {
     const [collapsed, setCollapsed] = useState(false)
@@ -26,7 +25,7 @@ export default function Sidebar({ items }: { items: MenuProps["items"] }) {
     return (
         <Layout.Sider
             collapsible
-            breakpoint="lg"
+            breakpoint="xl"
             collapsedWidth={0}
             collapsed={collapsed}
             onCollapse={setCollapsed}

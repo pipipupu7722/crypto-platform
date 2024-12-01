@@ -66,6 +66,12 @@ enum DepositWalletStatus {
     @@map("DepositAddressStatus")
 }
 
+enum StrategyStatus {
+    NEW
+    WORKING
+    CLOSED
+}
+
 model User {
     id              String     @id @default(cuid())
     username        String     @unique
@@ -87,10 +93,10 @@ model User {
     createdAt DateTime @default(now())
 
     Sessions       Session[]
-    // Strategy    Strategy[]
+    Strategies     Strategy[]
     Transactions   Transaction[]
     DepositWallets DepositWallet[]
-    UserAuthLog    UserAuthLog[]
+    UserAuthLogs   UserAuthLog[]
 }
 
 model UserAuthLog {
@@ -177,16 +183,16 @@ model DepositWallet {
     @@map("DepositAddress")
 }
 
-// model Strategy {
-//     id         String  @id @default(cuid())
-//     userId     String
-//     cryptoPair String
-//     pnl        Float
-//     profit     Float
-//     isActive   Boolean @default(true)
-// 
-//     updatedAt DateTime @updatedAt
-//     createdAt DateTime @default(now())
-// 
-//     User User @relation(fields: [userId], references: [id])
-// }
+model Strategy {
+    id         String         @id @default(cuid())
+    userId     String
+    cryptoPair String
+    pnl        Float
+    profit     Float
+    status     StrategyStatus @default(NEW)
+
+    updatedAt DateTime @updatedAt
+    createdAt DateTime @default(now())
+
+    User User @relation(fields: [userId], references: [id])
+}

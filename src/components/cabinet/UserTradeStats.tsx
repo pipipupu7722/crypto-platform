@@ -1,10 +1,12 @@
 "use client"
 
-import { Card, Col, Row, Statistic, StatisticProps, theme } from "antd"
+import { css } from "@emotion/css"
+import { Card, Col, Row, Statistic, StatisticProps } from "antd"
 import { FC } from "react"
 import CountUp from "react-countup"
 
 import { useSession } from "@/providers/SessionProvider"
+import { breakpoints } from "@/theme"
 
 const formatter: StatisticProps["formatter"] = (value) => <CountUp end={value as number} decimals={2} prefix="$ " />
 
@@ -12,25 +14,80 @@ const UserTradeStats: FC = () => {
     const { session } = useSession()
 
     return (
-        <Row gutter={16}>
-            <Col span={8}>
-                <Card bordered={false}>
-                    <Statistic title="Общий баланс" formatter={formatter} value={session.User.balance} />
-                </Card>
-            </Col>
+        <>
+            <Row
+                gutter={{ xs: 8, sm: 8, md: 16 }}
+                className={css`
+                    @media (max-width: ${breakpoints.sm}) {
+                        display: none;
+                    }
+                `}
+            >
+                <Col span={8}>
+                    <Card bordered={false}>
+                        <Statistic title="Общий баланс" formatter={formatter} value={session.User.balance} />
+                    </Card>
+                </Col>
 
-            <Col span={8}>
-                <Card bordered={false}>
-                    <Statistic title="Торговый счет" formatter={formatter} value={session.User.tradingBalance} />
-                </Card>
-            </Col>
+                <Col span={8}>
+                    <Card bordered={false}>
+                        <Statistic title="Торговый счет" formatter={formatter} value={session.User.tradingBalance} />
+                    </Card>
+                </Col>
 
-            <Col span={8}>
-                <Card bordered={false}>
-                    <Statistic title="Выведенные средства" formatter={formatter} value={session.User.withdrawnFunds} />
-                </Card>
-            </Col>
-        </Row>
+                <Col span={8}>
+                    <Card bordered={false}>
+                        <Statistic
+                            title="Выведенные средства"
+                            formatter={formatter}
+                            value={session.User.withdrawnFunds}
+                        />
+                    </Card>
+                </Col>
+            </Row>
+
+            <Row
+                gutter={{ xs: 8, sm: 8, md: 16 }}
+                className={css`
+                    @media (min-width: ${breakpoints.sm}) {
+                        display: none;
+                    }
+                `}
+            >
+                <Col span={12}>
+                    <Card bordered={false}>
+                        <Statistic title="Общий баланс" formatter={formatter} value={session.User.balance} />
+                    </Card>
+                </Col>
+
+                <Col span={12}>
+                    <Card bordered={false}>
+                        <Statistic title="Торговый счет" formatter={formatter} value={session.User.tradingBalance} />
+                    </Card>
+                </Col>
+            </Row>
+
+            <Row
+                gutter={{ xs: 8, sm: 8, md: 16 }}
+                className={css`
+                    margin-top: 8px;
+
+                    @media (min-width: ${breakpoints.sm}) {
+                        display: none;
+                    }
+                `}
+            >
+                <Col span={24}>
+                    <Card bordered={false}>
+                        <Statistic
+                            title="Выведенные средства"
+                            formatter={formatter}
+                            value={session.User.withdrawnFunds}
+                        />
+                    </Card>
+                </Col>
+            </Row>
+        </>
     )
 }
 

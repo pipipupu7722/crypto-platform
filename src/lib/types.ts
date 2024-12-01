@@ -18,7 +18,7 @@ export enum AppEvents {
 }
 
 export type EventMap = {
-    BalanceChanged: { userId: string; balance: number; diff: number }
+    BalanceChanged: { userId: string; balance: number; tradingBalance: number; withdrawnFunds: number }
 }
 
 export type AuthTokenPair = {

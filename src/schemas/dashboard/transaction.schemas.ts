@@ -12,4 +12,4 @@ export const DepositTransactionSchema = z.object({
     description: z.string().nullable().optional(),
 })
 export const DepositTransactionSchemaRule = createSchemaFieldRule(DepositTransactionSchema)
-export type DepositWalletSchemaType = z.infer<typeof DepositTransactionSchema>
+export type DepositTransactionSchemaType = z.infer<typeof DepositTransactionSchema>

@@ -4,6 +4,7 @@ import { Tabs } from "antd"
 import { Content } from "antd/es/layout/layout"
 
 import DepositTab from "@/components/cabinet/DepositTab"
+import UserTradeStats from "@/components/cabinet/UserTradeStats"
 import WithdrawalTab from "@/components/cabinet/WithdrawalTab"
 import PageContent from "@/components/layout/PageContent"
 import { cryptocurrenciesService } from "@/lib/server/services/cryptocurrencies.service"
@@ -22,7 +23,7 @@ const Cabinet = async ({ searchParams }: { searchParams: Promise<{ [key: string]
 
     return (
         <Content style={{ minHeight: "100%", display: "flex", flexDirection: "column" }}>
-            {/* <UserTradeStats /> */}
+            <UserTradeStats />
 
             <PageContent>
                 <Tabs

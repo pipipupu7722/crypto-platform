@@ -30,7 +30,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode; initialSessi
             ...session,
             User: {
                 ...session.User,
-                balance: payload.balance,
+                ...payload,
             },
         })
     )

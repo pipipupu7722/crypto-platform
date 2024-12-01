@@ -19,7 +19,10 @@ class UsersService {
         })
     }
 
-    public async update(userId: string, data: { password?: string } & Partial<User>) {
+    public async update(
+        userId: string,
+        data: Omit<{ password?: string } & Partial<User>, "balance" | "tradingBalance" | "withdrawnFunds">
+    ) {
         if (data.country) {
             data.country = data.country.toUpperCase()
         }
@@ -30,16 +33,27 @@ class UsersService {
         return await prisma.user.update({ where: { id: userId }, data })
     }
 
-    public async updateBalance(userId: string, diff: number) {
+    public async depositFunds(userId: string, diff: number) {
         const user = await prisma.user.update({
             where: { id: userId },
             data: {
-                balance: {
-                    increment: diff,
-                },
+                balance: { increment: diff },
             },
         })
-        eventEmitter.emit(AppEvents.BalanceChanged, { userId, balance: user.balance, diff })
+        const { balance, tradingBalance, withdrawnFunds } = user
+        eventEmitter.emit(AppEvents.BalanceChanged, { userId, balance, tradingBalance, withdrawnFunds })
+    }
+
+    public async withdrawFunds(userId: string, diff: number) {
+        const user = await prisma.user.update({
+            where: { id: userId },
+            data: {
+                balance: { decrement: diff },
+                withdrawnFunds: { increment: diff },
+            },
+        })
+        const { balance, tradingBalance, withdrawnFunds } = user
+        eventEmitter.emit(AppEvents.BalanceChanged, { userId, balance, tradingBalance, withdrawnFunds })
     }
 
     public async validate(email: string, password: string): Promise<User | null> {

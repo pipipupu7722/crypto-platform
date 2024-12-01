@@ -17,6 +17,7 @@ export default function DepositTab({
     return (
         <div
             className={css`
+                gap: 12px;
                 display: flex;
                 justify-content: space-between;
 
@@ -28,7 +29,6 @@ export default function DepositTab({
         >
             <div
                 className={css`
-                    margin-right: 10px;
                     width: 100%;
 
                     @media screen and (max-width: ${breakpoints.md}) {

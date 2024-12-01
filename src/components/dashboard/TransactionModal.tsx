@@ -4,8 +4,8 @@ import { Cryptocurrency, DepositWallet, Transaction, TransactionStatus } from "@
 import { Button, Descriptions, Form, Input, InputNumber, Modal, Select } from "antd"
 import { useEffect } from "react"
 
-import { DepositWalletStatusTag, TransactionStatusTag, TransactionTypeTag } from "../misc/Tags"
-import { DepositTransactionSchemaRule, DepositWalletSchemaType } from "@/schemas/dashboard/transaction.schemas"
+import { TransactionStatusTag, TransactionTypeTag } from "../misc/Tags"
+import { DepositTransactionSchemaRule, DepositTransactionSchemaType } from "@/schemas/dashboard/transaction.schemas"
 
 type TransactionModalProps = {
     open: boolean
@@ -15,8 +15,8 @@ type TransactionModalProps = {
     isEditing?: boolean
     loading?: boolean
     onClose: () => void
-    onUpdate: (transaction: DepositWalletSchemaType) => void
-    onCreate: (transaction: DepositWalletSchemaType) => void
+    onUpdate: (transaction: DepositTransactionSchemaType) => void
+    onCreate: (transaction: DepositTransactionSchemaType) => void
 }
 
 const TransactionModal: React.FC<TransactionModalProps> = ({
@@ -76,7 +76,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
             <Form form={form} layout="horizontal">
                 <Descriptions bordered column={1} size="small">
                     <Descriptions.Item label="Криптовалюта">
-                        <Form.Item<DepositWalletSchemaType>
+                        <Form.Item<DepositTransactionSchemaType>
                             name="crypto"
                             style={{ marginBottom: 0 }}
                             rules={[DepositTransactionSchemaRule]}
@@ -102,7 +102,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
                     )}
 
                     <Descriptions.Item label="Хэш транзакции">
-                        <Form.Item<DepositWalletSchemaType>
+                        <Form.Item<DepositTransactionSchemaType>
                             name="txHash"
                             style={{ marginBottom: 0 }}
                             rules={[DepositTransactionSchemaRule]}
@@ -112,7 +112,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
                     </Descriptions.Item>
 
                     <Descriptions.Item label="Сумма">
-                        <Form.Item<DepositWalletSchemaType>
+                        <Form.Item<DepositTransactionSchemaType>
                             name="amount"
                             style={{ marginBottom: 0 }}
                             rules={[DepositTransactionSchemaRule]}
@@ -122,7 +122,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
                     </Descriptions.Item>
 
                     <Descriptions.Item label="Сумма в USD">
-                        <Form.Item<DepositWalletSchemaType>
+                        <Form.Item<DepositTransactionSchemaType>
                             name="amountUsd"
                             style={{ marginBottom: 0 }}
                             rules={[DepositTransactionSchemaRule]}
@@ -140,7 +140,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
                     )}
 
                     <Descriptions.Item label="Статус">
-                        <Form.Item<DepositWalletSchemaType>
+                        <Form.Item<DepositTransactionSchemaType>
                             name="status"
                             style={{ marginBottom: 0 }}
                             rules={[DepositTransactionSchemaRule]}
@@ -169,7 +169,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
                     </Descriptions.Item>
 
                     <Descriptions.Item label="Описание">
-                        <Form.Item<DepositWalletSchemaType>
+                        <Form.Item<DepositTransactionSchemaType>
                             name="description"
                             style={{ marginBottom: 0 }}
                             rules={[DepositTransactionSchemaRule]}
