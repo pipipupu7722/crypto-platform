@@ -1,15 +1,17 @@
 "use client"
 
 import { AntdRegistry } from "@ant-design/nextjs-registry"
-import { ConfigProvider, theme } from "antd"
+import { ConfigProvider } from "antd"
 import { PropsWithChildren } from "react"
+
+import { themeConfig } from "@/theme"
 
 const AntdProvider = (props: PropsWithChildren) => {
     const { children } = props
 
     return (
         <AntdRegistry>
-            <ConfigProvider theme={{ algorithm: theme.darkAlgorithm }}>
+            <ConfigProvider theme={themeConfig}>
                 <>{children}</>
             </ConfigProvider>
         </AntdRegistry>

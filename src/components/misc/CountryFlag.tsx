@@ -5,6 +5,7 @@ export default function CountryFlag({ country }: { country: string }) {
     return (
         <>
             <div style={{ display: "none" }}>
+                {/* load phone-input styles to use flags from this lib */}
                 <PhoneInput />
             </div>
 

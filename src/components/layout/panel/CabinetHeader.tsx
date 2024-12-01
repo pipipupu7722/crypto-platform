@@ -1,9 +1,10 @@
 "use client"
 
 import { PlusOutlined } from "@ant-design/icons"
+import { css } from "@emotion/css"
 import { DepositWallet } from "@prisma/client"
 import { Button, Modal, Tooltip } from "antd"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import CountUp from "react-countup"
 
 import Header from "../Header"
@@ -14,12 +15,6 @@ export default function CabinetHeader({ wallets }: { wallets: DepositWallet[] })
     const [isOpen, setIsOpen] = useState(false)
 
     const { session } = useSession()
-
-    useEffect(() => {
-        const style = document.createElement("style")
-        style.textContent = ".deposit-card-modal .ant-modal-content { padding: 0 }"
-        document.head.appendChild(style)
-    }, [])
 
     return (
         <>
@@ -36,15 +31,18 @@ export default function CabinetHeader({ wallets }: { wallets: DepositWallet[] })
                 </div>
 
                 <div></div>
-                <div></div>
             </Header>
 
             <Modal
                 open={isOpen}
                 footer={[]}
-                className="deposit-card-modal"
                 onCancel={() => setIsOpen(false)}
                 style={{ maxWidth: 400 }}
+                className={css`
+                    .ant-modal-content {
+                        padding: 0;
+                    }
+                `}
             >
                 <DepositCard wallets={wallets} />
             </Modal>

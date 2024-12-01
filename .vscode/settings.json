@@ -15,7 +15,9 @@
         ".prettierrc": true,
         "next.config.ts": true,
         "README.md": true,
-        "tsconfig.json": true
+        "tsconfig.json": true,
+        ".babelrc": true,
+        ".env.example": true
     },
     "hide-files.files": [
         "yarn.lock",
@@ -27,6 +29,8 @@
         ".prettierrc",
         "next.config.ts",
         "README.md",
-        "tsconfig.json"
+        "tsconfig.json",
+        ".babelrc",
+        ".env.example"
     ]
 }

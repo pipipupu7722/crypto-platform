@@ -1,11 +1,13 @@
 "use client"
 
 import { LogoutOutlined } from "@ant-design/icons"
+import { css } from "@emotion/css"
 import { Layout, Menu, MenuProps, theme } from "antd"
 import { redirect, usePathname } from "next/navigation"
 import { useState } from "react"
 
 import { logout } from "@/actions/auth/logout"
+import { breakpoints } from "@/theme"
 
 export default function Sidebar({ items }: { items: MenuProps["items"] }) {
     const [collapsed, setCollapsed] = useState(false)
@@ -24,12 +26,17 @@ export default function Sidebar({ items }: { items: MenuProps["items"] }) {
     return (
         <Layout.Sider
             collapsible
+            breakpoint="lg"
+            collapsedWidth={0}
             collapsed={collapsed}
             onCollapse={setCollapsed}
             onBreakpoint={setCollapsed}
-            collapsedWidth={50}
-            breakpoint="lg"
             style={{ background: token.colorBgContainer }}
+            className={css`
+                .ant-layout-sider-zero-width-trigger {
+                    display: none;
+                }
+            `}
         >
             <div
                 style={{

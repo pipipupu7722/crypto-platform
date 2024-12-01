@@ -1,10 +1,12 @@
 "use client"
 
 import { BellOutlined, SettingOutlined } from "@ant-design/icons"
+import { css } from "@emotion/css"
 import { Avatar, Button, Layout, Tooltip, theme } from "antd"
 import { PropsWithChildren } from "react"
 
 import { useSession } from "@/providers/SessionProvider"
+import { breakpoints } from "@/theme"
 
 export default function Header({ children }: PropsWithChildren) {
     const { session } = useSession()
@@ -12,36 +14,64 @@ export default function Header({ children }: PropsWithChildren) {
 
     return (
         <Layout.Header
-            style={{
-                padding: 0,
-                display: "flex",
-                justifyContent: "space-around",
-                backgroundColor: token.colorBgContainer,
-            }}
+            className={css`
+                padding: 0;
+                display: flex;
+                justify-content: space-around;
+                background-color: ${token.colorBgContainer};
+            `}
         >
             <div
-                style={{
-                    padding: "0 24px",
-                    width: "100%",
-                    maxWidth: 1280,
-                }}
+                className={css`
+                    padding: 0 24px;
+                    width: 100%;
+                    max-width: 1280px;
+
+                    @media (max-width: ${breakpoints.sm}) {
+                        padding: 0 12px;
+                    }
+                `}
             >
                 <div
-                    style={{
-                        padding: "0 24px",
-                        width: "100%",
-                        height: "100%",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                    }}
+                    className={css`
+                        padding: 0 24px;
+                        width: 100%;
+                        height: 100%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+
+                        @media (max-width: ${breakpoints.sm}) {
+                            padding: 0;
+                        }
+                    `}
                 >
-                    <div style={{ display: "flex", alignItems: "center" }}>
+                    <div
+                        className={css`
+                            display: flex;
+                            align-items: center;
+
+                            @media (max-width: ${breakpoints.sm}) {
+                                display: none;
+                            }
+                        `}
+                    >
                         <Avatar>
                             {session.User.firstName?.substring(0, 1)?.toUpperCase() ?? "F"}
                             {session.User.lastName?.substring(0, 1)?.toUpperCase() ?? "L"}
                         </Avatar>
-                        <div style={{ marginLeft: 10, display: "flex", flexDirection: "column" }}>
+
+                        <div
+                            className={css`
+                                margin-left: 10px;
+                                display: flex;
+                                flex-direction: column;
+
+                                @media (max-width: ${breakpoints.sm}) {
+                                    display: none;
+                                }
+                            `}
+                        >
                             <span style={{ lineHeight: "1rem" }}>
                                 {session.User.firstName} {session.User.lastName}
                             </span>
@@ -49,8 +79,34 @@ export default function Header({ children }: PropsWithChildren) {
                         </div>
                     </div>
 
-                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    <div
+                        className={css`
+                            gap: 8px;
+                            display: none;
+                            align-items: center;
+
+                            @media (max-width: ${breakpoints.sm}) {
+                                display: flex;
+                            }
+                        `}
+                    >
                         {children}
+                    </div>
+
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <div
+                            className={css`
+                                gap: 8px;
+                                display: flex;
+                                align-items: center;
+
+                                @media (max-width: ${breakpoints.sm}) {
+                                    display: none;
+                                }
+                            `}
+                        >
+                            {children}
+                        </div>
 
                         <Tooltip title="Уведомления">
                             <Button type="default" shape="circle" icon={<BellOutlined />} />

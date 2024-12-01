@@ -1,6 +1,6 @@
 "use client"
 
-import { BarChartOutlined, LineChartOutlined, LockOutlined, TransactionOutlined } from "@ant-design/icons"
+import { BarChartOutlined, LockOutlined, TransactionOutlined } from "@ant-design/icons"
 import { UserRole } from "@prisma/client"
 import { MenuProps } from "antd"
 import { redirect } from "next/navigation"

@@ -1,13 +1,10 @@
 "use server"
 
-import { TransactionType } from "@prisma/client"
 import { Tabs } from "antd"
 import { Content } from "antd/es/layout/layout"
 
-import DepositCard from "@/components/cabinet/DepositCard"
-import TransactionsTable from "@/components/cabinet/TransactionsTable"
-import UserTradeStats from "@/components/cabinet/UserTradeStats"
-import WithdrawalCard from "@/components/cabinet/WithdrawalCard"
+import DepositTab from "@/components/cabinet/DepositTab"
+import WithdrawalTab from "@/components/cabinet/WithdrawalTab"
 import PageContent from "@/components/layout/PageContent"
 import { cryptocurrenciesService } from "@/lib/server/services/cryptocurrencies.service"
 import { depositWalletsService } from "@/lib/server/services/depositWallets.service"
@@ -25,7 +22,7 @@ const Cabinet = async ({ searchParams }: { searchParams: Promise<{ [key: string]
 
     return (
         <Content style={{ minHeight: "100%", display: "flex", flexDirection: "column" }}>
-            <UserTradeStats />
+            {/* <UserTradeStats /> */}
 
             <PageContent>
                 <Tabs
@@ -35,36 +32,12 @@ const Cabinet = async ({ searchParams }: { searchParams: Promise<{ [key: string]
                         {
                             key: "deposit",
                             label: "Пополнение",
-                            children: (
-                                <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                    <div style={{ marginRight: 10, width: "100%" }}>
-                                        <TransactionsTable
-                                            transactions={transactions.filter(
-                                                (tx) => tx.type === TransactionType.DEPOSIT
-                                            )}
-                                        />
-                                    </div>
-
-                                    <DepositCard wallets={depositWallets} />
-                                </div>
-                            ),
+                            children: <DepositTab transactions={transactions} wallets={depositWallets} />,
                         },
                         {
                             key: "withdrawal",
                             label: "Вывод",
-                            children: (
-                                <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                    <div style={{ marginRight: 10, width: "100%" }}>
-                                        <TransactionsTable
-                                            transactions={transactions.filter(
-                                                (tx) => tx.type === TransactionType.WITHDRAWAL
-                                            )}
-                                        />
-                                    </div>
-
-                                    <WithdrawalCard cryptos={withdrawableCryptos} />
-                                </div>
-                            ),
+                            children: <WithdrawalTab transactions={transactions} cryptos={withdrawableCryptos} />,
                         },
                     ]}
                 />

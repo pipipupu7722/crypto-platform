@@ -1,8 +1,7 @@
 "use client"
 
-import { ArrowDownOutlined, ArrowUpOutlined } from "@ant-design/icons"
 import { Transaction, TransactionType } from "@prisma/client"
-import { Button, Table, TableProps, Tag } from "antd"
+import { Button, Table, TableProps } from "antd"
 import { format } from "date-fns"
 
 import { TransactionStatusTag, TransactionTypeTag } from "../misc/Tags"
@@ -26,7 +25,7 @@ const TransactionsTable = ({
             sorter: (a, b) => a.crypto.localeCompare(b.crypto),
         },
         {
-            title: "Сумма в USD",
+            title: "Сумма",
             key: "amountUsd",
             render: (_, rec) => (rec.type === TransactionType.DEPOSIT ? "+" : "-") + rec.amountUsd.toFixed(2) + " $",
             sorter: (a, b) => a.amountUsd - b.amountUsd,
@@ -35,6 +34,7 @@ const TransactionsTable = ({
             title: "Тип",
             key: "type",
             width: 1,
+            responsive: ["sm"],
             render: (_, rec) => <TransactionTypeTag type={rec.type} />,
             sorter: (a, b) => a.type.localeCompare(b.type),
         },
@@ -49,6 +49,7 @@ const TransactionsTable = ({
             title: "Дата",
             key: "date",
             width: 175,
+            responsive: ["sm"],
             render: (_, rec) => <>{format(rec.createdAt, "HH:mm:ss dd.MM.yyyy")}</>,
             sorter: (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
         },
