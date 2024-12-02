@@ -1,7 +1,7 @@
 "use server";
 
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/server/providers/prisma";
+import { documentsService } from "@/lib/server/services/documents.service";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -17,9 +17,7 @@ export const GET = async (req: Request) => {
 			);
 		}
 
-		const documents = await prisma.document.findMany({
-			where: { userId },
-		});
+		const documents = await documentsService.getDocumentsByUserId(userId);
 
 		return NextResponse.json({ success: true, documents });
 	} catch (error) {
@@ -61,12 +59,7 @@ export const POST = async (req: Request) => {
 		const filePath = path.join(uploadsDir, `${Date.now()}-${file.name}`);
 		fs.writeFileSync(filePath, buffer);
 
-		const document = await prisma.document.create({
-			data: {
-				userId,
-				path: filePath,
-			},
-		});
+		const document = await documentsService.createDocument(userId, filePath);
 
 		return NextResponse.json({ success: true, document });
 	} catch (error) {
