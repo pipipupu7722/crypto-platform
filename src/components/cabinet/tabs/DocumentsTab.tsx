@@ -1,24 +1,66 @@
 "use client";
 
-import { User } from "@prisma/client";
-import { Button, Descriptions, Upload, message } from "antd";
+import type { User } from "@prisma/client";
+import { Button, Descriptions, Upload, message, List, Tag, Spin } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { useState } from "react";
 
 const DocumentsTab = ({ initialUser }: { initialUser: User }) => {
 	const [isActionPending, setIsActionPending] = useState(false);
-	const [uploadedFiles, setUploadedFiles] = useState([]);
+	const [uploadedFiles, setUploadedFiles] = useState<
+		{ name: string; status: string }[]
+	>([]);
 
 	const handleUpload = async (file: File) => {
+		setIsActionPending(true);
+		const formData = new FormData();
+		formData.append("file", file);
+
+		setUploadedFiles((prev) => [
+			...prev,
+			{ name: file.name, status: "loading" },
+		]);
+
 		try {
-			// Симуляция загрузки файла
-			await new Promise((resolve) => setTimeout(resolve, 1000));
-			message.success(`${file.name} успешно загружен`);
-			setUploadedFiles((prev) => [...prev, file]);
-			return true;
+			console.log("Uploading file:", file.name);
+			const response = await fetch("/api/cabinet/documents", {
+				method: "POST",
+				body: formData,
+			});
+
+			if (!response.ok) {
+				const errorText = await response.text();
+				console.error("Server response error:", errorText);
+				throw new Error("Ошибка загрузки файла");
+			}
+
+			const result = await response.json();
+
+			if (result.success) {
+				setUploadedFiles((prev) =>
+					prev.map((item) =>
+						item.name === file.name ? { ...item, status: "success" } : item,
+					),
+				);
+				message.success(`${file.name} успешно загружен`);
+			} else {
+				setUploadedFiles((prev) =>
+					prev.map((item) =>
+						item.name === file.name ? { ...item, status: "error" } : item,
+					),
+				);
+				message.error(`${file.name} не удалось загрузить`);
+			}
 		} catch (error) {
+			console.error("Upload error:", error);
+			setUploadedFiles((prev) =>
+				prev.map((item) =>
+					item.name === file.name ? { ...item, status: "error" } : item,
+				),
+			);
 			message.error(`${file.name} не удалось загрузить`);
-			return false;
+		} finally {
+			setIsActionPending(false);
 		}
 	};
 
@@ -26,16 +68,8 @@ const DocumentsTab = ({ initialUser }: { initialUser: User }) => {
 		name: "file",
 		multiple: true,
 		beforeUpload: async (file: File) => {
-			const success = await handleUpload(file);
-			return false; // Prevent automatic upload by Ant Design
-		},
-		onChange(info: any) {
-			const { status, name } = info.file;
-			if (status === "done") {
-				message.success(`${name} файл загружен`);
-			} else if (status === "error") {
-				message.error(`${name} ошибка загрузки`);
-			}
+			await handleUpload(file);
+			return false;
 		},
 	};
 
@@ -44,11 +78,20 @@ const DocumentsTab = ({ initialUser }: { initialUser: User }) => {
 			<Descriptions bordered column={1} size="small">
 				<Descriptions.Item label="Загруженные документы">
 					{uploadedFiles.length > 0 ? (
-						<ul>
-							{uploadedFiles.map((file: File, index: number) => (
-								<li key={index}>{file.name}</li>
-							))}
-						</ul>
+						<List
+							dataSource={uploadedFiles}
+							renderItem={(item) => (
+								<List.Item>
+									{item.name}{" "}
+									<Tag
+										color={item.status === "success" ? "green" : "red"}
+										style={{ marginLeft: 8 }}
+									>
+										{item.status === "success" ? "Успешно" : "Ошибка"}
+									</Tag>
+								</List.Item>
+							)}
+						/>
 					) : (
 						"Нет загруженных документов"
 					)}
@@ -56,18 +99,20 @@ const DocumentsTab = ({ initialUser }: { initialUser: User }) => {
 			</Descriptions>
 
 			<div style={{ marginTop: 20 }}>
-				<Upload.Dragger {...draggerProps} style={{ padding: 20 }}>
-					<p className="ant-upload-drag-icon">
-						<UploadOutlined />
-					</p>
-					<p className="ant-upload-text">
-						Перетащите файл сюда или нажмите, чтобы выбрать
-					</p>
-					<p className="ant-upload-hint">
-						Поддерживаются одиночные или множественные загрузки. Формат: jpg,
-						png, pdf.
-					</p>
-				</Upload.Dragger>
+				<Spin spinning={isActionPending}>
+					<Upload.Dragger {...draggerProps} style={{ padding: 20 }}>
+						<p className="ant-upload-drag-icon">
+							<UploadOutlined />
+						</p>
+						<p className="ant-upload-text">
+							Перетащите файл сюда или нажмите, чтобы выбрать
+						</p>
+						<p className="ant-upload-hint">
+							Поддерживаются одиночные или множественные загрузки. Формат: jpg,
+							png, pdf.
+						</p>
+					</Upload.Dragger>
+				</Spin>
 			</div>
 
 			<div style={{ textAlign: "right", marginTop: 10 }}>
@@ -75,6 +120,7 @@ const DocumentsTab = ({ initialUser }: { initialUser: User }) => {
 					type="primary"
 					loading={isActionPending}
 					onClick={() => message.success("Документы успешно сохранены")}
+					disabled={isActionPending}
 				>
 					Сохранить документы
 				</Button>

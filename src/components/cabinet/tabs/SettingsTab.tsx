@@ -1,9 +1,8 @@
 "use client";
 
-import { User } from "@prisma/client";
+import type { User } from "@prisma/client";
 import { Button, Descriptions, Form, Input } from "antd";
 import PhoneInput from "antd-phone-input";
-import { format } from "date-fns";
 import { parsePhoneNumber } from "libphonenumber-js";
 import { notFound } from "next/navigation";
 import { useState } from "react";
@@ -15,12 +14,15 @@ import {
 	type UserDetailsSchemaType,
 } from "@/schemas/dashboard/user.schemas";
 import { updateUserDetails } from "@/actions/cabinet/user";
+import { useNotify } from "@/providers/NotificationProvider";
 
 const SettingsTab = ({ initialUser }: { initialUser: User }) => {
 	const [isActionPending, setIsActionPending] = useState(false);
 	const [isEditing, setIsEditing] = useState(false);
 	const [user, setUser] = useState(initialUser);
 	const [form] = Form.useForm();
+
+	const { notify } = useNotify();
 
 	if (!user) {
 		return notFound();
@@ -118,7 +120,16 @@ const SettingsTab = ({ initialUser }: { initialUser: User }) => {
 							onClick={() =>
 								form
 									.validateFields()
-									.then((details) => updateUserDetails(user.id, details))
+									.then(async (details) => {
+										const res = await updateUserDetails(user.id, details);
+										const { success, ...other } = res;
+
+										success
+											? setUser(other as User)
+											: notify.error({ message: res.error });
+										toggleEditMode();
+									})
+									.finally(() => setIsActionPending(false))
 							}
 						>
 							Применить

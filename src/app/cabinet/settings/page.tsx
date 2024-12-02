@@ -4,15 +4,12 @@ import { Tabs } from "antd";
 import { notFound } from "next/navigation";
 
 import PageContent from "@/components/layout/PageContent";
-import { usersService } from "@/lib/server/services/users.service";
 import { getSession } from "@/lib/server/session";
 import SettingsTab from "@/components/cabinet/tabs/SettingsTab";
 import DocumentsTab from "@/components/cabinet/tabs/DocumentsTab";
 
 const Settings = async () => {
-	const { userId } = await getSession();
-
-	const user = await usersService.getById(userId);
+	const { User: user } = await getSession();
 
 	if (!user) {
 		return notFound();
