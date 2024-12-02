@@ -14,7 +14,7 @@ import {
 	type UserDetailsSchemaType,
 } from "@/schemas/dashboard/user.schemas";
 import { updateUserDetails } from "@/actions/cabinet/user";
-import { useNotify } from "@/providers/NotificationProvider";
+import { useNotify } from "@/providers/NotifyProvider";
 
 const SettingsTab = ({ initialUser }: { initialUser: User }) => {
 	const [isActionPending, setIsActionPending] = useState(false);

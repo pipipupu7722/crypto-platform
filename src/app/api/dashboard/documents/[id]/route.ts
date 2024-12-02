@@ -52,7 +52,7 @@ export const DELETE = async (
 	context: { params: { id: string } },
 ) => {
 	try {
-		const { id } = context.params;
+		const { id } = await context.params;
 
 		const document = await documentsService.getDocumentById(id);
 		if (!document) {
