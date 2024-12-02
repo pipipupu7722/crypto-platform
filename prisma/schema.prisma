@@ -225,7 +225,8 @@ model StrategyPnl {
 model Document {
   id     String @id @default(cuid())
   userId String
-
+  path   String
+  
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
 

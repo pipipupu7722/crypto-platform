@@ -2,27 +2,56 @@
 
 import type { User } from "@prisma/client";
 import { Button, Descriptions, Upload, message, List, Tag, Spin } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
-import { useState } from "react";
+import {
+	UploadOutlined,
+	DownloadOutlined,
+	CheckCircleOutlined,
+} from "@ant-design/icons";
+import { useEffect, useState } from "react";
 
 const DocumentsTab = ({ initialUser }: { initialUser: User }) => {
 	const [isActionPending, setIsActionPending] = useState(false);
 	const [uploadedFiles, setUploadedFiles] = useState<
-		{ name: string; status: string }[]
+		{ id: string; name: string; path: string; status: string }[]
 	>([]);
+	const [isSaved, setIsSaved] = useState(false);
+
+	useEffect(() => {
+		const fetchUploadedFiles = async () => {
+			try {
+				const response = await fetch(
+					`/api/cabinet/documents?userId=${initialUser.id}`,
+				);
+				if (!response.ok) {
+					throw new Error("Не удалось загрузить список документов");
+				}
+				const result = await response.json();
+				setUploadedFiles(
+					result.documents.map((doc: { id: string; path: string }) => ({
+						id: doc.id,
+						name: doc.path.split("/").pop() || "Документ",
+						path: doc.path,
+						status: "success",
+					})),
+				);
+			} catch (error) {
+				console.error(error);
+				message.error("Ошибка загрузки списка документов");
+			}
+		};
+
+		fetchUploadedFiles();
+	}, [initialUser.id]);
 
 	const handleUpload = async (file: File) => {
 		setIsActionPending(true);
 		const formData = new FormData();
 		formData.append("file", file);
-
-		setUploadedFiles((prev) => [
-			...prev,
-			{ name: file.name, status: "loading" },
-		]);
+		formData.append("userId", initialUser.id);
 
 		try {
 			console.log("Uploading file:", file.name);
+
 			const response = await fetch("/api/cabinet/documents", {
 				method: "POST",
 				body: formData,
@@ -37,27 +66,21 @@ const DocumentsTab = ({ initialUser }: { initialUser: User }) => {
 			const result = await response.json();
 
 			if (result.success) {
-				setUploadedFiles((prev) =>
-					prev.map((item) =>
-						item.name === file.name ? { ...item, status: "success" } : item,
-					),
-				);
+				setUploadedFiles((prev) => [
+					...prev,
+					{
+						id: result.document.id,
+						name: result.document.path.split("/").pop() || file.name,
+						path: result.document.path,
+						status: "success",
+					},
+				]);
 				message.success(`${file.name} успешно загружен`);
 			} else {
-				setUploadedFiles((prev) =>
-					prev.map((item) =>
-						item.name === file.name ? { ...item, status: "error" } : item,
-					),
-				);
 				message.error(`${file.name} не удалось загрузить`);
 			}
 		} catch (error) {
 			console.error("Upload error:", error);
-			setUploadedFiles((prev) =>
-				prev.map((item) =>
-					item.name === file.name ? { ...item, status: "error" } : item,
-				),
-			);
 			message.error(`${file.name} не удалось загрузить`);
 		} finally {
 			setIsActionPending(false);
@@ -73,6 +96,11 @@ const DocumentsTab = ({ initialUser }: { initialUser: User }) => {
 		},
 	};
 
+	const handleSave = () => {
+		setIsSaved(true);
+		message.success("Документы успешно сохранены!");
+	};
+
 	return (
 		<div>
 			<Descriptions bordered column={1} size="small">
@@ -81,14 +109,23 @@ const DocumentsTab = ({ initialUser }: { initialUser: User }) => {
 						<List
 							dataSource={uploadedFiles}
 							renderItem={(item) => (
-								<List.Item>
-									{item.name}{" "}
-									<Tag
-										color={item.status === "success" ? "green" : "red"}
-										style={{ marginLeft: 8 }}
-									>
-										{item.status === "success" ? "Успешно" : "Ошибка"}
-									</Tag>
+								<List.Item
+									actions={[
+										<Button
+											type="link"
+											href={`/api/cabinet/documents/${item.id}`}
+											icon={<DownloadOutlined />}
+										>
+											Скачать
+										</Button>,
+									]}
+								>
+									<div style={{ display: "flex", alignItems: "center" }}>
+										<span>{item.name}</span>
+										<Tag color="green" style={{ marginLeft: 8 }}>
+											Успешно
+										</Tag>
+									</div>
 								</List.Item>
 							)}
 						/>
@@ -115,16 +152,23 @@ const DocumentsTab = ({ initialUser }: { initialUser: User }) => {
 				</Spin>
 			</div>
 
-			<div style={{ textAlign: "right", marginTop: 10 }}>
+			<div style={{ textAlign: "center", marginTop: 10 }}>
 				<Button
 					type="primary"
 					loading={isActionPending}
-					onClick={() => message.success("Документы успешно сохранены")}
+					onClick={handleSave}
 					disabled={isActionPending}
 				>
 					Сохранить документы
 				</Button>
 			</div>
+
+			{isSaved && (
+				<div style={{ textAlign: "center", marginTop: 20 }}>
+					<CheckCircleOutlined style={{ fontSize: 24, color: "green" }} />
+					<p>Документы успешно сохранены!</p>
+				</div>
+			)}
 		</div>
 	);
 };
