@@ -12,7 +12,7 @@ import CountryFlag from "../../misc/CountryFlag"
 import { UserStatusTag } from "../../misc/Tags"
 import { approveUserRegistration, banUser, rejectUserRegistration, unbanUser } from "@/actions/dashboard/user"
 import { ServerActionResponse } from "@/lib/types"
-import { useNotify } from "@/providers/NotificationProvider"
+import { useNotify } from "@/providers/NotifyProvider"
 import { UserDetailsSchemaRule, UserDetailsSchemaType } from "@/schemas/dashboard/user.schemas"
 
 const UserDetailsTab = ({ initialUser }: { initialUser: User }) => {

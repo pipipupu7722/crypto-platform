@@ -11,7 +11,7 @@ import ClickToCopy from "../misc/ClickToCopy"
 import CountryFlag from "../misc/CountryFlag"
 import { UserStatusTag } from "../misc/Tags"
 import { fetchUsers } from "@/lib/client/dashboard/fetchUsers"
-import { useNotify } from "@/providers/NotificationProvider"
+import { useNotify } from "@/providers/NotifyProvider"
 
 const UsersTable: React.FC = () => {
     const [users, setUsers] = useState<User[] | undefined>(undefined)

@@ -6,7 +6,7 @@ import { format } from "date-fns"
 
 import ClickToCopy from "../misc/ClickToCopy"
 import { TransactionStatusTag, TransactionTypeTag } from "../misc/Tags"
-import { useNotify } from "@/providers/NotificationProvider"
+import { useNotify } from "@/providers/NotifyProvider"
 
 const TransactionsTable = ({
     transactions,

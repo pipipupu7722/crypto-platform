@@ -2,16 +2,23 @@
 
 import { css } from "@emotion/css"
 import { Card, Col, Row, Statistic, StatisticProps } from "antd"
-import { FC } from "react"
-import CountUp from "react-countup"
+import { FC, useEffect, useRef } from "react"
 
+import CountUpWithRef from "../misc/CountUpWithRef"
 import { useSession } from "@/providers/SessionProvider"
 import { breakpoints } from "@/theme"
 
-const formatter: StatisticProps["formatter"] = (value) => <CountUp end={value as number} decimals={2} prefix="$ " />
+const formatter: StatisticProps["formatter"] = (value) => (
+    <CountUpWithRef end={value as number} decimals={2} prefix="$ " />
+)
 
 const UserTradeStats: FC = () => {
     const { session } = useSession()
+
+    const prevUser = useRef(session.User)
+    useEffect(() => {
+        prevUser.current = session.User
+    }, [session.User])
 
     return (
         <>

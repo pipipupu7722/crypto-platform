@@ -3,7 +3,7 @@
 import mitt from "mitt"
 import { PropsWithChildren, useEffect } from "react"
 
-import { EventMap } from "@/lib/types"
+import { EventMap } from "@/lib/events"
 
 export const sseReceiver = mitt<EventMap>()
 

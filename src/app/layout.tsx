@@ -2,7 +2,7 @@ import { Metadata } from "next"
 import { PropsWithChildren } from "react"
 
 import { AntdProvider } from "../providers/AntdProvider"
-import { NotificationProvider } from "../providers/NotificationProvider"
+import { NotifyProvider } from "../providers/NotifyProvider"
 
 export const metadata: Metadata = {
     title: "Crypto Platform",
@@ -21,9 +21,9 @@ export default async function RootLayout({ children }: PropsWithChildren) {
                 }}
             >
                 <AntdProvider>
-                    <NotificationProvider>
+                    <NotifyProvider>
                         <>{children}</>
-                    </NotificationProvider>
+                    </NotifyProvider>
                 </AntdProvider>
             </body>
         </html>

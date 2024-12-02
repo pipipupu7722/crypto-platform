@@ -3,8 +3,8 @@
 import { css } from "@emotion/css"
 import { Cryptocurrency, Transaction, TransactionType } from "@prisma/client"
 
-import TransactionsTable from "./TransactionsTable"
-import WithdrawalCard from "./WithdrawalCard"
+import TransactionsTable from "../TransactionsTable"
+import WithdrawalCard from "../WithdrawalCard"
 import { breakpoints } from "@/theme"
 
 export default function DepositTab({

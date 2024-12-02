@@ -10,7 +10,7 @@ import { createDepositWallet, updateDepositWallet } from "@/actions/dashboard/de
 import ClickToCopy from "@/components/misc/ClickToCopy"
 import { DepositWalletStatusTag } from "@/components/misc/Tags"
 import { hasRole } from "@/lib/helpers"
-import { useNotify } from "@/providers/NotificationProvider"
+import { useNotify } from "@/providers/NotifyProvider"
 import { useSession } from "@/providers/SessionProvider"
 import type { DepositWalletSchemaType } from "@/schemas/dashboard/depositWallets.schemas"
 

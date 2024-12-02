@@ -5,7 +5,7 @@ import { Button, Table, TableProps } from "antd"
 import { format } from "date-fns"
 
 import { TransactionStatusTag, TransactionTypeTag } from "../misc/Tags"
-import { useNotify } from "@/providers/NotificationProvider"
+import { useNotify } from "@/providers/NotifyProvider"
 
 const TransactionsTable = ({
     transactions,

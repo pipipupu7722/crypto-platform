@@ -5,7 +5,7 @@ import "server-only"
 import { eventEmitter } from "../providers/event.emitter"
 import { prisma } from "../providers/prisma"
 import { appconf } from "@/appconf"
-import { AppEvents } from "@/lib/types"
+import { AppEvents } from "@/lib/events"
 import { GetUsersSchemaType } from "@/schemas/dashboard/user.schemas"
 
 class UsersService {
@@ -66,6 +66,16 @@ class UsersService {
             where: { id: userId },
             data: {
                 balance: { decrement: diff },
+                tradingBalance: { increment: diff },
+            },
+        })
+        this.emitBalanceChanged(user)
+    }
+
+    public async addProfit(userId: string, diff: number) {
+        const user = await prisma.user.update({
+            where: { id: userId },
+            data: {
                 tradingBalance: { increment: diff },
             },
         })

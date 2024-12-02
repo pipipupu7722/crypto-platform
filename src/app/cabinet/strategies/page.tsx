@@ -2,7 +2,8 @@
 
 import { Content } from "antd/es/layout/layout"
 
-import StrategiesTab from "@/components/cabinet/StrategiesTab"
+import UserTradeStats from "@/components/cabinet/UserTradeStats"
+import StrategiesTab from "@/components/cabinet/tabs/StrategiesTab"
 import PageContent from "@/components/layout/PageContent"
 import { strategiesService } from "@/lib/server/services/strategies.service"
 import { getSessionPayload } from "@/lib/server/session"
@@ -14,7 +15,7 @@ const Strategies = async () => {
 
     return (
         <Content style={{ minHeight: "100%", display: "flex", flexDirection: "column" }}>
-            {/* <UserTradeStats /> */}
+            <UserTradeStats />
 
             <PageContent>
                 <StrategiesTab initialStrategies={strategies} />

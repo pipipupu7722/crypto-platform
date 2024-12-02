@@ -3,7 +3,8 @@
 import { createContext, useContext, useState } from "react"
 
 import { sseReceiver } from "./SseProvider"
-import { AppEvents, UserSession } from "@/lib/types"
+import { AppEvents } from "@/lib/events"
+import { UserSession } from "@/lib/types"
 
 interface SessionContextType {
     session: UserSession

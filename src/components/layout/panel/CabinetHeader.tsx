@@ -5,10 +5,10 @@ import { css } from "@emotion/css"
 import { DepositWallet } from "@prisma/client"
 import { Button, Modal, Tooltip } from "antd"
 import { useState } from "react"
-import CountUp from "react-countup"
 
 import Header from "../Header"
 import DepositCard from "@/components/cabinet/DepositCard"
+import CountUpWithRef from "@/components/misc/CountUpWithRef"
 import { useSession } from "@/providers/SessionProvider"
 
 export default function CabinetHeader({ wallets }: { wallets: DepositWallet[] }) {
@@ -26,7 +26,7 @@ export default function CabinetHeader({ wallets }: { wallets: DepositWallet[] })
                 <div style={{ display: "flex", flexDirection: "column" }}>
                     <span style={{ lineHeight: "1rem" }}>Общий баланс</span>
                     <strong style={{ lineHeight: "1rem" }}>
-                        <CountUp end={session.User.balance} decimals={2} prefix="$ " />
+                        <CountUpWithRef end={session.User.balance} decimals={2} prefix="$ " />
                     </strong>
                 </div>
 

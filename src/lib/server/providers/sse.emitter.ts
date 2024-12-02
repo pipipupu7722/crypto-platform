@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server"
 import "server-only"
 
-import { AppEvents } from "../../types"
 import { getSessionPayload } from "../session"
 import { logger } from "./logger"
 import { redis } from "./redis"
+import { AppEvents } from "@/lib/events"
 
 class SseEmitter {
     private activeConnections: Map<string, Set<WritableStreamDefaultWriter>> = new Map()

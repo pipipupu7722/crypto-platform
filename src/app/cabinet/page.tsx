@@ -3,9 +3,9 @@
 import { Tabs } from "antd"
 import { Content } from "antd/es/layout/layout"
 
-import DepositTab from "@/components/cabinet/DepositTab"
 import UserTradeStats from "@/components/cabinet/UserTradeStats"
-import WithdrawalTab from "@/components/cabinet/WithdrawalTab"
+import DepositTab from "@/components/cabinet/tabs/DepositTab"
+import WithdrawalTab from "@/components/cabinet/tabs/WithdrawalTab"
 import PageContent from "@/components/layout/PageContent"
 import { cryptocurrenciesService } from "@/lib/server/services/cryptocurrencies.service"
 import { depositWalletsService } from "@/lib/server/services/depositWallets.service"

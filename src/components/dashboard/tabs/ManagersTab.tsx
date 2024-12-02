@@ -11,7 +11,7 @@ import { createManager, updateManagerDetails } from "@/actions/dashboard/manager
 import ClickToCopy from "@/components/misc/ClickToCopy"
 import CountryFlag from "@/components/misc/CountryFlag"
 import { UserRolesTags, UserStatusTag } from "@/components/misc/Tags"
-import { useNotify } from "@/providers/NotificationProvider"
+import { useNotify } from "@/providers/NotifyProvider"
 import { ManagerDetailsSchemaType } from "@/schemas/dashboard/manager.schemas"
 
 export default function ManagersTab({ initial }: { initial: User[] }) {

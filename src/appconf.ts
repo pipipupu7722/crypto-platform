@@ -7,6 +7,7 @@ const dotEnv = {
     isBuilding: process.env.IS_BUILDING === "true",
 
     appHost: process.env.APP_HOST,
+    appName: "CopyTrade",
 
     runtime: process.env.NEXT_RUNTIME,
     env: process.env.NODE_ENV as NodeEnvs,
@@ -14,9 +15,9 @@ const dotEnv = {
     passwordHashRounds: 10 as number,
     strategyIntervalMs: 30000 as number,
 
-    jwtUserAccessTokenExpirationMs: ms(process.env.JWT_USER_ACCESS_TOKEN_EXPIRATION as string),
-    jwtUserRefreshTokenExpirationMs: ms(process.env.JWT_USER_REFRESH_TOKEN_EXPIRATION as string),
-    jwtServiceAccessTokenExpirationMs: ms(process.env.JWT_SERVICE_ACCESS_TOKEN_EXPIRATION as string),
+    jwtUserAccessTokenExpirationMs: ms(process.env.JWT_USER_ACCESS_TOKEN_EXPIRATION ?? "0"),
+    jwtUserRefreshTokenExpirationMs: ms(process.env.JWT_USER_REFRESH_TOKEN_EXPIRATION ?? "0"),
+    jwtServiceAccessTokenExpirationMs: ms(process.env.JWT_SERVICE_ACCESS_TOKEN_EXPIRATION ?? "0"),
     jwtSecret: process.env.JWT_SECRET as string,
 
     redisUrl: process.env.REDIS_URL as string,

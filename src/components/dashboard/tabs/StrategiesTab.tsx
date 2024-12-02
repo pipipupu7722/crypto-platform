@@ -1,15 +1,15 @@
 "use client"
 
-import { Strategy } from "@prisma/client"
-import { Button, Table, TableProps } from "antd"
+import { Strategy, StrategyStatus } from "@prisma/client"
+import { Button, Popconfirm, Table, TableProps } from "antd"
 import { format } from "date-fns"
 import { useState } from "react"
 
 import StrategyModal from "../StrategyModal"
-import { createStrategy, updateStrategy } from "@/actions/dashboard/strategy"
+import { closeStrategy, createStrategy, updateStrategy } from "@/actions/dashboard/strategy"
 import ClickToCopy from "@/components/misc/ClickToCopy"
 import { StrategyStatusTag } from "@/components/misc/Tags"
-import { useNotify } from "@/providers/NotificationProvider"
+import { useNotify } from "@/providers/NotifyProvider"
 
 export default function StrategiesTab({
     userId,
@@ -19,7 +19,7 @@ export default function StrategiesTab({
     initialStrategies: Strategy[]
 }) {
     const [isModalOpen, setIsModalOpen] = useState(false)
-    const [isModalLoading, setIsModalLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
     const [strategies, setStrategies] = useState(initialStrategies)
     const [selectedStrategy, setSelectedStrategy] = useState<Strategy | undefined>(undefined)
 
@@ -63,16 +63,44 @@ export default function StrategiesTab({
             key: "actions",
             width: 1,
             render: (_, rec) => (
-                <Button
-                    type="primary"
-                    size="small"
-                    onClick={() => {
-                        setSelectedStrategy(rec)
-                        setIsModalOpen(true)
-                    }}
-                >
-                    Управление
-                </Button>
+                <div style={{ display: "flex", justifyContent: "end", gap: 8 }}>
+                    {rec.status === StrategyStatus.ACTIVE && (
+                        <Popconfirm
+                            title="Досрочно закрыть стратегию?"
+                            placement="topLeft"
+                            okText="Подтвердить"
+                            cancelText="Отмена"
+                            onConfirm={() => {
+                                setIsLoading(true)
+                                closeStrategy(rec.id)
+                                    .then((res) =>
+                                        res.success
+                                            ? setStrategies(
+                                                  strategies.map((strategy) =>
+                                                      strategy.id === res.id ? res : strategy
+                                                  )
+                                              )
+                                            : notify.error({ message: res.error })
+                                    )
+                                    .finally(() => setIsLoading(false))
+                            }}
+                        >
+                            <Button danger size="small" loading={isLoading} onClick={() => {}}>
+                                Закрыть
+                            </Button>
+                        </Popconfirm>
+                    )}
+                    <Button
+                        type="primary"
+                        size="small"
+                        onClick={() => {
+                            setSelectedStrategy(rec)
+                            setIsModalOpen(true)
+                        }}
+                    >
+                        Управление
+                    </Button>
+                </div>
             ),
         },
     ]
@@ -95,7 +123,7 @@ export default function StrategiesTab({
 
             <StrategyModal
                 open={isModalOpen}
-                loading={isModalLoading}
+                loading={isLoading}
                 strategy={selectedStrategy}
                 isEditing={!!selectedStrategy}
                 onClose={() => {
@@ -103,7 +131,7 @@ export default function StrategiesTab({
                     setSelectedStrategy(undefined)
                 }}
                 onUpdate={async (values) => {
-                    setIsModalLoading(true)
+                    setIsLoading(true)
                     const res = await updateStrategy(selectedStrategy?.id, values)
                     if (res.success) {
                         const { success, ...updated } = res
@@ -111,18 +139,18 @@ export default function StrategiesTab({
                     } else {
                         notify.error({ message: res.error })
                     }
-                    setIsModalLoading(false)
+                    setIsLoading(false)
                     setIsModalOpen(false)
                 }}
                 onCreate={async (values) => {
-                    setIsModalLoading(true)
+                    setIsLoading(true)
                     const res = await createStrategy(userId, values)
                     if (res.success) {
                         setStrategies([res, ...strategies])
                     } else {
                         notify.error({ message: res.error })
                     }
-                    setIsModalLoading(false)
+                    setIsLoading(false)
                     setIsModalOpen(false)
                 }}
             />

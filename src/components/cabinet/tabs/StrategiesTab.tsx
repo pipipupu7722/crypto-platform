@@ -7,8 +7,11 @@ import { useState } from "react"
 
 import { startStrategy } from "@/actions/cabinet/strategy"
 import ClickToCopy from "@/components/misc/ClickToCopy"
+import CountUpWithRef from "@/components/misc/CountUpWithRef"
 import { StrategyStatusTag } from "@/components/misc/Tags"
-import { useNotify } from "@/providers/NotificationProvider"
+import { AppEvents } from "@/lib/events"
+import { useNotify } from "@/providers/NotifyProvider"
+import { sseReceiver } from "@/providers/SseProvider"
 import { StrategyStartSchemaRule, StrategyStartSchemaType } from "@/schemas/cabinet/strategy.schemas"
 
 export default function StrategiesTab({ initialStrategies }: { initialStrategies: Strategy[] }) {
@@ -20,6 +23,15 @@ export default function StrategiesTab({ initialStrategies }: { initialStrategies
 
     const { notify } = useNotify()
 
+    sseReceiver.on(AppEvents.StrategiesRecalculated, (payload) =>
+        setStrategies(
+            strategies.map((strategy) => {
+                const updated = payload.strategies.find((updated) => strategy.id === updated.id)
+                return updated ? { ...strategy, ...updated } : strategy
+            })
+        )
+    )
+
     const columns: TableProps<Strategy>["columns"] = [
         {
             title: "Название",
@@ -29,7 +41,13 @@ export default function StrategiesTab({ initialStrategies }: { initialStrategies
         {
             title: "Вклад / Доход",
             key: "invested",
-            render: (_, rec) => (rec.startedAt ? `${rec.invested.toFixed(2)}$ / ${rec.profit.toFixed(2)}$` : "N/A"),
+            render: (_, rec) => (
+                <>
+                    <CountUpWithRef end={rec.invested} decimals={2} suffix=" $" />
+                    {" / "}
+                    <CountUpWithRef end={rec.profit} decimals={4} suffix=" $" />
+                </>
+            ),
         },
         {
             title: "PnL",
@@ -46,7 +64,7 @@ export default function StrategiesTab({ initialStrategies }: { initialStrategies
             title: "Дата закрытия",
             key: "closesAt",
             width: 150,
-            render: (_, rec) => <>{format(new Date(rec.closesAt), "dd-MM-yyyy")}</>,
+            render: (_, rec) => <>{format(rec.closedAt ?? rec.closesAt, "dd-MM-yyyy")}</>,
         },
         {
             title: "Действия",

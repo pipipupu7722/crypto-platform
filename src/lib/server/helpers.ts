@@ -22,7 +22,7 @@ export const wrapsa = <T>(action: ServerAction<T>) => {
             } else if (error instanceof JOSEError || error instanceof BadSessionError) {
                 return { success: false, error: "Unauthorized" }
             }
-            logger.error(error, { args }, "Error in ServerAction")
+            logger.error({ error, args }, "Error in ServerAction")
             return { success: false, error: "Something went wrong" }
         }
     }

@@ -10,7 +10,7 @@ export async function register() {
     ;(globalThis as any).strategyInterval = setInterval(async () => {
         const accessToken = await tokensService.issueServiceAccessToken()
 
-        const result = await fetch(new URL("/api/service/calc-strategies-pnl", appconf.appHost), {
+        const result = await fetch(new URL("/api/service/strategies/update", appconf.appHost), {
             method: "POST",
             body: JSON.stringify({ accessToken }),
         })

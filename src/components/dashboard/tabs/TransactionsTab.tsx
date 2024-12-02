@@ -7,7 +7,7 @@ import { useState } from "react"
 import TransactionModal from "../TransactionModal"
 import TransactionsTable from "../TransactionsTable"
 import { createDepositTransaction, updateTransaction } from "@/actions/dashboard/transaction"
-import { useNotify } from "@/providers/NotificationProvider"
+import { useNotify } from "@/providers/NotifyProvider"
 
 export default function TransactionsTab({
     userId,
