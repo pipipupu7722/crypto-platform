@@ -121,7 +121,7 @@ const WelcomePage = () => {
 
                     <Col xs={24} md={12} style={{ textAlign: "center", padding: "20px" }}>
                         <Image
-                            src="/images/home.png"
+                            src="/assets/img/home.png"
                             alt="Пример приложения"
                             width={400}
                             height={400}
