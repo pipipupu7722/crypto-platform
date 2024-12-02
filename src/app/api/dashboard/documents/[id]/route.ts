@@ -46,3 +46,35 @@ export const GET = async (
 		);
 	}
 };
+
+export const DELETE = async (
+	req: Request,
+	context: { params: { id: string } },
+) => {
+	try {
+		const { id } = context.params;
+
+		const document = await documentsService.getDocumentById(id);
+		if (!document) {
+			return NextResponse.json(
+				{ success: false, message: "Документ не найден" },
+				{ status: 404 },
+			);
+		}
+
+		const filePath = document.path;
+		if (fs.existsSync(filePath)) {
+			fs.unlinkSync(filePath);
+		}
+
+		await documentsService.deleteDocumentById(id);
+
+		return NextResponse.json({ success: true });
+	} catch (error) {
+		console.error("Ошибка удаления документа:", error);
+		return NextResponse.json(
+			{ success: false, message: "Ошибка сервера" },
+			{ status: 500 },
+		);
+	}
+};

@@ -1,8 +1,12 @@
 "use client";
 
 import type { User } from "@prisma/client";
-import { Button, Descriptions, List, Tag, message } from "antd";
-import { DownloadOutlined, CheckCircleOutlined } from "@ant-design/icons";
+import { Button, Descriptions, List, Tag, message, Popconfirm } from "antd";
+import {
+	DownloadOutlined,
+	DeleteOutlined,
+	CheckCircleOutlined,
+} from "@ant-design/icons";
 import { useEffect, useState } from "react";
 
 const AdminDocumentsTab = ({ targetUser }: { targetUser: User }) => {
@@ -39,6 +43,23 @@ const AdminDocumentsTab = ({ targetUser }: { targetUser: User }) => {
 		fetchUploadedFiles();
 	}, [targetUser.id]);
 
+	const handleDelete = async (documentId: string) => {
+		try {
+			const response = await fetch(`/api/dashboard/documents/${documentId}`, {
+				method: "DELETE",
+			});
+			if (!response.ok) {
+				throw new Error("Не удалось удалить документ");
+			}
+
+			message.success("Документ успешно удален");
+			setUploadedFiles((prev) => prev.filter((file) => file.id !== documentId));
+		} catch (error) {
+			console.error(error);
+			message.error("Ошибка удаления документа");
+		}
+	};
+
 	return (
 		<div>
 			<Descriptions bordered column={1} size="small">
@@ -58,6 +79,16 @@ const AdminDocumentsTab = ({ targetUser }: { targetUser: User }) => {
 										>
 											Скачать
 										</Button>,
+										<Popconfirm
+											title="Вы уверены, что хотите удалить этот документ?"
+											onConfirm={() => handleDelete(item.id)}
+											okText="Да"
+											cancelText="Нет"
+										>
+											<Button type="link" danger icon={<DeleteOutlined />}>
+												Удалить
+											</Button>
+										</Popconfirm>,
 									]}
 								>
 									<div style={{ display: "flex", alignItems: "center" }}>
