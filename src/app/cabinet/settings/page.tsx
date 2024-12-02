@@ -7,6 +7,7 @@ import PageContent from "@/components/layout/PageContent";
 import { usersService } from "@/lib/server/services/users.service";
 import { getSession } from "@/lib/server/session";
 import SettingsTab from "@/components/cabinet/tabs/SettingsTab";
+import DocumentsTab from "@/components/cabinet/tabs/DocumentsTab";
 
 const Settings = async () => {
 	const { userId } = await getSession();
@@ -26,6 +27,11 @@ const Settings = async () => {
 						key: "settings",
 						label: "Профиль",
 						children: <SettingsTab initialUser={user} />,
+					},
+					{
+						key: "documents",
+						label: "Документы",
+						children: <DocumentsTab initialUser={user} />,
 					},
 				]}
 			/>
