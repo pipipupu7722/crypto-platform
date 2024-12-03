@@ -52,7 +52,7 @@ export default function StrategiesTab({ initialStrategies }: { initialStrategies
         {
             title: "PnL",
             key: "fakeProfitMin",
-            render: (_, rec) => `${(rec.fakeProfitMin * 100).toFixed(0)}% / ${(rec.fakeProfitMax * 100).toFixed(0)}%`,
+            render: (_, rec) => `${(rec.fakeProfitMin * 100).toFixed(0)}% - ${(rec.fakeProfitMax * 100).toFixed(0)}%`,
         },
         {
             title: "Статус",

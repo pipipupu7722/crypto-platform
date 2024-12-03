@@ -10,7 +10,13 @@ import { useState } from "react"
 
 import CountryFlag from "../../misc/CountryFlag"
 import { UserStatusTag } from "../../misc/Tags"
-import { approveUserRegistration, banUser, rejectUserRegistration, unbanUser } from "@/actions/dashboard/user"
+import {
+    approveUserRegistration,
+    banUser,
+    rejectUserRegistration,
+    unbanUser,
+    updateUserDetails,
+} from "@/actions/dashboard/user"
 import { ServerActionResponse } from "@/lib/types"
 import { useNotify } from "@/providers/NotifyProvider"
 import { UserDetailsSchemaRule, UserDetailsSchemaType } from "@/schemas/dashboard/user.schemas"
@@ -135,7 +141,19 @@ const UserDetailsTab = ({ initialUser }: { initialUser: User }) => {
                             type="primary"
                             loading={isActionPending}
                             style={{ marginRight: 8 }}
-                            onClick={() => form.validateFields().then((details) => console.log(user.id, details))}
+                            onClick={() =>
+                                form.validateFields().then((details) => {
+                                    setIsActionPending(true)
+                                    updateUserDetails(user.id, details)
+                                        .then((res) =>
+                                            res.success ? setUser(res) : notify.error({ message: res.error })
+                                        )
+                                        .finally(() => {
+                                            setIsActionPending(false)
+                                            setIsEditing(false)
+                                        })
+                                })
+                            }
                         >
                             Применить
                         </Button>

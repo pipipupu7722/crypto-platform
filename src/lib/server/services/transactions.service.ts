@@ -13,20 +13,26 @@ import { DepositTransactionSchemaType } from "@/schemas/dashboard/transaction.sc
 class TransactionsService {
     constructor() {}
 
-    public async createDeposit(userId: string, transaction: DepositTransactionSchemaType) {
-        const crypto = await cryptocurrenciesService.getBySymbolOrThrow(transaction.crypto)
+    public async createDeposit(userId: string, data: DepositTransactionSchemaType) {
+        const crypto = await cryptocurrenciesService.getBySymbolOrThrow(data.crypto)
         const depositWallet = await depositWalletsService.getActiveByCrypto(crypto.symbol)
 
-        return await prisma.transaction.create({
+        const transaction = await prisma.transaction.create({
             data: {
-                ...transaction,
+                ...data,
                 userId,
                 wallet: depositWallet.wallet,
-                amount: round(transaction.amount, crypto.decimals),
+                amount: round(data.amount, crypto.decimals),
                 type: TransactionType.DEPOSIT,
-                description: transaction.description ?? null,
+                description: data.description ?? null,
             },
         })
+
+        if (transaction.status === TransactionStatus.COMPLETE) {
+            await usersService.depositFunds(userId, transaction.amountUsd)
+        }
+
+        return transaction
     }
 
     public async createWithdrawal(userId: string, data: WithdrawalTransactionSchemaType) {
@@ -47,7 +53,10 @@ class TransactionsService {
                 type: TransactionType.WITHDRAWAL,
             },
         })
-        await usersService.withdrawFunds(userId, transaction.amountUsd)
+
+        if (transaction.status !== TransactionStatus.CANCELLED) {
+            await usersService.withdrawFunds(userId, transaction.amountUsd)
+        }
 
         return transaction
     }
