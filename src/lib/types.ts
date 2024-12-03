@@ -13,6 +13,15 @@ export enum CookieKeys {
     MustSetupProfile = "MSP",
 }
 
+export enum NotificationType {
+    Info = "Info",
+    WithRedirect = "WithRedirect",
+}
+export type NotificationMeta = {
+    Info: { type: NotificationType.Info }
+    WithRedirect: { type: NotificationType.WithRedirect; href: string }
+}
+
 export type AuthTokenPair = {
     accessToken: string
     refreshToken: string

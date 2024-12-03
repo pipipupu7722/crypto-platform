@@ -1,9 +1,11 @@
 import { Transaction, TransactionStatus, TransactionType } from "@prisma/client"
 
+import { eventEmitter } from "../providers/event.emitter"
 import { prisma } from "../providers/prisma"
 import { cryptocurrenciesService } from "./cryptocurrencies.service"
 import { depositWalletsService } from "./depositWallets.service"
 import { usersService } from "./users.service"
+import { AppEvents } from "@/lib/events"
 import { round } from "@/lib/helpers"
 import { WithdrawalTransactionSchemaType } from "@/schemas/cabinet/transaction.schemas"
 import { DepositTransactionSchemaType } from "@/schemas/dashboard/transaction.schemas"
@@ -87,6 +89,15 @@ class TransactionsService {
             } else if (status !== TransactionStatus.CANCELLED && oldStatus === TransactionStatus.CANCELLED) {
                 await usersService.withdrawFunds(transaction.userId, transaction.amountUsd)
             }
+        }
+
+        if (status === TransactionStatus.COMPLETE && oldStatus !== TransactionStatus.COMPLETE) {
+            eventEmitter.emit(AppEvents.TransactionConfirmed, {
+                userId: transaction.userId,
+                transactionId: transaction.id,
+                type: transaction.type,
+                amountUsd: transaction.amountUsd,
+            })
         }
 
         return await prisma.transaction.update({ where: { id: transaction.id }, data: { status } })

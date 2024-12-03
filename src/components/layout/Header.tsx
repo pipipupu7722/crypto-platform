@@ -1,29 +1,33 @@
-"use client";
+"use client"
 
-import { BellOutlined, SettingOutlined } from "@ant-design/icons";
-import { css } from "@emotion/css";
-import { Avatar, Button, Layout, Tooltip, theme } from "antd";
-import { PropsWithChildren } from "react";
-import { redirect } from "next/navigation";
+import { BellOutlined, SettingOutlined } from "@ant-design/icons"
+import { css } from "@emotion/css"
+import { Avatar, Badge, Button, Layout, Tooltip, theme } from "antd"
+import { redirect } from "next/navigation"
+import { PropsWithChildren } from "react"
 
-import { useSession } from "@/providers/SessionProvider";
-import { breakpoints } from "@/theme";
+import NotificationDropdown from "../NotificationDropdown"
+import { useNotifications } from "@/providers/NotificationsProvider"
+import { useSession } from "@/providers/SessionProvider"
+import { breakpoints } from "@/theme"
 
 export default function Header({ children }: PropsWithChildren) {
-	const { session } = useSession();
-	const { token } = theme.useToken();
+    const { session } = useSession()
+    const { unreadCount } = useNotifications()
 
-	return (
-		<Layout.Header
-			className={css`
+    const { token } = theme.useToken()
+
+    return (
+        <Layout.Header
+            className={css`
                 padding: 0;
                 display: flex;
                 justify-content: space-around;
                 background-color: ${token.colorBgContainer};
             `}
-		>
-			<div
-				className={css`
+        >
+            <div
+                className={css`
                     padding: 0 24px;
                     width: 100%;
                     max-width: 1280px;
@@ -32,9 +36,9 @@ export default function Header({ children }: PropsWithChildren) {
                         padding: 0 12px;
                     }
                 `}
-			>
-				<div
-					className={css`
+            >
+                <div
+                    className={css`
                         padding: 0 24px;
                         width: 100%;
                         height: 100%;
@@ -46,9 +50,9 @@ export default function Header({ children }: PropsWithChildren) {
                             padding: 0;
                         }
                     `}
-				>
-					<div
-						className={css`
+                >
+                    <div
+                        className={css`
                             display: flex;
                             align-items: center;
 
@@ -56,14 +60,14 @@ export default function Header({ children }: PropsWithChildren) {
                                 display: none;
                             }
                         `}
-					>
-						<Avatar>
-							{session.User.firstName?.substring(0, 1)?.toUpperCase() ?? "F"}
-							{session.User.lastName?.substring(0, 1)?.toUpperCase() ?? "L"}
-						</Avatar>
+                    >
+                        <Avatar>
+                            {session.User.firstName?.substring(0, 1)?.toUpperCase() ?? "F"}
+                            {session.User.lastName?.substring(0, 1)?.toUpperCase() ?? "L"}
+                        </Avatar>
 
-						<div
-							className={css`
+                        <div
+                            className={css`
                                 margin-left: 10px;
                                 display: flex;
                                 flex-direction: column;
@@ -72,16 +76,16 @@ export default function Header({ children }: PropsWithChildren) {
                                     display: none;
                                 }
                             `}
-						>
-							<span style={{ lineHeight: "1rem" }}>
-								{session.User.firstName} {session.User.lastName}
-							</span>
-							<span style={{ lineHeight: "1rem" }}>{session.User.email}</span>
-						</div>
-					</div>
+                        >
+                            <span style={{ lineHeight: "1rem" }}>
+                                {session.User.firstName} {session.User.lastName}
+                            </span>
+                            <span style={{ lineHeight: "1rem" }}>{session.User.email}</span>
+                        </div>
+                    </div>
 
-					<div
-						className={css`
+                    <div
+                        className={css`
                             gap: 8px;
                             display: none;
                             align-items: center;
@@ -90,13 +94,13 @@ export default function Header({ children }: PropsWithChildren) {
                                 display: flex;
                             }
                         `}
-					>
-						{children}
-					</div>
+                    >
+                        {children}
+                    </div>
 
-					<div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-						<div
-							className={css`
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <div
+                            className={css`
                                 gap: 8px;
                                 display: flex;
                                 align-items: center;
@@ -105,25 +109,27 @@ export default function Header({ children }: PropsWithChildren) {
                                     display: none;
                                 }
                             `}
-						>
-							{children}
-						</div>
+                        >
+                            {children}
+                        </div>
 
-						<Tooltip title="Уведомления">
-							<Button type="default" shape="circle" icon={<BellOutlined />} />
-						</Tooltip>
+                        <NotificationDropdown>
+                            <Badge count={unreadCount} overflowCount={9} style={{ zIndex: 999 }}>
+                                <Button type="default" shape="circle" icon={<BellOutlined />} />
+                            </Badge>
+                        </NotificationDropdown>
 
-						<Tooltip title="Настройки">
-							<Button
-								type="default"
-								shape="circle"
-								icon={<SettingOutlined />}
-								onClick={() => redirect("/cabinet/settings")}
-							/>
-						</Tooltip>
-					</div>
-				</div>
-			</div>
-		</Layout.Header>
-	);
+                        <Tooltip title="Настройки">
+                            <Button
+                                type="default"
+                                shape="circle"
+                                icon={<SettingOutlined />}
+                                onClick={() => redirect("/cabinet/settings")}
+                            />
+                        </Tooltip>
+                    </div>
+                </div>
+            </div>
+        </Layout.Header>
+    )
 }

@@ -1,4 +1,4 @@
-import { Strategy, StrategyStatus } from "@prisma/client"
+import { StrategyStatus } from "@prisma/client"
 import { startOfDay } from "date-fns"
 
 import { getRandomFloat } from "../helpers"
@@ -12,14 +12,24 @@ import { StrategySchema, StrategySchemaType } from "@/schemas/dashboard/strategy
 class StrategiesService {
     constructor() {}
 
-    public async create(userId: string, strategy: StrategySchemaType) {
-        strategy = StrategySchema.parse(strategy)
-        if (!strategy.closesAt) {
+    public async create(userId: string, payload: StrategySchemaType) {
+        payload = StrategySchema.parse(payload)
+        if (!payload.closesAt) {
             throw Error("ClosesAt not specified")
         }
-        const closesAt = startOfDay(new Date(strategy.closesAt))
+        const closesAt = startOfDay(new Date(payload.closesAt))
 
-        return await prisma.strategy.create({ data: { ...strategy, closesAt, userId } })
+        const strategy = await prisma.strategy.create({ data: { ...payload, closesAt, userId } })
+
+        eventEmitter.emit(AppEvents.NewStrategy, {
+            userId: userId,
+            strategyId: strategy.id,
+            name: strategy.name,
+            profitMin: strategy.fakeProfitMin,
+            profitMax: strategy.fakeProfitMax,
+        })
+
+        return strategy
     }
 
     public async update(id: string, strategy: StrategySchemaType) {
@@ -46,11 +56,11 @@ class StrategiesService {
     }
 
     public async close(id: string) {
-        const { invested, profit, userId } = await prisma.strategy.findUniqueOrThrow({
+        const { invested, profit, userId, name } = await prisma.strategy.findUniqueOrThrow({
             where: { id, status: StrategyStatus.ACTIVE },
         })
 
-        eventEmitter.emit(AppEvents.StrategyClosed, { userId: userId, strategyId: id, invested, profit })
+        eventEmitter.emit(AppEvents.StrategyClosed, { userId: userId, strategyId: id, name, invested, profit })
 
         await usersService.takeProfit(userId, invested + profit)
 
@@ -77,8 +87,8 @@ class StrategiesService {
         for (const { userId } of userIds) {
             const strategies = await prisma.strategy.findMany({ where: { userId, status: StrategyStatus.ACTIVE } })
 
-            const strategyUpdates: { id: string; profitDelta: number }[] = []
-            const pnlData: { strategyId: string; profitDelta: number }[] = []
+            const strategyUpdateQuery: { id: string; profitDelta: number }[] = []
+            const pnlCreateQuery: { strategyId: string; profitDelta: number }[] = []
 
             let totalProfitDelta = 0
 
@@ -89,25 +99,25 @@ class StrategiesService {
                 const intervals = Math.floor(totalMilliseconds / appconf.strategyIntervalMs)
                 if (intervals <= 0) continue
 
-                const minProfit = invested * (realProfitMin / 100)
-                const maxProfit = invested * (realProfitMax / 100)
+                const minProfit = invested * realProfitMin
+                const maxProfit = invested * realProfitMax
 
                 const totalProfit = getRandomFloat(minProfit, maxProfit)
                 const profitDelta = totalProfit / intervals
 
-                strategyUpdates.push({ id: strategy.id, profitDelta })
-                pnlData.push({ strategyId: strategy.id, profitDelta })
+                strategyUpdateQuery.push({ id: strategy.id, profitDelta })
+                pnlCreateQuery.push({ strategyId: strategy.id, profitDelta })
                 totalProfitDelta += profitDelta
             }
 
             const result = await prisma.$transaction([
-                ...strategyUpdates.map((data) =>
+                ...strategyUpdateQuery.map((data) =>
                     prisma.strategy.update({
                         where: { id: data.id },
                         data: { profit: { increment: data.profitDelta } },
                     })
                 ),
-                prisma.strategyPnl.createMany({ data: pnlData }),
+                prisma.strategyPnl.createMany({ data: pnlCreateQuery }),
             ])
 
             await usersService.addProfit(userId, totalProfitDelta)
