@@ -2,13 +2,15 @@ FROM node:20 AS builder
 
 WORKDIR /app
 
-COPY package.json yarn.lock ./
+RUN npm install -g pnpm
 
-RUN yarn install --frozen-lockfile
+COPY package.json pnpm-lock.yaml ./
+
+RUN pnpm i --frozen-lockfile
 
 COPY . .
 
-RUN npx prisma generate && yarn build
+RUN npx prisma generate && pnpm build
 
 
 FROM node:20
@@ -19,4 +21,4 @@ COPY --from=builder /app ./
 
 EXPOSE 3000
 
-CMD ["yarn", "start"]
+CMD ["pnpm", "start"]
