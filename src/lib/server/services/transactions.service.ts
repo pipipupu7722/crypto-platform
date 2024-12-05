@@ -5,6 +5,7 @@ import { prisma } from "../providers/prisma"
 import { cryptocurrenciesService } from "./cryptocurrencies.service"
 import { depositWalletsService } from "./depositWallets.service"
 import { usersService } from "./users.service"
+import { AlreadyHasPendingWithdrawalError } from "@/lib/errors"
 import { AppEvents } from "@/lib/events"
 import { round } from "@/lib/helpers"
 import { WithdrawalTransactionSchemaType } from "@/schemas/cabinet/transaction.schemas"
@@ -39,10 +40,16 @@ class TransactionsService {
         const crypto = await cryptocurrenciesService.getBySymbolOrThrow(data.crypto)
         const user = await usersService.getById(userId)
 
+        const pendingWithdrawal = await prisma.transaction.findFirst({
+            where: { type: TransactionType.WITHDRAWAL, status: TransactionStatus.PENDING },
+        })
+
         if (data.amountUsd > crypto.withdrawalMaxUsd || data.amountUsd < crypto.withdrawalMinUsd) {
             throw new Error("Amount is out of allowed bounds")
         } else if ((user?.balance ?? 0) - data.amountUsd < 0) {
             throw new Error("Balance is too low")
+        } else if (pendingWithdrawal) {
+            throw new AlreadyHasPendingWithdrawalError()
         }
 
         const transaction = await prisma.transaction.create({

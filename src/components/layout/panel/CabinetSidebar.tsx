@@ -6,6 +6,7 @@ import { MenuProps } from "antd"
 import { redirect } from "next/navigation"
 
 import Sidebar from "../Sidebar"
+import { appconf } from "@/appconf"
 import { hasRole } from "@/lib/helpers"
 import { useSession } from "@/providers/SessionProvider"
 
@@ -14,16 +15,16 @@ export default function CabinetSidebar() {
 
     const menuItems: MenuProps["items"] = [
         {
-            key: "/cabinet",
-            label: "Баланс",
-            icon: <TransactionOutlined />,
-            onClick: () => redirect("/cabinet"),
-        },
-        {
             key: "/cabinet/strategies",
             label: "Стратегии",
             icon: <LineChartOutlined />,
             onClick: () => redirect("/cabinet/strategies"),
+        },
+        {
+            key: "/cabinet",
+            label: "Баланс",
+            icon: <TransactionOutlined />,
+            onClick: () => redirect("/cabinet"),
         },
         {
             key: "/cabinet/market",
@@ -36,10 +37,10 @@ export default function CabinetSidebar() {
 
     if (hasRole(session.User.roles, [UserRole.ADMIN, UserRole.MANAGER])) {
         menuItems.push({
-            key: "/dashboard",
+            key: appconf.routes.default.admin,
             label: "Менеджер",
             icon: <LockOutlined />,
-            onClick: () => redirect("/dashboard"),
+            onClick: () => redirect(appconf.routes.default.admin),
         })
     }
 

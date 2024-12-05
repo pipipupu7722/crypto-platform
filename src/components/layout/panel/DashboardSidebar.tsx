@@ -6,6 +6,7 @@ import { MenuProps } from "antd"
 import { redirect } from "next/navigation"
 
 import Sidebar from "../Sidebar"
+import { appconf } from "@/appconf"
 import { hasRole } from "@/lib/helpers"
 import { useSession } from "@/providers/SessionProvider"
 
@@ -35,10 +36,10 @@ export default function DashboardSidebar() {
 
     if (hasRole(session.User.roles, [UserRole.USER])) {
         menuItems.push({
-            key: "/cabinet",
+            key: appconf.routes.default.user,
             label: "Пользователь",
             icon: <LockOutlined />,
-            onClick: () => redirect("/cabinet"),
+            onClick: () => redirect(appconf.routes.default.user),
         })
     }
 

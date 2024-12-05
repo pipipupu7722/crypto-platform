@@ -55,6 +55,15 @@ export default function StrategiesTab({ initialStrategies }: { initialStrategies
             render: (_, rec) => `${(rec.fakeProfitMin * 100).toFixed(0)}% - ${(rec.fakeProfitMax * 100).toFixed(0)}%`,
         },
         {
+            title: "Ожидаемый доход",
+            key: "fakeProfitMax",
+            width: 175,
+            render: (_, rec) =>
+                rec.invested > 0
+                    ? `${(rec.invested * rec.fakeProfitMin).toFixed(2)}$ - ${(rec.invested * rec.fakeProfitMax).toFixed(2)}$`
+                    : "-",
+        },
+        {
             title: "Статус",
             key: "status",
             width: 1,

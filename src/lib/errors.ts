@@ -15,3 +15,9 @@ export class ServerActionError extends Error {
         super(message, options)
     }
 }
+
+export class AlreadyHasPendingWithdrawalError extends Error {
+    constructor(message?: string, options?: { cause?: unknown }) {
+        super(message, options)
+    }
+}

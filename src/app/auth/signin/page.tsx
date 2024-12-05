@@ -6,6 +6,7 @@ import { redirect } from "next/navigation"
 import React, { useState } from "react"
 
 import { signIn } from "@/actions/auth/signin"
+import { appconf } from "@/appconf"
 import { SignInSchemaRule, SignInSchemaType } from "@/schemas/auth.schemas"
 
 const SignIn: React.FC = () => {
@@ -17,7 +18,7 @@ const SignIn: React.FC = () => {
         setLoading(true)
         const res = await signIn(values)
         if (res.success) {
-            redirect("/cabinet")
+            redirect(appconf.routes.default.user)
         } else {
             setLoading(false)
             setError(res.error)

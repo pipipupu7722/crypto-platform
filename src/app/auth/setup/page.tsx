@@ -6,6 +6,7 @@ import { redirect } from "next/navigation"
 import React, { useState } from "react"
 
 import { setupProfile } from "@/actions/auth/setupProfile"
+import { appconf } from "@/appconf"
 import { ProfileSetupSchemaRule, ProfileSetupSchemaType } from "@/schemas/auth.schemas"
 
 const Setup: React.FC = () => {
@@ -17,7 +18,7 @@ const Setup: React.FC = () => {
         setLoading(true)
         const res = await setupProfile(values)
         if (res.success) {
-            redirect("/cabinet")
+            redirect(appconf.routes.default.user)
         } else {
             setLoading(false)
             setError(res.error)

@@ -25,7 +25,7 @@ const middleware = async (req: NextRequest) => {
 
     if (isGuestUrl(urlPath)) {
         if (accessToken && refreshToken) {
-            return NextResponse.redirect(new URL("/cabinet", appconf.appHost))
+            return NextResponse.redirect(new URL(appconf.routes.default.user, appconf.appHost))
         }
         return NextResponse.next()
     }
@@ -49,7 +49,7 @@ const middleware = async (req: NextRequest) => {
 
         if (!hasRouteRole(urlPath, sessionPayload.rls)) {
             if (urlPath.startsWith("/cabinet")) {
-                return NextResponse.redirect(new URL("/dashboard", appconf.appHost))
+                return NextResponse.redirect(new URL(appconf.routes.default.admin, appconf.appHost))
             } else if (urlPath.startsWith("/dashboard")) {
                 return NextResponse.redirect(new URL("/cabine", appconf.appHost))
             } else {
@@ -63,7 +63,7 @@ const middleware = async (req: NextRequest) => {
             return NextResponse.next({ request: new Request(req.url, { ...req, headers }) })
         }
         if (mustSetupProfile !== "true" && urlPath.startsWith("/auth/setup")) {
-            return NextResponse.redirect(new URL("/cabinet", appconf.appHost))
+            return NextResponse.redirect(new URL(appconf.routes.default.user, appconf.appHost))
         } else if (mustSetupProfile === "true") {
             if (urlPath.startsWith("/auth/setup")) {
                 return NextWithAuth()
@@ -72,7 +72,7 @@ const middleware = async (req: NextRequest) => {
             }
         }
         if (urlPath.startsWith("/auth/pending") && sessionPayload.sts !== UserStatus.PENDING) {
-            return NextResponse.redirect(new URL("/cabinet", appconf.appHost))
+            return NextResponse.redirect(new URL(appconf.routes.default.user, appconf.appHost))
         } else if (sessionPayload.sts === UserStatus.PENDING) {
             await dropAuthAccessToken()
 
