@@ -1,14 +1,19 @@
-import type { Document } from "@prisma/client";
+import type { Document, DocumentType } from "@prisma/client";
 import "server-only";
 
 import { prisma } from "../providers/prisma";
 
 class DocumentsService {
-	public async createDocument(userId: string, filePath: string) {
+	public async createDocument(
+		userId: string,
+		filePath: string,
+		type: DocumentType = "ID",
+	) {
 		return await prisma.document.create({
 			data: {
 				userId,
 				path: filePath,
+				type,
 			},
 		});
 	}
@@ -22,6 +27,16 @@ class DocumentsService {
 	public async getDocumentsByUserId(userId: string): Promise<Document[]> {
 		return await prisma.document.findMany({
 			where: { userId },
+			orderBy: { createdAt: "desc" },
+		});
+	}
+
+	public async getDocumentsByType(
+		userId: string,
+		type: DocumentType,
+	): Promise<Document[]> {
+		return await prisma.document.findMany({
+			where: { userId, type },
 			orderBy: { createdAt: "desc" },
 		});
 	}
@@ -45,6 +60,16 @@ class DocumentsService {
 	public async deleteDocumentsByUserId(userId: string): Promise<number> {
 		const deleteResult = await prisma.document.deleteMany({
 			where: { userId },
+		});
+		return deleteResult.count;
+	}
+
+	public async deleteDocumentsByType(
+		userId: string,
+		type: DocumentType,
+	): Promise<number> {
+		const deleteResult = await prisma.document.deleteMany({
+			where: { userId, type },
 		});
 		return deleteResult.count;
 	}

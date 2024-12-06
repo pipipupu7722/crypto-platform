@@ -4,11 +4,13 @@ import { NextResponse } from "next/server";
 import { documentsService } from "@/lib/server/services/documents.service";
 import fs from "node:fs";
 import path from "node:path";
+import { DocumentType } from "@prisma/client";
 
 export const GET = async (req: Request) => {
 	try {
 		const { searchParams } = new URL(req.url);
 		const userId = searchParams.get("userId");
+		const type = searchParams.get("type") as DocumentType | null;
 
 		if (!userId) {
 			return NextResponse.json(
@@ -17,7 +19,9 @@ export const GET = async (req: Request) => {
 			);
 		}
 
-		const documents = await documentsService.getDocumentsByUserId(userId);
+		const documents = type
+			? await documentsService.getDocumentsByType(userId, type)
+			: await documentsService.getDocumentsByUserId(userId);
 
 		return NextResponse.json({ success: true, documents });
 	} catch (error) {
@@ -34,6 +38,9 @@ export const POST = async (req: Request) => {
 		const formData = await req.formData();
 		const file = formData.get("file") as File | null;
 		const userId = formData.get("userId") as string;
+		const type = formData.get("type") as DocumentType | null;
+
+		console.log("formData", formData);
 
 		if (!file) {
 			return NextResponse.json(
@@ -49,6 +56,13 @@ export const POST = async (req: Request) => {
 			);
 		}
 
+		if (!type || !Object.values(DocumentType).includes(type)) {
+			return NextResponse.json(
+				{ success: false, message: "Некорректный тип документа" },
+				{ status: 400 },
+			);
+		}
+
 		const buffer = Buffer.from(await file.arrayBuffer());
 		const uploadsDir = path.join(process.cwd(), "uploads/documents", userId);
 
@@ -59,7 +73,11 @@ export const POST = async (req: Request) => {
 		const filePath = path.join(uploadsDir, `${Date.now()}-${file.name}`);
 		fs.writeFileSync(filePath, buffer);
 
-		const document = await documentsService.createDocument(userId, filePath);
+		const document = await documentsService.createDocument(
+			userId,
+			filePath,
+			type,
+		);
 
 		return NextResponse.json({ success: true, document });
 	} catch (error) {

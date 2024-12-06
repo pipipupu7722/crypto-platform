@@ -1,23 +1,40 @@
 "use client";
 
 import type { User } from "@prisma/client";
-import { Button, Descriptions, Upload, message, List, Tag, Spin } from "antd";
 import {
-	UploadOutlined,
-	DownloadOutlined,
-	CheckCircleOutlined,
-} from "@ant-design/icons";
+	Button,
+	Descriptions,
+	Upload,
+	message,
+	List,
+	Tag,
+	Spin,
+	Row,
+	Col,
+	Form,
+	Input,
+	Select,
+	DatePicker,
+} from "antd";
+import { UploadOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
+
+const { Option } = Select;
 
 const DocumentsTab = ({ initialUser }: { initialUser: User }) => {
 	const [isActionPending, setIsActionPending] = useState(false);
 	const [uploadedFiles, setUploadedFiles] = useState<
 		{ id: string; name: string; path: string; status: string }[]
 	>([]);
-	const [isSaved, setIsSaved] = useState(false);
+	const [uploadedSelfies, setUploadedSelfies] = useState<
+		{ id: string; name: string; path: string; status: string }[]
+	>([]);
+	const [pendingDocuments, setPendingDocuments] = useState<File[]>([]);
+	const [pendingSelfie, setPendingSelfie] = useState<File | null>(null);
+	const [form] = Form.useForm();
 
 	useEffect(() => {
-		const fetchUploadedFiles = async () => {
+		const fetchUploadedData = async () => {
 			try {
 				const response = await fetch(
 					`/api/cabinet/documents?userId=${initialUser.id}`,
@@ -26,46 +43,91 @@ const DocumentsTab = ({ initialUser }: { initialUser: User }) => {
 					throw new Error("Не удалось загрузить список документов");
 				}
 				const result = await response.json();
+
+				const documents = result.documents.filter(
+					(doc: { type: string }) => doc.type === "ID",
+				);
+				const selfies = result.documents.filter(
+					(doc: { type: string }) => doc.type === "SELFIE",
+				);
+
 				setUploadedFiles(
-					result.documents.map((doc: { id: string; path: string }) => ({
+					documents.map((doc: { id: string; path: string }) => ({
 						id: doc.id,
 						name: doc.path.split("/").pop() || "Документ",
 						path: doc.path,
 						status: "success",
 					})),
 				);
+
+				setUploadedSelfies(
+					selfies.map((selfie: { id: string; path: string }) => ({
+						id: selfie.id,
+						name: selfie.path.split("/").pop() || "Селфи",
+						path: selfie.path,
+						status: "success",
+					})),
+				);
 			} catch (error) {
 				console.error(error);
-				message.error("Ошибка загрузки списка документов");
+				message.error("Ошибка загрузки данных");
 			}
 		};
 
-		fetchUploadedFiles();
+		fetchUploadedData();
 	}, [initialUser.id]);
 
-	const handleUpload = async (file: File) => {
+	const handleSave = async () => {
+		if (pendingDocuments.length === 0 && !pendingSelfie) {
+			message.warning("Нет новых файлов для загрузки");
+			return;
+		}
+
 		setIsActionPending(true);
+
+		try {
+			// Загрузка документов
+			for (const file of pendingDocuments) {
+				await uploadFile(file, "ID");
+			}
+
+			// Загрузка селфи
+			if (pendingSelfie) {
+				await uploadFile(pendingSelfie, "SELFIE");
+			}
+
+			message.success("Файлы успешно загружены!");
+			setPendingDocuments([]);
+			setPendingSelfie(null);
+		} catch (error) {
+			console.error(error);
+			message.error("Ошибка загрузки файлов");
+		} finally {
+			setIsActionPending(false);
+		}
+	};
+
+	const uploadFile = async (file: File, type: "ID" | "SELFIE") => {
 		const formData = new FormData();
 		formData.append("file", file);
 		formData.append("userId", initialUser.id);
+		formData.append("type", type);
 
-		try {
-			console.log("Uploading file:", file.name);
+		const response = await fetch("/api/cabinet/documents", {
+			method: "POST",
+			body: formData,
+		});
 
-			const response = await fetch("/api/cabinet/documents", {
-				method: "POST",
-				body: formData,
-			});
+		if (!response.ok) {
+			const errorText = await response.text();
+			console.error("Server response error:", errorText);
+			throw new Error(`Ошибка загрузки файла ${file.name}`);
+		}
 
-			if (!response.ok) {
-				const errorText = await response.text();
-				console.error("Server response error:", errorText);
-				throw new Error("Ошибка загрузки файла");
-			}
+		const result = await response.json();
 
-			const result = await response.json();
-
-			if (result.success) {
+		if (result.success) {
+			if (type === "ID") {
 				setUploadedFiles((prev) => [
 					...prev,
 					{
@@ -75,100 +137,189 @@ const DocumentsTab = ({ initialUser }: { initialUser: User }) => {
 						status: "success",
 					},
 				]);
-				message.success(`${file.name} успешно загружен`);
 			} else {
-				message.error(`${file.name} не удалось загрузить`);
+				setUploadedSelfies((prev) => [
+					...prev,
+					{
+						id: result.document.id,
+						name: result.document.path.split("/").pop() || file.name,
+						path: result.document.path,
+						status: "success",
+					},
+				]);
 			}
-		} catch (error) {
-			console.error("Upload error:", error);
-			message.error(`${file.name} не удалось загрузить`);
-		} finally {
-			setIsActionPending(false);
+		} else {
+			throw new Error(`Ошибка загрузки файла ${file.name}`);
 		}
 	};
 
-	const draggerProps = {
+	const draggerProps = (type: "ID" | "SELFIE") => ({
 		name: "file",
-		multiple: true,
-		beforeUpload: async (file: File) => {
-			await handleUpload(file);
-			return false;
+		multiple: type === "ID",
+		beforeUpload: (file: File) => {
+			if (type === "ID") {
+				setPendingDocuments((prev) => [...prev, file]);
+			} else {
+				setPendingSelfie(file);
+			}
+			message.success(`Файл ${file.name} добавлен в очередь`);
+			return false; // Отключаем автоматическую загрузку Ant Design
 		},
-	};
-
-	const handleSave = () => {
-		setIsSaved(true);
-		message.success("Документы успешно сохранены!");
-	};
+	});
 
 	return (
 		<div>
-			<Descriptions bordered column={1} size="small">
-				<Descriptions.Item label="Загруженные документы">
-					{uploadedFiles.length > 0 ? (
-						<List
-							dataSource={uploadedFiles}
-							renderItem={(item) => (
-								<List.Item
-									actions={[
-										<Button
-											type="link"
-											href={`/api/cabinet/documents/${item.id}`}
-											icon={<DownloadOutlined />}
-										>
-											Скачать
-										</Button>,
+			<Form form={form} layout="vertical">
+				<Row gutter={16}>
+					<Col span={12}>
+						<Form.Item label="Тип документа" name="documentType">
+							<Select placeholder="Выберите тип документа">
+								<Option value="passport">Паспорт</Option>
+								<Option value="id_card">ID карта</Option>
+							</Select>
+						</Form.Item>
+
+						<Form.Item label="Номер документа" name="documentNumber">
+							<Input placeholder="Введите номер документа" />
+						</Form.Item>
+					</Col>
+					<Col span={12}>
+						<Form.Item label="Дата рождения" name="birthDate">
+							<DatePicker
+								style={{ width: "100%" }}
+								placeholder="Выберите дату"
+							/>
+						</Form.Item>
+
+						<Form.Item label="Страна" name="country">
+							<Select placeholder="Выберите страну">
+								<Option value="russia">Россия</Option>
+								<Option value="usa">США</Option>
+								<Option value="china">Китай</Option>
+								{/* Добавьте другие страны по мере необходимости */}
+							</Select>
+						</Form.Item>
+					</Col>
+				</Row>
+
+				<Row gutter={16}>
+					<Col span={12}>
+						<Descriptions
+							bordered
+							column={1}
+							size="small"
+							style={{ marginBottom: 16 }}
+						>
+							<Descriptions.Item label="Загруженные документы">
+								<List
+									dataSource={[
+										...uploadedFiles,
+										...pendingDocuments.map((file) => ({
+											id: `pending-${file.name}`,
+											name: file.name,
+											status: "pending",
+										})),
 									]}
-								>
-									<div style={{ display: "flex", alignItems: "center" }}>
-										<span>{item.name}</span>
-										<Tag color="green" style={{ marginLeft: 8 }}>
-											Успешно
-										</Tag>
-									</div>
-								</List.Item>
-							)}
-						/>
-					) : (
-						"Нет загруженных документов"
-					)}
-				</Descriptions.Item>
-			</Descriptions>
+									renderItem={(item) => (
+										<List.Item>
+											<div style={{ display: "flex", alignItems: "center" }}>
+												<span>{item.name}</span>
+												<Tag
+													color={item.status === "success" ? "green" : "orange"}
+													style={{ marginLeft: 8 }}
+												>
+													{item.status === "success" ? "Успешно" : "В очереди"}
+												</Tag>
+											</div>
+										</List.Item>
+									)}
+								/>
+							</Descriptions.Item>
+						</Descriptions>
 
-			<div style={{ marginTop: 20 }}>
-				<Spin spinning={isActionPending}>
-					<Upload.Dragger {...draggerProps} style={{ padding: 20 }}>
-						<p className="ant-upload-drag-icon">
-							<UploadOutlined />
-						</p>
-						<p className="ant-upload-text">
-							Перетащите файл сюда или нажмите, чтобы выбрать
-						</p>
-						<p className="ant-upload-hint">
-							Поддерживаются одиночные или множественные загрузки. Формат: jpg,
-							png, pdf.
-						</p>
-					</Upload.Dragger>
-				</Spin>
-			</div>
+						<Spin spinning={isActionPending}>
+							<Upload.Dragger {...draggerProps("ID")} style={{ height: 150 }}>
+								<p className="ant-upload-drag-icon">
+									<UploadOutlined />
+								</p>
+								<p className="ant-upload-text">
+									Перетащите документы сюда или нажмите
+								</p>
+								<p className="ant-upload-hint">
+									Загрузите документы. Формат: jpg, png, pdf.
+								</p>
+							</Upload.Dragger>
+						</Spin>
+					</Col>
 
-			<div style={{ textAlign: "center", marginTop: 10 }}>
+					<Col span={12}>
+						<Descriptions
+							bordered
+							column={1}
+							size="small"
+							style={{ marginBottom: 16 }}
+						>
+							<Descriptions.Item label="Загруженные селфи">
+								<List
+									dataSource={[
+										...uploadedSelfies,
+										...(pendingSelfie
+											? [
+													{
+														id: `pending-${pendingSelfie.name}`,
+														name: pendingSelfie.name,
+														status: "pending",
+													},
+												]
+											: []),
+									]}
+									renderItem={(item) => (
+										<List.Item>
+											<div style={{ display: "flex", alignItems: "center" }}>
+												<span>{item.name}</span>
+												<Tag
+													color={item.status === "success" ? "green" : "orange"}
+													style={{ marginLeft: 8 }}
+												>
+													{item.status === "success" ? "Успешно" : "В очереди"}
+												</Tag>
+											</div>
+										</List.Item>
+									)}
+								/>
+							</Descriptions.Item>
+						</Descriptions>
+
+						<Spin spinning={isActionPending}>
+							<Upload.Dragger
+								{...draggerProps("SELFIE")}
+								style={{ height: 150 }}
+							>
+								<p className="ant-upload-drag-icon">
+									<UploadOutlined />
+								</p>
+								<p className="ant-upload-text">
+									Перетащите селфи сюда или нажмите
+								</p>
+								<p className="ant-upload-hint">
+									Загрузите селфи. Формат: jpg, png.
+								</p>
+							</Upload.Dragger>
+						</Spin>
+					</Col>
+				</Row>
+			</Form>
+
+			<div style={{ textAlign: "center", marginTop: 20 }}>
 				<Button
 					type="primary"
 					loading={isActionPending}
 					onClick={handleSave}
 					disabled={isActionPending}
 				>
-					Сохранить документы
+					Сохранить файлы
 				</Button>
 			</div>
-
-			{isSaved && (
-				<div style={{ textAlign: "center", marginTop: 20 }}>
-					<CheckCircleOutlined style={{ fontSize: 24, color: "green" }} />
-					<p>Документы успешно сохранены!</p>
-				</div>
-			)}
 		</div>
 	);
 };
