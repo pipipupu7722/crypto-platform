@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 
 const AdminDocumentsTab = ({ targetUser }: { targetUser: User }) => {
 	const [uploadedFiles, setUploadedFiles] = useState<
-		{ id: string; name: string; path: string; status: string }[]
+		{ id: string; name: string; path: string; status: string; type: string }[]
 	>([]);
 	const [isLoaded, setIsLoaded] = useState(false); // Флаг для статуса загрузки документов
 
@@ -26,12 +26,15 @@ const AdminDocumentsTab = ({ targetUser }: { targetUser: User }) => {
 				}
 				const result = await response.json();
 				setUploadedFiles(
-					result.documents.map((doc: { id: string; path: string }) => ({
-						id: doc.id,
-						name: doc.path.split("/").pop() || "Документ",
-						path: doc.path,
-						status: "success",
-					})),
+					result.documents.map(
+						(doc: { id: string; path: string; type: string }) => ({
+							id: doc.id,
+							name: doc.path.split("/").pop() || "Документ",
+							path: doc.path,
+							type: doc.type,
+							status: "success",
+						}),
+					),
 				);
 				setIsLoaded(true);
 			} catch (error) {
@@ -94,7 +97,7 @@ const AdminDocumentsTab = ({ targetUser }: { targetUser: User }) => {
 									<div style={{ display: "flex", alignItems: "center" }}>
 										<span>{item.name}</span>
 										<Tag color="green" style={{ marginLeft: 8 }}>
-											Успешно
+											{item.type}
 										</Tag>
 									</div>
 								</List.Item>
