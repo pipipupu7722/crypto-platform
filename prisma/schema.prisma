@@ -166,14 +166,19 @@ model Transaction {
   id        String            @id @default(cuid())
   userId    String
   crypto    String
-  wallet    String
   amount    Float
   amountUsd Float
   type      TransactionType
   status    TransactionStatus @default(PENDING)
 
-  txHash      String?
-  description String?
+  txHash       String?
+  description  String?
+
+  wallet       String?
+
+  bankName     String?
+  cardNumber   String?
+  cardDate     String?
 
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
