@@ -18,6 +18,7 @@ import {
 } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
+import { updateUserDetails } from "@/actions/cabinet/user";
 
 const { Option } = Select;
 
@@ -78,6 +79,26 @@ const DocumentsTab = ({ initialUser }: { initialUser: User }) => {
 	}, [initialUser.id]);
 
 	const handleSave = async () => {
+		const values = await form.validateFields();
+		setIsActionPending(true);
+
+		console.log("values", values);
+
+		// Сохраняем данные пользователя
+		await updateUserDetails(initialUser.id, {
+			...initialUser,
+			idType: values.idType,
+			idNumber: values.idNumber,
+			dob: values.dob ? values.dob.toISOString() : null,
+			country: values.country,
+		})
+			.then((res) =>
+				res.success
+					? message.success("Данные пользователя успешно обновлены!")
+					: console.error({ message: res.error }),
+			)
+			.finally(() => setIsActionPending(false));
+
 		if (pendingDocuments.length === 0 && !pendingSelfie) {
 			message.warning("Нет новых файлов для загрузки");
 			return;
@@ -86,12 +107,10 @@ const DocumentsTab = ({ initialUser }: { initialUser: User }) => {
 		setIsActionPending(true);
 
 		try {
-			// Загрузка документов
 			for (const file of pendingDocuments) {
 				await uploadFile(file, "ID");
 			}
 
-			// Загрузка селфи
 			if (pendingSelfie) {
 				await uploadFile(pendingSelfie, "SELFIE");
 			}
@@ -163,28 +182,37 @@ const DocumentsTab = ({ initialUser }: { initialUser: User }) => {
 				setPendingSelfie(file);
 			}
 			message.success(`Файл ${file.name} добавлен в очередь`);
-			return false; // Отключаем автоматическую загрузку Ant Design
+			return false;
 		},
 	});
 
 	return (
 		<div>
-			<Form form={form} layout="vertical">
+			<Form
+				form={form}
+				layout="vertical"
+				initialValues={{
+					idType: initialUser.idType || undefined,
+					idNumber: initialUser.idNumber || undefined,
+					dob: initialUser.dob || undefined,
+					country: initialUser.country || undefined,
+				}}
+			>
 				<Row gutter={16}>
 					<Col span={12}>
-						<Form.Item label="Тип документа" name="documentType">
+						<Form.Item label="Тип документа" name="idType">
 							<Select placeholder="Выберите тип документа">
 								<Option value="passport">Паспорт</Option>
 								<Option value="id_card">ID карта</Option>
 							</Select>
 						</Form.Item>
 
-						<Form.Item label="Номер документа" name="documentNumber">
+						<Form.Item label="Номер документа" name="idNumber">
 							<Input placeholder="Введите номер документа" />
 						</Form.Item>
 					</Col>
 					<Col span={12}>
-						<Form.Item label="Дата рождения" name="birthDate">
+						<Form.Item label="Дата рождения" name="dob">
 							<DatePicker
 								style={{ width: "100%" }}
 								placeholder="Выберите дату"
@@ -196,7 +224,6 @@ const DocumentsTab = ({ initialUser }: { initialUser: User }) => {
 								<Option value="russia">Россия</Option>
 								<Option value="usa">США</Option>
 								<Option value="china">Китай</Option>
-								{/* Добавьте другие страны по мере необходимости */}
 							</Select>
 						</Form.Item>
 					</Col>
