@@ -71,24 +71,24 @@ export default function WithdrawalCard({
 					</Select>
 				</Form.Item>
 
-				<Form.Item<WithdrawalTransactionSchemaType>
-					name="crypto"
-					rules={[WithdrawalTransactionSchemaRule]}
-				>
-					<Select
-						placeholder="Выберите актив"
-						onChange={(value) => setSymbol(value)}
-					>
-						{cryptos.map((crypto) => (
-							<Select.Option key={crypto.symbol} value={crypto.symbol}>
-								{crypto.name}
-							</Select.Option>
-						))}
-					</Select>
-				</Form.Item>
-
 				{method === "crypto" && (
 					<>
+						<Form.Item<WithdrawalTransactionSchemaType>
+							name="crypto"
+							rules={[WithdrawalTransactionSchemaRule]}
+						>
+							<Select
+								placeholder="Выберите актив"
+								onChange={(value) => setSymbol(value)}
+							>
+								{cryptos.map((crypto) => (
+									<Select.Option key={crypto.symbol} value={crypto.symbol}>
+										{crypto.name}
+									</Select.Option>
+								))}
+							</Select>
+						</Form.Item>
+
 						<Form.Item<WithdrawalTransactionSchemaType>
 							name="wallet"
 							rules={[WithdrawalTransactionSchemaRule]}
@@ -157,7 +157,30 @@ export default function WithdrawalCard({
 
 						<Form.Item<WithdrawalTransactionSchemaType>
 							name="amountUsd"
-							rules={[WithdrawalTransactionSchemaRule]}
+							rules={[
+								WithdrawalTransactionSchemaRule,
+								() => ({
+									validator(_, value) {
+										const selectedCrypto = cryptos.find(
+											(crypto) => crypto.symbol === symbol,
+										);
+										if (!selectedCrypto) {
+											return Promise.resolve();
+										}
+										const min = selectedCrypto.withdrawalMinUsd;
+										const max = selectedCrypto.withdrawalMaxUsd;
+
+										if (!value || (value >= min && value <= max)) {
+											return Promise.resolve();
+										}
+										return Promise.reject(
+											new Error(
+												`Введите сумму от ${min.toFixed(2)} $ до ${max.toFixed(2)} $`,
+											),
+										);
+									},
+								}),
+							]}
 						>
 							<InputNumber
 								disabled={!symbol}
