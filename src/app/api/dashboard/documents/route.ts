@@ -2,8 +2,6 @@
 
 import { NextResponse } from "next/server";
 import { documentsService } from "@/lib/server/services/documents.service";
-import fs from "node:fs";
-import path from "node:path";
 
 export const GET = async (req: Request) => {
 	try {

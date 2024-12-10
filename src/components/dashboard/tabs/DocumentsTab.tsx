@@ -9,7 +9,7 @@ import {
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 
-const AdminDocumentsTab = ({ targetUser }: { targetUser: User }) => {
+const DocumentsTab = ({ targetUser }: { targetUser: User }) => {
 	const [uploadedFiles, setUploadedFiles] = useState<
 		{ id: string; name: string; path: string; status: string; type: string }[]
 	>([]);
@@ -121,4 +121,4 @@ const AdminDocumentsTab = ({ targetUser }: { targetUser: User }) => {
 	);
 };
 
-export default AdminDocumentsTab;
+export default DocumentsTab;
