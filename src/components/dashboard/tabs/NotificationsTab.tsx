@@ -42,7 +42,7 @@ const NotificationTab = ({ userId }: { userId: string }) => {
 			console.error(error);
 			notify.error({
 				message: "Ошибка отправки уведомления",
-				description: error.message || "Что-то пошло не так",
+				description: "Что-то пошло не так",
 			});
 		} finally {
 			setIsSending(false);
