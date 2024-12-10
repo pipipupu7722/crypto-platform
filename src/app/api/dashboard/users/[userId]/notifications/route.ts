@@ -3,7 +3,7 @@ import { notificationsService } from "@/lib/server/services/notifications.servic
 
 export const POST = async (
 	req: Request,
-	{ params }: { params: { userId: string } },
+	{ params }: { params: Promise<{ userId: string }> },
 ) => {
 	try {
 		const { title, description } = await req.json();
