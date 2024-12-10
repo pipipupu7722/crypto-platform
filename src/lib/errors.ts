@@ -21,3 +21,9 @@ export class AlreadyHasPendingWithdrawalError extends Error {
         super(message, options)
     }
 }
+
+export class BalanceIsTooLowError extends Error {
+    constructor(message?: string, options?: { cause?: unknown }) {
+        super(message, options)
+    }
+}
