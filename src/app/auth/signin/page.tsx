@@ -47,7 +47,7 @@ const SignIn: React.FC = () => {
 
                 <Form.Item style={{ marginTop: "2rem", marginBottom: "1rem" }}>
                     <Button style={{ width: "100%" }} size="large" type="primary" htmlType="submit" loading={loading}>
-                        Войти
+                        Зарегистрироваться
                     </Button>
                 </Form.Item>
 

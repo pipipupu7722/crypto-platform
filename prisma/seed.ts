@@ -1,51 +1,42 @@
-import { CryptocurrencyStatus, CryptocurrencyType, PrismaClient, UserRole, UserStatus } from "@prisma/client"
-import { hashSync } from "bcrypt"
+import { PrismaClient } from "@prisma/client"
+import { join } from "path"
 
-import { appconf } from "./../src/appconf"
+import { readdir } from "fs/promises"
 
 const prisma = new PrismaClient()
 
 ;(async () => {
-    const firstUser = await prisma.user.findFirst()
-    if (firstUser) {
-        return console.log(`\n🌱  First user already exists. Exiting database seeder...`)
+    try {
+        const seedersPath = join(__dirname, "./seeders")
+        const seederFiles = await readdir(seedersPath)
+
+        for (const file of seederFiles) {
+            if (file.endsWith(".ts") || file.endsWith(".js")) {
+                const seederPath = join(seedersPath, file)
+                const { default: seed } = await import(seederPath)
+
+                if (await prisma.seeder.findFirst({ where: { name: file } })) {
+                    console.log(`\n🌱  Skipping seeder ${file}: Already applied.`)
+                } else if (typeof seed === "function") {
+                    console.log(`\n🌱  Running seeder ${file}`)
+
+                    const seeder = await prisma.seeder.create({ data: { name: file } })
+
+                    await seed(prisma)
+
+                    await prisma.seeder.update({ where: { id: seeder.id }, data: { finishedAt: new Date() } })
+
+                    console.log(`🌱  Completed seeder ${file}`)
+                } else {
+                    console.warn(`⚠️  Skipping ${file}: No default export function found.`)
+                }
+            } else {
+                console.warn(`⚠️  Skipping ${file}: Not a TypeScript or JavaScript file.`)
+            }
+        }
+    } catch (error) {
+        console.error("❌  Error during seeding:", error)
+    } finally {
+        await prisma.$disconnect()
     }
-
-    await prisma.user.createMany({
-        data: [
-            {
-                username: "admin",
-                email: "admin@gmail.com",
-                passwordHash: hashSync("asdasdasd", appconf.passwordHashRounds),
-                firstName: "John",
-                lastName: "Doe",
-                country: "US",
-                phone: "+12065550100",
-                roles: [UserRole.ADMIN, UserRole.MANAGER],
-                status: UserStatus.ACTIVE,
-            },
-        ],
-    })
-
-    await prisma.cryptocurrency.createMany({
-        data: [
-            {
-                name: "USDT TRC-20",
-                symbol: "USDT:TRC20",
-                decimals: 6,
-                type: CryptocurrencyType.TOKEN,
-                status: CryptocurrencyStatus.ACTIVE,
-                withdrawalMinUsd: 10,
-                withdrawalMaxUsd: 100,
-            },
-        ],
-    })
 })()
-    .then(async () => {
-        await prisma.$disconnect()
-    })
-    .catch(async (e) => {
-        console.error(e)
-        await prisma.$disconnect()
-        process.exit(1)
-    })

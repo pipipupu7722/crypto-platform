@@ -1,6 +1,6 @@
 "use client"
 
-import { Strategy, StrategyStatus } from "@prisma/client"
+import { Strategy, StrategyStatus, UserRole } from "@prisma/client"
 import { Button, Popconfirm, Table, TableProps } from "antd"
 import { format } from "date-fns"
 import { useState } from "react"
@@ -10,6 +10,7 @@ import { closeStrategy, createStrategy, updateStrategy } from "@/actions/dashboa
 import ClickToCopy from "@/components/misc/ClickToCopy"
 import { StrategyStatusTag } from "@/components/misc/Tags"
 import { useNotify } from "@/providers/NotifyProvider"
+import { useSession } from "@/providers/SessionProvider"
 
 export default function StrategiesTab({
     userId,
@@ -23,6 +24,7 @@ export default function StrategiesTab({
     const [strategies, setStrategies] = useState(initialStrategies)
     const [selectedStrategy, setSelectedStrategy] = useState<Strategy | undefined>(undefined)
 
+    const { session } = useSession()
     const { notify } = useNotify()
 
     const columns: TableProps<Strategy>["columns"] = [
@@ -58,7 +60,10 @@ export default function StrategiesTab({
             width: 175,
             render: (_, rec) => <>{format(new Date(rec.createdAt), "dd-MM-yyyy HH:mm:ss")}</>,
         },
-        {
+    ]
+
+    if (session.User.roles.includes(UserRole.ADMIN)) {
+        columns.push({
             title: "Действия",
             key: "actions",
             width: 1,
@@ -102,8 +107,8 @@ export default function StrategiesTab({
                     </Button>
                 </div>
             ),
-        },
-    ]
+        })
+    }
 
     return (
         <>

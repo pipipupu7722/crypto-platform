@@ -4,7 +4,7 @@ import { PlusOutlined } from "@ant-design/icons"
 import { css } from "@emotion/css"
 import { DepositWallet } from "@prisma/client"
 import { Button, Modal, Tooltip } from "antd"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 import Header from "../Header"
 import DepositCard from "@/components/cabinet/DepositCard"
@@ -13,8 +13,13 @@ import { useSession } from "@/providers/SessionProvider"
 
 export default function CabinetHeader({ wallets }: { wallets: DepositWallet[] }) {
     const [isOpen, setIsOpen] = useState(false)
+    const [totalBalance, setTotalBalance] = useState(0)
 
     const { session } = useSession()
+
+    useEffect(() => {
+        setTotalBalance(session.User.balance + session.User.tradingBalance)
+    }, [session.User.balance, session.User.tradingBalance])
 
     return (
         <>
@@ -26,7 +31,7 @@ export default function CabinetHeader({ wallets }: { wallets: DepositWallet[] })
                 <div style={{ display: "flex", flexDirection: "column" }}>
                     <span style={{ lineHeight: "1rem" }}>Общий баланс</span>
                     <strong style={{ lineHeight: "1rem" }}>
-                        <CountUpWithRef end={session.User.balance} decimals={2} prefix="$ " />
+                        <CountUpWithRef end={totalBalance} decimals={2} prefix="$ " />
                     </strong>
                 </div>
 

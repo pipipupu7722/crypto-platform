@@ -263,3 +263,13 @@ model Notification {
 
   User User @relation(fields: [userId], references: [id])
 }
+
+model Seeder {
+    id   String @id @default(cuid())
+    name String
+
+    finishedAt DateTime?
+    createdAt  DateTime  @default(now())
+
+    @@map("_custom_seeders")
+}
