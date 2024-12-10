@@ -92,10 +92,10 @@ const DocumentsTab = ({ initialUser }: { initialUser: User }) => {
 			dob: values.dob ? values.dob.toISOString() : null,
 			country: values.country,
 		})
-			.then((res) =>
-				res.success
-					? message.success("Данные пользователя успешно обновлены!")
-					: console.error({ message: res.error }),
+			.then(
+				(res) =>
+					res.success ??
+					message.success("Данные пользователя успешно обновлены!"),
 			)
 			.finally(() => setIsActionPending(false));
 
