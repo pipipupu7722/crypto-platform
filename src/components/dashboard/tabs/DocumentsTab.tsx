@@ -2,18 +2,14 @@
 
 import type { User } from "@prisma/client";
 import { Button, Descriptions, List, Tag, message, Popconfirm } from "antd";
-import {
-	DownloadOutlined,
-	DeleteOutlined,
-	CheckCircleOutlined,
-} from "@ant-design/icons";
+import { DownloadOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 
 const DocumentsTab = ({ targetUser }: { targetUser: User }) => {
 	const [uploadedFiles, setUploadedFiles] = useState<
 		{ id: string; name: string; path: string; status: string; type: string }[]
 	>([]);
-	const [isLoaded, setIsLoaded] = useState(false); // Флаг для статуса загрузки документов
+	const [isLoaded, setIsLoaded] = useState(false);
 
 	useEffect(() => {
 		const fetchUploadedFiles = async () => {
@@ -65,6 +61,28 @@ const DocumentsTab = ({ targetUser }: { targetUser: User }) => {
 
 	return (
 		<div>
+			<Descriptions
+				bordered
+				column={1}
+				size="small"
+				style={{ marginBottom: 20 }}
+			>
+				<Descriptions.Item label="Тип документа">
+					{targetUser.idType || "N/A"}
+				</Descriptions.Item>
+				<Descriptions.Item label="Номер документа">
+					{targetUser.idNumber || "N/A"}
+				</Descriptions.Item>
+				<Descriptions.Item label="Дата рождения">
+					{targetUser.dob
+						? new Date(targetUser.dob).toLocaleDateString()
+						: "N/A"}
+				</Descriptions.Item>
+				<Descriptions.Item label="Страна">
+					{targetUser.country || "N/A"}
+				</Descriptions.Item>
+			</Descriptions>
+
 			<Descriptions bordered column={1} size="small">
 				<Descriptions.Item
 					label={`Документы пользователя ${targetUser.username}`}
@@ -103,20 +121,11 @@ const DocumentsTab = ({ targetUser }: { targetUser: User }) => {
 								</List.Item>
 							)}
 						/>
-					) : isLoaded ? (
-						"Нет загруженных документов"
 					) : (
-						"Загрузка документов..."
+						<p>У пользователя нет загруженных документов.</p>
 					)}
 				</Descriptions.Item>
 			</Descriptions>
-
-			{isLoaded && uploadedFiles.length === 0 && (
-				<div style={{ textAlign: "center", marginTop: 20 }}>
-					<CheckCircleOutlined style={{ fontSize: 24, color: "red" }} />
-					<p>У пользователя нет загруженных документов.</p>
-				</div>
-			)}
 		</div>
 	);
 };
