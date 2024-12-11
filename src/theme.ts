@@ -15,7 +15,7 @@ export const themeConfig = {
     algorithm: theme.defaultAlgorithm,
     token: {
         ...theme.defaultConfig?.token,
-        fontFamily: "'IBM Plex Sans', sans-serif",
+        fontFamily: "'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Roboto', 'Arial', sans-serif",
         colorPrimary: "#F7A600",
         colorLink: "#F7A600",
         colorBgSolid: "#111111",

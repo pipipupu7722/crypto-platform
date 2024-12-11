@@ -45,7 +45,11 @@ export default function StrategiesTab({ initialStrategies }: { initialStrategies
                 <>
                     <CountUpWithRef end={rec.invested} decimals={2} suffix=" $" />
                     {" / "}
-                    <CountUpWithRef end={rec.profit} decimals={4} suffix=" $" />
+                    <span style={{ 
+                        color: rec.profit > 0 ? 'green' : rec.profit < 0 ? 'red' : 'black' 
+                    }}>
+                        <CountUpWithRef end={rec.profit} decimals={4} suffix=" $" />
+                    </span>
                 </>
             ),
         },
