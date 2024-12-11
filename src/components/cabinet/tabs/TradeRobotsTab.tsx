@@ -1,38 +1,37 @@
 "use client"
 
-import { Strategy, StrategyStatus } from "@prisma/client"
+import { TradeRobot, TradeRobotStatus } from "@prisma/client"
 import { Button, Descriptions, Form, InputNumber, Modal, Table, TableProps } from "antd"
 import { format } from "date-fns"
 import { useState } from "react"
 
-import { startStrategy } from "@/actions/cabinet/strategy"
-import ClickToCopy from "@/components/misc/ClickToCopy"
+import { startTradeRobot } from "@/actions/cabinet/tradeRobot"
 import CountUpWithRef from "@/components/misc/CountUpWithRef"
-import { StrategyStatusTag } from "@/components/misc/Tags"
+import { TradeRobotStatusTag } from "@/components/misc/Tags"
 import { AppEvents } from "@/lib/events"
 import { useNotify } from "@/providers/NotifyProvider"
 import { sseReceiver } from "@/providers/SseProvider"
-import { StrategyStartSchemaRule, StrategyStartSchemaType } from "@/schemas/cabinet/strategy.schemas"
+import { TradeRobotStartSchemaRule, TradeRobotStartSchemaType } from "@/schemas/cabinet/tradeRobot.schemas"
 
-export default function StrategiesTab({ initialStrategies }: { initialStrategies: Strategy[] }) {
-    const [form] = Form.useForm<StrategyStartSchemaType>()
+export default function TradeRobotsTab({ initialTradeRobots }: { initialTradeRobots: TradeRobot[] }) {
+    const [form] = Form.useForm<TradeRobotStartSchemaType>()
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [isModalLoading, setIsModalLoading] = useState(false)
-    const [strategies, setStrategies] = useState(initialStrategies)
-    const [strategy, setStrategy] = useState<Strategy | undefined>(undefined)
+    const [tradeRobots, setTradeRobots] = useState(initialTradeRobots)
+    const [tradeRobot, setTradeRobot] = useState<TradeRobot | undefined>(undefined)
 
     const { notify } = useNotify()
 
-    sseReceiver.on(AppEvents.StrategiesRecalculated, (payload) =>
-        setStrategies(
-            strategies.map((strategy) => {
-                const updated = payload.strategies.find((updated) => strategy.id === updated.id)
-                return updated ? { ...strategy, ...updated } : strategy
+    sseReceiver.on(AppEvents.TradeRobotsRecalculated, (payload) =>
+        setTradeRobots(
+            tradeRobots.map((tradeRobot) => {
+                const updated = payload.tradeRobots.find((updated) => tradeRobot.id === updated.id)
+                return updated ? { ...tradeRobot, ...updated } : tradeRobot
             })
         )
     )
 
-    const columns: TableProps<Strategy>["columns"] = [
+    const columns: TableProps<TradeRobot>["columns"] = [
         {
             title: "Название",
             key: "name",
@@ -87,7 +86,7 @@ export default function StrategiesTab({ initialStrategies }: { initialStrategies
             title: "Статус",
             key: "status",
             width: 1,
-            render: (_, rec) => <StrategyStatusTag status={rec.status} />,
+            render: (_, rec) => <TradeRobotStatusTag status={rec.status} />,
         },
         {
             title: "Дата закрытия",
@@ -95,15 +94,32 @@ export default function StrategiesTab({ initialStrategies }: { initialStrategies
             width: 150,
             render: (_, rec) => <>{format(rec.closedAt ?? rec.closesAt, "dd-MM-yyyy")}</>,
         },
+        {
+            title: "Действия",
+            key: "actions",
+            width: 1,
+            render: (_, rec) => (
+                <Button
+                    type="primary"
+                    size="small"
+                    onClick={() => {
+                        setTradeRobot(rec)
+                        setIsModalOpen(true)
+                    }}
+                >
+                    Подробнее
+                </Button>
+            ),
+        },
     ]
 
     return (
         <>
-            <Table<Strategy>
+            <Table<TradeRobot>
                 columns={columns}
                 pagination={false}
                 rowKey={(row) => row.id}
-                dataSource={strategies}
+                dataSource={tradeRobots}
                 style={{ height: "100%" }}
                 scroll={{ x: "min-content" }}
             />
@@ -113,7 +129,7 @@ export default function StrategiesTab({ initialStrategies }: { initialStrategies
                 title={"О стратегии"}
                 onCancel={() => setIsModalOpen(false)}
                 footer={[
-                    strategy?.status === StrategyStatus.AVAILABLE && (
+                    tradeRobot?.status === TradeRobotStatus.AVAILABLE && (
                         <Button
                             key="submit"
                             type="primary"
@@ -121,12 +137,12 @@ export default function StrategiesTab({ initialStrategies }: { initialStrategies
                             onClick={() => {
                                 setIsModalLoading(true)
                                 form.validateFields()
-                                    .then((values) => startStrategy(strategy?.id, values.amount))
+                                    .then((values) => startTradeRobot(tradeRobot?.id, values.amount))
                                     .then((res) => {
                                         if (res.success) {
                                             const { success, ...updated } = res
-                                            setStrategies(
-                                                strategies.map((row) => (row.id === updated.id ? updated : row))
+                                            setTradeRobots(
+                                                tradeRobots.map((row) => (row.id === updated.id ? updated : row))
                                             )
                                         } else {
                                             notify.error({ message: res.error })
@@ -147,61 +163,61 @@ export default function StrategiesTab({ initialStrategies }: { initialStrategies
                     </Button>,
                 ]}
             >
-                {strategy && (
+                {tradeRobot && (
                     <>
                         <Descriptions bordered column={1} size="small">
-                            <Descriptions.Item label="Название">{strategy.name}</Descriptions.Item>
+                            <Descriptions.Item label="Название">{tradeRobot.name}</Descriptions.Item>
 
                             <Descriptions.Item label="Доходность">
-                                {`${(strategy.fakeProfitMin * 100).toFixed(0)}% / ${(strategy.fakeProfitMax * 100).toFixed(0)}%`}
+                                {`${(tradeRobot.fakeProfitMin * 100).toFixed(0)}% / ${(tradeRobot.fakeProfitMax * 100).toFixed(0)}%`}
                             </Descriptions.Item>
 
-                            {strategy.startedAt && (
+                            {tradeRobot.startedAt && (
                                 <Descriptions.Item label="Инвестиция">
-                                    {strategy.invested.toFixed(2)} $
+                                    {tradeRobot.invested.toFixed(2)} $
                                 </Descriptions.Item>
                             )}
 
-                            {strategy.startedAt && (
-                                <Descriptions.Item label="Прибыль">{strategy.profit.toFixed(2)} $</Descriptions.Item>
+                            {tradeRobot.startedAt && (
+                                <Descriptions.Item label="Прибыль">{tradeRobot.profit.toFixed(2)} $</Descriptions.Item>
                             )}
 
                             <Descriptions.Item label="Статус">
-                                {<StrategyStatusTag status={strategy.status} />}
+                                {<TradeRobotStatusTag status={tradeRobot.status} />}
                             </Descriptions.Item>
 
-                            {strategy.createdAt && (
+                            {tradeRobot.createdAt && (
                                 <Descriptions.Item label="Дата добавления">
-                                    {format(strategy.createdAt, "dd-MM-yyyy")}
+                                    {format(tradeRobot.createdAt, "dd-MM-yyyy")}
                                 </Descriptions.Item>
                             )}
 
-                            {strategy.startedAt && (
+                            {tradeRobot.startedAt && (
                                 <Descriptions.Item label="Дата старта">
-                                    {format(strategy.startedAt, "dd-MM-yyyy")}
+                                    {format(tradeRobot.startedAt, "dd-MM-yyyy")}
                                 </Descriptions.Item>
                             )}
 
-                            {strategy.closesAt && !strategy.closedAt && (
+                            {tradeRobot.closesAt && !tradeRobot.closedAt && (
                                 <Descriptions.Item label="Дата закрытия">
-                                    {format(strategy.closesAt, "dd-MM-yyyy")}
+                                    {format(tradeRobot.closesAt, "dd-MM-yyyy")}
                                 </Descriptions.Item>
                             )}
 
-                            {strategy.closedAt && (
+                            {tradeRobot.closedAt && (
                                 <Descriptions.Item label="Дата закрытия">
-                                    {format(strategy.closedAt, "dd-MM-yyyy")}
+                                    {format(tradeRobot.closedAt, "dd-MM-yyyy")}
                                 </Descriptions.Item>
                             )}
 
-                            <Descriptions.Item label="Описание">{strategy.description}</Descriptions.Item>
+                            <Descriptions.Item label="Описание">{tradeRobot.description}</Descriptions.Item>
                         </Descriptions>
 
-                        {strategy.status === StrategyStatus.AVAILABLE && (
+                        {tradeRobot.status === TradeRobotStatus.AVAILABLE && (
                             <Form style={{ marginTop: 36, width: "100%" }} form={form} layout="inline">
-                                <Form.Item<StrategyStartSchemaType>
+                                <Form.Item<TradeRobotStartSchemaType>
                                     name="amount"
-                                    rules={[StrategyStartSchemaRule]}
+                                    rules={[TradeRobotStartSchemaRule]}
                                     style={{ width: "100%" }}
                                 >
                                     <InputNumber placeholder="Сумма инвестиции" style={{ width: "100%" }} />

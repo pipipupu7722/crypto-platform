@@ -14,6 +14,7 @@ const dotEnv = {
 
     passwordHashRounds: 10 as number,
     strategyIntervalMs: 30000 as number,
+    tradeRobotIntervalMs: 30000 as number,
 
     jwtUserAccessTokenExpirationMs: ms(process.env.JWT_USER_ACCESS_TOKEN_EXPIRATION ?? "0"),
     jwtUserRefreshTokenExpirationMs: ms(process.env.JWT_USER_REFRESH_TOKEN_EXPIRATION ?? "0"),

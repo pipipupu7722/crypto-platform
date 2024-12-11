@@ -9,6 +9,10 @@ export enum AppEvents {
     StrategyClosed = "StrategyClosed",
     StrategiesRecalculated = "StrategiesRecalculated",
 
+    NewTradeRobot = "NewTradeRobot",
+    TradeRobotClosed = "TradeRobotClosed",
+    TradeRobotsRecalculated = "TradeRobotsRecalculated",
+
     NewNotification = "NewNotification",
     NotificationRead = "NotificationRead",
 }
@@ -21,6 +25,10 @@ export type EventMap = {
     NewStrategy: { userId: string; strategyId: string; name: string; profitMin: number; profitMax: number }
     StrategyClosed: { userId: string; strategyId: string; name: string; invested: number; profit: number }
     StrategiesRecalculated: { userId: string; strategies: { id: string; profit: number }[] }
+
+    NewTradeRobot: { userId: string; tradeRobotId: string; name: string; profitMin: number; profitMax: number }
+    TradeRobotClosed: { userId: string; tradeRobotId: string; name: string; invested: number; profit: number }
+    TradeRobotsRecalculated: { userId: string; tradeRobots: { id: string; profit: number }[] }
 
     NewNotification: Notification
     NotificationRead: { userId: string; notificationId: string }
