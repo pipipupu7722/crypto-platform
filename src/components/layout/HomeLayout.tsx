@@ -3,8 +3,10 @@
 import { css } from "@emotion/css"
 import { Button, Col, Row, theme } from "antd"
 import Image from "next/image"
+import { redirect } from "next/navigation"
 import React, { PropsWithChildren } from "react"
 
+import Loader from "./Loader"
 import { appconf } from "@/appconf"
 import { breakpoints } from "@/theme"
 
@@ -28,6 +30,8 @@ const HomeLayout = ({ children }: PropsWithChildren) => {
                 }
             `}</style>
 
+            <Loader />
+
             <div
                 style={{
                     position: "fixed",
@@ -49,7 +53,7 @@ const HomeLayout = ({ children }: PropsWithChildren) => {
             >
                 <div style={{ fontSize: "20px", fontWeight: "bold" }}>{appconf.appName}</div>
                 <Button
-                    href="/auth/signin"
+                    onClick={() => redirect("/auth/signin")}
                     type="primary"
                     style={{
                         fontSize: "14px",
@@ -63,14 +67,15 @@ const HomeLayout = ({ children }: PropsWithChildren) => {
             </div>
 
             <div
+                style={{
+                    height: "100%",
+                    minHeight: "100vh",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: "60px 0 0 0",
+                }}
                 className={css`
-                    height: 100%;
-                    min-height: 100vh;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    padding: 60px 0 0 0;
-
                     @media (max-width: ${breakpoints.sm}) {
                         height: fit-content;
                     }
