@@ -21,8 +21,8 @@ const TransactionsTable = ({
             title: "Актив",
             key: "crypto",
             width: 1,
-            render: (_, rec) => rec.crypto,
-            sorter: (a, b) => a.crypto.localeCompare(b.crypto),
+            render: (_, rec) => (rec.crypto ? rec.crypto : "Bank USD"),
+            sorter: (a, b) => (a.crypto && b.crypto ? a.crypto.localeCompare(b.crypto) : 0),
         },
         {
             title: "Сумма",

@@ -165,7 +165,7 @@ model Cryptocurrency {
 model Transaction {
   id        String            @id @default(cuid())
   userId    String
-  crypto    String
+  crypto    String?
   amount    Float
   amountUsd Float
   type      TransactionType
@@ -184,7 +184,7 @@ model Transaction {
   createdAt DateTime @default(now())
 
   User   User           @relation(fields: [userId], references: [id])
-  Crypto Cryptocurrency @relation(fields: [crypto], references: [symbol])
+  Crypto Cryptocurrency? @relation(fields: [crypto], references: [symbol])
 }
 
 model DepositWallet {

@@ -37,7 +37,11 @@ class TransactionsService {
     }
 
     public async createWithdrawal(userId: string, data: WithdrawalTransactionSchemaType) {
-        const crypto = await cryptocurrenciesService.getBySymbolOrThrow(data.crypto)
+        let crypto
+        if (data.crypto) {
+            crypto = await cryptocurrenciesService.getBySymbolOrThrow(data.crypto)
+        }
+
         const user = await usersService.getById(userId)
 
         if (!user) {
@@ -48,9 +52,11 @@ class TransactionsService {
             where: { userId: user.id, type: TransactionType.WITHDRAWAL, status: TransactionStatus.PENDING },
         })
 
-        if (data.amountUsd > crypto.withdrawalMaxUsd || data.amountUsd < crypto.withdrawalMinUsd) {
-            throw new Error("Amount is out of allowed bounds")
-        } else if ((user?.balance ?? 0) - data.amountUsd < 0) {
+        // TODO: fix
+        // if (data.amountUsd > 10 || data.amountUsd < 100000) {
+        //    throw new Error("Amount is out of allowed bounds")
+        //}
+        if ((user?.balance ?? 0) - data.amountUsd < 0) {
             throw new BalanceIsTooLowError()
         } else if (pendingWithdrawal) {
             throw new AlreadyHasPendingWithdrawalError()
@@ -74,11 +80,14 @@ class TransactionsService {
 
     public async update(id: string, payload: Partial<Transaction>) {
         const transaction = await prisma.transaction.findUniqueOrThrow({ where: { id }, include: { Crypto: true } })
-        const crypto = payload.crypto
-            ? await cryptocurrenciesService.getBySymbolOrThrow(transaction.crypto)
-            : transaction.Crypto
+        // TODO: fix
+        // const crypto = payload.crypto
+        //     ? await cryptocurrenciesService.getBySymbolOrThrow(transaction.crypto)
+        //     : transaction.Crypto
 
-        payload.amount = round(transaction.amount, crypto.decimals)
+        // payload.amount = round(transaction.amount, crypto.decimals)
+
+        payload.amount = round(transaction.amount, 6)
 
         const { status, ...data } = payload
 

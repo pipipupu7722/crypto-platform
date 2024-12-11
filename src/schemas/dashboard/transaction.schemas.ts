@@ -4,7 +4,7 @@ import { z } from "zod"
 
 //
 export const DepositTransactionSchema = z.object({
-    crypto: z.string({ message: "Выберите криптовалюту" }),
+    crypto: z.string({ message: "Выберите криптовалюту" }).optional(),
     txHash: z.string({ message: "Введите хэш транзакции" }).nullable().optional(),
     amount: z.number({ message: "Введите сумму транзакции" }),
     amountUsd: z.number({ message: "Введите сумму в долларах" }),
