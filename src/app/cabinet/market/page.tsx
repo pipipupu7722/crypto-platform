@@ -25,7 +25,7 @@ const Market: React.FC = () => {
                 }}
             >
                 <MarketOverview
-                    colorTheme="dark"
+                    colorTheme="light"
                     locale="ru"
                     width="100%"
                     height="100%"
