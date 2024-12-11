@@ -20,10 +20,14 @@ export const themeConfig = {
         colorLink: "#F7A600",
         colorBgSolid: "#111111",
         colorBgLayout: "#F5F7FA",
+<<<<<<< HEAD
         colorBgSider: "#2C2E30",
         colorBgHeader: "#17181E",
         colorBgHeaderButton: "#121214",
     } as unknown as CustomToken,
+=======
+    },
+>>>>>>> ff3eb2c (feat: responsiveness + design tweaks)
 }
 
 export const breakpoints = {

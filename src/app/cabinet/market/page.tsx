@@ -1,28 +1,34 @@
 "use client"
 
+import { css } from "@emotion/css"
 import { theme } from "antd"
 import { Content } from "antd/es/layout/layout"
 import { MarketOverview } from "react-ts-tradingview-widgets"
+
+import { breakpoints } from "@/theme"
 
 const Market: React.FC = () => {
     const { token } = theme.useToken()
 
     return (
         <Content
-            style={{
-                height: "100%",
-                display: "flex",
-                padding: "24px 0",
-                flexDirection: "column",
-            }}
+            className={css`
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+            `}
         >
             <Content
-                style={{
-                    height: "100%",
-                    padding: 24,
-                    background: token.colorBgContainer,
-                    borderRadius: token.borderRadiusLG,
-                }}
+                className={css`
+                    height: 100%;
+                    padding: 24px;
+                    background: ${token.colorBgContainer};
+                    border-radius: ${token.borderRadiusLG};
+
+                    @media (max-width: ${breakpoints.md}) {
+                        padding: 12px;
+                    }
+                `}
             >
                 <MarketOverview
                     colorTheme="light"

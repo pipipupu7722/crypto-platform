@@ -1,24 +1,32 @@
 "use client"
 
+import { css } from "@emotion/css"
 import { theme } from "antd"
 import { Content } from "antd/es/layout/layout"
 import { PropsWithChildren } from "react"
+
+import PageContentWrapper from "./PageContentWrapper"
+import { breakpoints } from "@/theme"
 
 export default function PageContent({ children }: PropsWithChildren) {
     const { token } = theme.useToken()
 
     return (
-        <Content style={{ minHeight: "100%", display: "flex", flexDirection: "column" }}>
+        <PageContentWrapper>
             <Content
-                style={{
-                    margin: "24px 0",
-                    padding: 24,
-                    background: token.colorBgContainer,
-                    borderRadius: token.borderRadiusLG,
-                }}
+                className={css`
+                    margin: 24px 0;
+                    padding: 24px;
+                    background: ${token.colorBgContainer};
+                    border-radius: ${token.borderRadiusLG};
+
+                    @media (max-width: ${breakpoints.sm}) {
+                        padding: 12px;
+                    }
+                `}
             >
                 {children}
             </Content>
-        </Content>
+        </PageContentWrapper>
     )
 }

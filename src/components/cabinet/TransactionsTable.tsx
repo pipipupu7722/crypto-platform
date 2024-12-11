@@ -34,7 +34,6 @@ const TransactionsTable = ({
             title: "Тип",
             key: "type",
             width: 1,
-            responsive: ["sm"],
             render: (_, rec) => <TransactionTypeTag type={rec.type} />,
             sorter: (a, b) => a.type.localeCompare(b.type),
         },
@@ -49,7 +48,6 @@ const TransactionsTable = ({
             title: "Дата",
             key: "date",
             width: 175,
-            responsive: ["sm"],
             render: (_, rec) => <>{format(rec.createdAt, "HH:mm:ss dd.MM.yyyy")}</>,
             sorter: (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
         },
@@ -74,6 +72,7 @@ const TransactionsTable = ({
             rowKey={(trx) => trx.id}
             dataSource={transactions}
             style={{ height: "100%" }}
+            scroll={{ x: "min-content" }}
         />
     )
 }

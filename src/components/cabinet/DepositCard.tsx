@@ -10,7 +10,7 @@ export default function DepositCard({ wallets }: { wallets: DepositWallet[] }) {
     const [wallet, setWallet] = useState<DepositWallet | undefined>(undefined)
 
     return (
-        <Card title="Пополнение счета" bordered={true} style={{ minWidth: 350 }}>
+        <Card title="Пополнение счета" bordered={true}>
             <Form.Item>
                 <Select
                     placeholder="Выберите актив"

@@ -7,6 +7,7 @@ import UserTradeStats from "@/components/cabinet/UserTradeStats"
 import DepositTab from "@/components/cabinet/tabs/DepositTab"
 import WithdrawalTab from "@/components/cabinet/tabs/WithdrawalTab"
 import PageContent from "@/components/layout/PageContent"
+import PageContentWrapper from "@/components/layout/PageContentWrapper"
 import { cryptocurrenciesService } from "@/lib/server/services/cryptocurrencies.service"
 import { depositWalletsService } from "@/lib/server/services/depositWallets.service"
 import { transactionService } from "@/lib/server/services/transactions.service"
@@ -22,7 +23,7 @@ const Cabinet = async ({ searchParams }: { searchParams: Promise<{ [key: string]
     const withdrawableCryptos = await cryptocurrenciesService.getWithdrawable()
 
     return (
-        <Content style={{ minHeight: "100%", display: "flex", flexDirection: "column" }}>
+        <PageContentWrapper>
             <UserTradeStats />
 
             <PageContent>
@@ -43,7 +44,7 @@ const Cabinet = async ({ searchParams }: { searchParams: Promise<{ [key: string]
                     ]}
                 />
             </PageContent>
-        </Content>
+        </PageContentWrapper>
     )
 }
 

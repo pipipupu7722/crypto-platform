@@ -5,6 +5,7 @@ import { Content } from "antd/es/layout/layout"
 import UserTradeStats from "@/components/cabinet/UserTradeStats"
 import StrategiesTab from "@/components/cabinet/tabs/StrategiesTab"
 import PageContent from "@/components/layout/PageContent"
+import PageContentWrapper from "@/components/layout/PageContentWrapper"
 import { strategiesService } from "@/lib/server/services/strategies.service"
 import { getSessionPayload } from "@/lib/server/session"
 
@@ -14,13 +15,13 @@ const Strategies = async () => {
     const strategies = await strategiesService.getAllByUser(session.uid)
 
     return (
-        <Content style={{ minHeight: "100%", display: "flex", flexDirection: "column" }}>
+        <PageContentWrapper>
             <UserTradeStats />
 
             <PageContent>
                 <StrategiesTab initialStrategies={strategies} />
             </PageContent>
-        </Content>
+        </PageContentWrapper>
     )
 }
 

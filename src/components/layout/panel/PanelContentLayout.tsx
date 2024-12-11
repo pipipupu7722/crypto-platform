@@ -15,6 +15,7 @@ export default function PanelContentLayout({ children }: { children: ReactNode }
                 display: flex;
                 flex-direction: row;
                 justify-content: space-around;
+                overflow-x: hidden;
 
                 @media (max-width: ${breakpoints.md}) {
                     padding: 0;
@@ -25,6 +26,7 @@ export default function PanelContentLayout({ children }: { children: ReactNode }
                 className={css`
                     margin: 0;
                     padding: 24px;
+                    width: 100%;
                     max-width: 1280px;
 
                     @media (max-width: ${breakpoints.sm}) {

@@ -10,7 +10,7 @@ import { AppEvents } from "@/lib/events"
 interface NotificationsContextType {
     notifications: Notification[]
     unreadCount: number
-    markAsRead: (id: string) => void
+    markAsRead: (id: string) => Promise<void>
 }
 
 const NotificationsContext = createContext<NotificationsContextType | undefined>(undefined)
@@ -34,15 +34,21 @@ export const NotificationsProvider: React.FC<{ children: React.ReactNode; initia
         setUnreadCount(notifications.filter((n) => n.status === NotificationStatus.NEW).length)
     }, [notifications])
 
-    const markAsRead = (id: string) => {
+    const markAsRead = async (id: string) => {
         setNotifications(
             notifications.map((notif) => (notif.id === id ? { ...notif, status: NotificationStatus.READ } : notif))
         )
-        markNotificationAsRead(id).then(() => null)
+        await markNotificationAsRead(id)
     }
 
     sseReceiver.on(AppEvents.NewNotification, (payload) => setNotifications([payload, ...notifications]))
-    sseReceiver.on(AppEvents.NotificationRead, (payload) => markAsRead(payload.notificationId))
+    sseReceiver.on(AppEvents.NotificationRead, (payload) => {
+        setNotifications(
+            notifications.map((notif) =>
+                notif.id === payload.notificationId ? { ...notif, status: NotificationStatus.READ } : notif
+            )
+        )
+    })
 
     return (
         <NotificationsContext.Provider value={{ notifications, unreadCount, markAsRead }}>

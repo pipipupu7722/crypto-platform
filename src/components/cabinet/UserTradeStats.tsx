@@ -21,80 +21,25 @@ const UserTradeStats: FC = () => {
     }, [session.User])
 
     return (
-        <>
-            <Row
-                gutter={{ xs: 8, sm: 8, md: 16 }}
-                className={css`
-                    @media (max-width: ${breakpoints.sm}) {
-                        display: none;
-                    }
-                `}
-            >
-                <Col span={8}>
-                    <Card bordered={false}>
-                        <Statistic title="Общий баланс" formatter={formatter} value={session.User.balance} />
-                    </Card>
-                </Col>
+        <Row gutter={{ xs: 8, sm: 8, md: 16 }}>
+            <Col xs={24} sm={24} md={8} style={{ paddingBottom: 10 }}>
+                <Card bordered={false}>
+                    <Statistic title="Общий баланс" formatter={formatter} value={session.User.balance} />
+                </Card>
+            </Col>
 
-                <Col span={8}>
-                    <Card bordered={false}>
-                        <Statistic title="Торговый счет" formatter={formatter} value={session.User.tradingBalance} />
-                    </Card>
-                </Col>
+            <Col xs={24} sm={24} md={8} style={{ paddingBottom: 10 }}>
+                <Card bordered={false}>
+                    <Statistic title="Торговый счет" formatter={formatter} value={session.User.tradingBalance} />
+                </Card>
+            </Col>
 
-                <Col span={8}>
-                    <Card bordered={false}>
-                        <Statistic
-                            title="Выведенные средства"
-                            formatter={formatter}
-                            value={session.User.withdrawnFunds}
-                        />
-                    </Card>
-                </Col>
-            </Row>
-
-            <Row
-                gutter={{ xs: 8, sm: 8, md: 16 }}
-                className={css`
-                    @media (min-width: ${breakpoints.sm}) {
-                        display: none;
-                    }
-                `}
-            >
-                <Col span={12}>
-                    <Card bordered={false}>
-                        <Statistic title="Общий баланс" formatter={formatter} value={session.User.balance} />
-                    </Card>
-                </Col>
-
-                <Col span={12}>
-                    <Card bordered={false}>
-                        <Statistic title="Торговый счет" formatter={formatter} value={session.User.tradingBalance} />
-                    </Card>
-                </Col>
-            </Row>
-
-            <Row
-                gutter={{ xs: 8, sm: 8, md: 16 }}
-                className={css`
-                    margin-top: 8px;
-
-                    @media (min-width: ${breakpoints.sm}) {
-                        display: none;
-                    }
-                `}
-            >
-                <Col span={24}>
-                    <Card bordered={false}>
-                        <Statistic
-                            title="Выведенные средства"
-                            formatter={formatter}
-                            value={session.User.withdrawnFunds}
-                        />
-                    </Card>
-                </Col>
-            </Row>
-        </>
+            <Col xs={24} sm={24} md={8} style={{ paddingBottom: 10 }}>
+                <Card bordered={false}>
+                    <Statistic title="Выведенные средства" formatter={formatter} value={session.User.withdrawnFunds} />
+                </Card>
+            </Col>
+        </Row>
     )
 }
 

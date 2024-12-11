@@ -8,6 +8,7 @@ import {
     PlusCircleOutlined,
     SyncOutlined,
 } from "@ant-design/icons"
+import { css } from "@emotion/css"
 import {
     DepositWalletStatus,
     StrategyStatus,
@@ -17,34 +18,55 @@ import {
     UserRole,
     UserStatus,
 } from "@prisma/client"
-import { Tag } from "antd"
+import { Tag, TagProps } from "antd"
+import { ReactNode } from "react"
 
-import { hasRole } from "@/lib/helpers"
+const TagWithIcon = ({
+    color,
+    icon,
+    children,
+}: {
+    color: TagProps["color"]
+    icon: TagProps["icon"]
+    children: ReactNode
+}) => {
+    return (
+        <Tag
+            icon={icon}
+            color={color}
+            className={css`
+                width: "fit-content";
+            `}
+        >
+            {children}
+        </Tag>
+    )
+}
 
 export const UserStatusTag = ({ status }: { status: UserStatus }) => {
     if (status === UserStatus.PENDING) {
         return (
-            <Tag icon={<ClockCircleOutlined spin />} color="default" style={{ width: "fit-content" }}>
+            <TagWithIcon icon={<ClockCircleOutlined spin />} color="default">
                 Ждет проверки
-            </Tag>
+            </TagWithIcon>
         )
     } else if (status === UserStatus.ACTIVE) {
         return (
-            <Tag icon={<CheckCircleOutlined />} color="success" style={{ width: "fit-content" }}>
+            <TagWithIcon icon={<CheckCircleOutlined />} color="success">
                 Активен
-            </Tag>
+            </TagWithIcon>
         )
     } else if (status === UserStatus.BANNED) {
         return (
-            <Tag icon={<CloseCircleOutlined />} color="error" style={{ width: "fit-content" }}>
+            <TagWithIcon icon={<CloseCircleOutlined />} color="error">
                 Заблокирован
-            </Tag>
+            </TagWithIcon>
         )
     } else if (status === UserStatus.REJECTED) {
         return (
-            <Tag icon={<CloseCircleOutlined />} color="error" style={{ width: "fit-content" }}>
+            <TagWithIcon icon={<CloseCircleOutlined />} color="error">
                 Отклонен
-            </Tag>
+            </TagWithIcon>
         )
     }
 }
@@ -52,53 +74,33 @@ export const UserStatusTag = ({ status }: { status: UserStatus }) => {
 export const UserRolesTags = ({ roles }: { roles: UserRole[] }) => {
     return (
         <>
-            {roles.includes(UserRole.ADMIN) && (
-                <Tag color="volcano" style={{ width: "fit-content" }}>
-                    Админ
-                </Tag>
-            )}
-            {roles.includes(UserRole.MANAGER) && (
-                <Tag color="lime" style={{ width: "fit-content" }}>
-                    Менеджер
-                </Tag>
-            )}
-            {roles.includes(UserRole.USER) && (
-                <Tag color="blue" style={{ width: "fit-content" }}>
-                    Пользователь
-                </Tag>
-            )}
+            {roles.includes(UserRole.ADMIN) && <TagWithIcon color="volcano">Админ</TagWithIcon>}
+            {roles.includes(UserRole.MANAGER) && <TagWithIcon color="lime">Менеджер</TagWithIcon>}
+            {roles.includes(UserRole.USER) && <TagWithIcon color="blue">Пользователь</TagWithIcon>}
         </>
     )
 }
 
 export const UserAuthLogTypeTag = ({ type }: { type: UserAuthLogType }) => {
     if (type === UserAuthLogType.LOGIN) {
-        return (
-            <Tag color="cyan" style={{ width: "fit-content" }}>
-                Вход
-            </Tag>
-        )
+        return <TagWithIcon color="cyan">Вход</TagWithIcon>
     } else if (type === UserAuthLogType.REFRESH) {
-        return (
-            <Tag color="gold" style={{ width: "fit-content" }}>
-                Доступ
-            </Tag>
-        )
+        return <TagWithIcon color="gold">Доступ</TagWithIcon>
     }
 }
 
 export const TransactionTypeTag = ({ type }: { type: TransactionType }) => {
     if (type === TransactionType.DEPOSIT) {
         return (
-            <Tag color="gold" style={{ width: "fit-content" }}>
+            <TagWithIcon color="gold">
                 <ArrowDownOutlined /> Пополнение
-            </Tag>
+            </TagWithIcon>
         )
     } else if (type === TransactionType.WITHDRAWAL) {
         return (
-            <Tag color="green" style={{ width: "fit-content" }}>
+            <TagWithIcon color="green">
                 <ArrowUpOutlined /> Вывод
-            </Tag>
+            </TagWithIcon>
         )
     }
 }
@@ -106,21 +108,21 @@ export const TransactionTypeTag = ({ type }: { type: TransactionType }) => {
 export const TransactionStatusTag = ({ status }: { status: TransactionStatus }) => {
     if (status === TransactionStatus.PENDING) {
         return (
-            <Tag icon={<SyncOutlined spin />} color="processing" style={{ width: "fit-content" }}>
+            <TagWithIcon icon={<SyncOutlined spin />} color="processing">
                 В обработке
-            </Tag>
+            </TagWithIcon>
         )
     } else if (status === TransactionStatus.COMPLETE) {
         return (
-            <Tag icon={<CheckCircleOutlined />} color="success" style={{ width: "fit-content" }}>
+            <TagWithIcon icon={<CheckCircleOutlined />} color="success">
                 Выполнен
-            </Tag>
+            </TagWithIcon>
         )
     } else if (status === TransactionStatus.CANCELLED) {
         return (
-            <Tag icon={<CloseCircleOutlined />} color="error" style={{ width: "fit-content" }}>
+            <TagWithIcon icon={<CloseCircleOutlined />} color="error">
                 Отменен
-            </Tag>
+            </TagWithIcon>
         )
     }
 }
@@ -128,21 +130,21 @@ export const TransactionStatusTag = ({ status }: { status: TransactionStatus }) 
 export const DepositWalletStatusTag = ({ status }: { status: DepositWalletStatus }) => {
     if (status === DepositWalletStatus.ACTIVE) {
         return (
-            <Tag icon={<CheckCircleOutlined />} color="success" style={{ width: "fit-content" }}>
+            <TagWithIcon icon={<CheckCircleOutlined />} color="success">
                 Активен
-            </Tag>
+            </TagWithIcon>
         )
     } else if (status === DepositWalletStatus.INACTIVE) {
         return (
-            <Tag icon={<CloseCircleOutlined spin />} color="error" style={{ width: "fit-content" }}>
+            <TagWithIcon icon={<CloseCircleOutlined spin />} color="error">
                 Неактивен
-            </Tag>
+            </TagWithIcon>
         )
     } else if (status === DepositWalletStatus.ARCHIVED) {
         return (
-            <Tag icon={<ContainerOutlined />} color="default" style={{ width: "fit-content" }}>
+            <TagWithIcon icon={<ContainerOutlined />} color="default">
                 Архивирован
-            </Tag>
+            </TagWithIcon>
         )
     }
 }
@@ -150,21 +152,21 @@ export const DepositWalletStatusTag = ({ status }: { status: DepositWalletStatus
 export const StrategyStatusTag = ({ status }: { status: StrategyStatus }) => {
     if (status === StrategyStatus.ACTIVE) {
         return (
-            <Tag icon={<SyncOutlined spin />} color="processing" style={{ width: "fit-content" }}>
+            <TagWithIcon icon={<SyncOutlined spin />} color="processing">
                 В работе
-            </Tag>
+            </TagWithIcon>
         )
     } else if (status === StrategyStatus.AVAILABLE) {
         return (
-            <Tag icon={<PlusCircleOutlined />} color="gold" style={{ width: "fit-content" }}>
+            <TagWithIcon icon={<PlusCircleOutlined />} color="gold">
                 Доступна
-            </Tag>
+            </TagWithIcon>
         )
     } else if (status === StrategyStatus.CLOSED) {
         return (
-            <Tag icon={<CheckCircleOutlined />} color="success" style={{ width: "fit-content" }}>
+            <TagWithIcon icon={<CheckCircleOutlined />} color="success">
                 Закрыта
-            </Tag>
+            </TagWithIcon>
         )
     }
 }

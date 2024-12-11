@@ -1,10 +1,12 @@
 "use client"
 
-import { Button, Col, Row, Typography, theme } from "antd"
+import { css } from "@emotion/css"
+import { Button, Col, Row, theme } from "antd"
 import Image from "next/image"
 import React, { PropsWithChildren } from "react"
 
 import { appconf } from "@/appconf"
+import { breakpoints } from "@/theme"
 
 const HomeLayout = ({ children }: PropsWithChildren) => {
     const { token } = theme.useToken()
@@ -19,7 +21,7 @@ const HomeLayout = ({ children }: PropsWithChildren) => {
                     height: 100%;
                     font-family: Arial, sans-serif;
                     flex-direction: column;
-                    overflow: hidden;
+                    overflow-x: hidden;
                 }
                 #__next {
                     height: 100%;
@@ -34,7 +36,7 @@ const HomeLayout = ({ children }: PropsWithChildren) => {
                     right: 0,
                     height: "60px",
                     color: token.colorTextLightSolid,
-                    background: "#1b1c1c",
+                    background: "#17181E",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "space-between",
@@ -61,22 +63,27 @@ const HomeLayout = ({ children }: PropsWithChildren) => {
             </div>
 
             <div
-                style={{
-                    height: "100%",
-                    minHeight: "100vh",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    padding: 0,
-                }}
+                className={css`
+                    height: 100%;
+                    min-height: 100vh;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 60px 0 0 0;
+
+                    @media (max-width: ${breakpoints.sm}) {
+                        height: fit-content;
+                    }
+                `}
             >
                 <Row align="middle" justify="center" style={{ width: "100%", height: "100%" }} gutter={[32, 32]}>
-                    <Col xs={24} md={12} style={{ textAlign: "center", padding: "20px" }}>
+                    <Col xs={24} sm={24} md={12} style={{ textAlign: "center", padding: "20px" }}>
                         {children}
                     </Col>
 
                     <Col
                         xs={24}
+                        sm={24}
                         md={12}
                         style={{
                             alignContent: "center",

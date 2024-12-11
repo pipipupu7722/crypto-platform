@@ -36,13 +36,14 @@ export default function StrategiesTab({ initialStrategies }: { initialStrategies
         {
             title: "Название",
             key: "name",
-            render: (_, rec) => <ClickToCopy>{rec.name}</ClickToCopy>,
+            render: (_, rec) => rec.name,
         },
         {
             title: "Вклад / Доход",
             key: "invested",
             render: (_, rec) => (
                 <>
+<<<<<<< HEAD
                     <CountUpWithRef end={rec.invested} decimals={2} suffix=" $" />
                     {" / "}
                     <span style={{ 
@@ -50,22 +51,43 @@ export default function StrategiesTab({ initialStrategies }: { initialStrategies
                     }}>
                         <CountUpWithRef end={rec.profit} decimals={4} suffix=" $" />
                     </span>
+=======
+                    <article style={{ textWrap: "nowrap" }}>
+                        <CountUpWithRef end={rec.invested} decimals={2} suffix="$" />
+                        {" / "}
+                    </article>
+                    <CountUpWithRef end={rec.profit} decimals={4} suffix="$" />
+>>>>>>> ff3eb2c (feat: responsiveness + design tweaks)
                 </>
             ),
         },
         {
             title: "PnL",
             key: "fakeProfitMin",
-            render: (_, rec) => `${(rec.fakeProfitMin * 100).toFixed(0)}% - ${(rec.fakeProfitMax * 100).toFixed(0)}%`,
+            render: (_, rec) => (
+                <>
+                    <article style={{ textWrap: "nowrap" }}>
+                        {(rec.fakeProfitMin * 100).toFixed(0)}%{" - "}
+                    </article>
+                    {(rec.fakeProfitMax * 100).toFixed(0)}%
+                </>
+            ),
         },
         {
             title: "Ожидаемый доход",
             key: "fakeProfitMax",
             width: 175,
             render: (_, rec) =>
-                rec.invested > 0
-                    ? `${(rec.invested * rec.fakeProfitMin).toFixed(2)}$ - ${(rec.invested * rec.fakeProfitMax).toFixed(2)}$`
-                    : "-",
+                rec.invested > 0 ? (
+                    <>
+                        <article style={{ textWrap: "nowrap" }}>
+                            {(rec.invested * rec.fakeProfitMin).toFixed(2)}${" - "}
+                        </article>
+                        {(rec.invested * rec.fakeProfitMax).toFixed(2)}$
+                    </>
+                ) : (
+                    "N/A"
+                ),
         },
         {
             title: "Статус",
@@ -106,6 +128,7 @@ export default function StrategiesTab({ initialStrategies }: { initialStrategies
                 rowKey={(row) => row.id}
                 dataSource={strategies}
                 style={{ height: "100%" }}
+                scroll={{ x: "min-content" }}
             />
 
             <Modal

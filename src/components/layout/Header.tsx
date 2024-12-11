@@ -24,7 +24,7 @@ export default function Header({ children }: PropsWithChildren) {
                 padding: 0;
                 display: flex;
                 justify-content: space-around;
-                background-color: #1b1c1c;
+                background-color: #17181e;
             `}
         >
             <div
@@ -123,8 +123,8 @@ export default function Header({ children }: PropsWithChildren) {
                                     shape="circle"
                                     icon={<BellOutlined />}
                                     style={{
-                                        backgroundColor: token.colorPrimary,
-                                        borderColor: token.colorBorder,
+                                        backgroundColor: "#121214",
+                                        borderColor: "#121214",
                                         color: token.colorTextLightSolid,
                                     }}
                                 />
@@ -138,8 +138,8 @@ export default function Header({ children }: PropsWithChildren) {
                                 icon={<SettingOutlined />}
                                 onClick={() => redirect("/cabinet/settings")}
                                 style={{
-                                    backgroundColor: token.colorPrimary,
-                                    borderColor: token.colorBorder,
+                                    backgroundColor: "#121214",
+                                    borderColor: "#121214",
                                     color: token.colorTextLightSolid,
                                 }}
                             />
