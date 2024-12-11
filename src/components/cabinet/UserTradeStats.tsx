@@ -9,7 +9,7 @@ import { useSession } from "@/providers/SessionProvider"
 import { breakpoints } from "@/theme"
 
 const formatter: StatisticProps["formatter"] = (value) => (
-    <CountUpWithRef end={value as number} decimals={2} prefix="$ " />
+    <CountUpWithRef style={{ fontWeight: "bold" }} end={value as number} decimals={2} prefix="$ " />
 )
 
 const UserTradeStats: FC = () => {

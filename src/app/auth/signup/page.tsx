@@ -67,7 +67,13 @@ const SignUp: React.FC = () => {
                 </Form.Item>
 
                 <Form.Item style={{ marginTop: "2rem", marginBottom: "1rem" }}>
-                    <Button style={{ width: "100%" }} size="large" type="primary" htmlType="submit" loading={loading}>
+                    <Button
+                        style={{ width: "100%", fontWeight: "bold" }}
+                        size="large"
+                        type="primary"
+                        htmlType="submit"
+                        loading={loading}
+                    >
                         Зарегистрироваться
                     </Button>
                 </Form.Item>
@@ -75,7 +81,9 @@ const SignUp: React.FC = () => {
                 <Form.Item style={{ textAlign: "center", marginBottom: 0 }}>
                     <Space>
                         <span>Уже есть аккаунт?</span>
-                        <Link href="/auth/signin">Авторизируйтесь</Link>
+                        <Link style={{ textDecoration: "underline" }} href="/auth/signin">
+                            Войти
+                        </Link>
                     </Space>
                 </Form.Item>
             </Form>

@@ -1,7 +1,19 @@
 import { theme } from "antd"
 
 export const themeConfig = {
-    algorithm: theme.darkAlgorithm,
+    algorithm: theme.defaultAlgorithm,
+    token: {
+        fontFamily: "IBM Plex Sans",
+
+        colorPrimary: "#F7A600",
+        colorLink: "#F7A600",
+
+        colorBgSolid: "#111111",
+        colorBgLayout: "#F5F7FA",
+        colorBgSider: "#2C2E30",
+        colorBgHeader: "#17181E",
+        colorBgHeaderButton: "#121214",
+    },
 }
 
 export const breakpoints = {

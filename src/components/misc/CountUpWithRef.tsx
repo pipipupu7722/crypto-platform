@@ -39,7 +39,7 @@ export default function CountUpWithRef(props: CountUpProps) {
                         animation: "rise-and-fade 3s forwards",
                     }}
                 >
-                    {diff > 0 ? `+${diff.toFixed(2)}` : diff.toFixed(2)}$
+                    {diff > 0 ? `+${diff.toFixed(props.decimals)}` : diff.toFixed(props.decimals)}$
                 </span>
             )}
             <style jsx>{`

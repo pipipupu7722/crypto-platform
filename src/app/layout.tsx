@@ -16,8 +16,6 @@ export default async function RootLayout({ children }: PropsWithChildren) {
                 style={{
                     padding: 0,
                     margin: 0,
-                    background: "#131313",
-                    color: "#dcdcdc",
                 }}
             >
                 <AntdProvider>

@@ -46,15 +46,23 @@ const SignIn: React.FC = () => {
                 </Form.Item>
 
                 <Form.Item style={{ marginTop: "2rem", marginBottom: "1rem" }}>
-                    <Button style={{ width: "100%" }} size="large" type="primary" htmlType="submit" loading={loading}>
-                        Зарегистрироваться
+                    <Button
+                        style={{ width: "100%", fontWeight: "bold" }}
+                        size="large"
+                        type="primary"
+                        htmlType="submit"
+                        loading={loading}
+                    >
+                        Вход
                     </Button>
                 </Form.Item>
 
                 <Form.Item style={{ textAlign: "center", marginBottom: 0 }}>
                     <Space>
                         <span>Нет аккаунта?</span>
-                        <Link href="/auth/signup">Зарегистрируйтесь</Link>
+                        <Link style={{ textDecoration: "underline" }} href="/auth/signup">
+                            Зарегистрируйтесь
+                        </Link>
                     </Space>
                 </Form.Item>
             </Form>

@@ -23,7 +23,7 @@ export default function Header({ children }: PropsWithChildren) {
                 padding: 0;
                 display: flex;
                 justify-content: space-around;
-                background-color: ${token.colorBgContainer};
+                background-color: ${token.colorBgHeader};
             `}
         >
             <div
@@ -61,7 +61,7 @@ export default function Header({ children }: PropsWithChildren) {
                             }
                         `}
                     >
-                        <Avatar>
+                        <Avatar style={{ backgroundColor: token.colorBgBase, color: token.colorText }}>
                             {session.User.firstName?.substring(0, 1)?.toUpperCase() ?? "F"}
                             {session.User.lastName?.substring(0, 1)?.toUpperCase() ?? "L"}
                         </Avatar>
@@ -77,10 +77,12 @@ export default function Header({ children }: PropsWithChildren) {
                                 }
                             `}
                         >
-                            <span style={{ lineHeight: "1rem" }}>
+                            <span style={{ lineHeight: "1rem", fontWeight: "bold", color: token.colorTextLightSolid }}>
                                 {session.User.firstName} {session.User.lastName}
                             </span>
-                            <span style={{ lineHeight: "1rem" }}>{session.User.email}</span>
+                            <span style={{ lineHeight: "1rem", color: token.colorTextLightSolid }}>
+                                {session.User.email}
+                            </span>
                         </div>
                     </div>
 
@@ -114,8 +116,17 @@ export default function Header({ children }: PropsWithChildren) {
                         </div>
 
                         <NotificationDropdown>
-                            <Badge count={unreadCount} overflowCount={9} style={{ zIndex: 999 }}>
-                                <Button type="default" shape="circle" icon={<BellOutlined />} />
+                            <Badge count={unreadCount} overflowCount={99} style={{ zIndex: 999 }}>
+                                <Button
+                                    type="default"
+                                    shape="circle"
+                                    icon={<BellOutlined />}
+                                    style={{
+                                        backgroundColor: token.colorBgHeaderButton,
+                                        borderColor: token.colorBgHeaderButton,
+                                        color: token.colorTextLightSolid,
+                                    }}
+                                />
                             </Badge>
                         </NotificationDropdown>
 
@@ -125,6 +136,11 @@ export default function Header({ children }: PropsWithChildren) {
                                 shape="circle"
                                 icon={<SettingOutlined />}
                                 onClick={() => redirect("/cabinet/settings")}
+                                style={{
+                                    backgroundColor: token.colorBgHeaderButton,
+                                    borderColor: token.colorBgHeaderButton,
+                                    color: token.colorTextLightSolid,
+                                }}
                             />
                         </Tooltip>
                     </div>

@@ -19,8 +19,8 @@ export default function NotificationDropdown({ children }: PropsWithChildren) {
               onMouseEnter: () => handleHover(notification.id),
               label: (
                   <div>
-                      <p style={{ fontWeight: "bold" }}>{notification.title}</p>
-                      <p>{notification.description}</p>
+                      <p style={{ marginBottom: 3, fontWeight: "bold" }}>{notification.title}</p>
+                      <p style={{ marginTop: 0 }}>{notification.description}</p>
                   </div>
               ),
           }))
