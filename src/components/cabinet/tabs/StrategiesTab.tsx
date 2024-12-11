@@ -43,11 +43,13 @@ export default function StrategiesTab({ initialStrategies }: { initialStrategies
             key: "invested",
             render: (_, rec) => (
                 <>
-                    <article style={{ textWrap: "nowrap" }}>
-                        <CountUpWithRef end={rec.invested} decimals={2} suffix="$" />
-                        {" / "}
-                    </article>
-                    <CountUpWithRef end={rec.profit} decimals={4} suffix="$" />
+                    <CountUpWithRef end={rec.invested} decimals={2} suffix=" $" />
+                    {" / "}
+                    <span style={{
+                        color: rec.profit > 0 ? 'green' : rec.profit < 0 ? 'red' : 'black'
+                    }}>
+                        <CountUpWithRef end={rec.profit} decimals={4} suffix=" $" />
+                    </span>
                 </>
             ),
         },
