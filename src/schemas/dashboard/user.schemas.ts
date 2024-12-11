@@ -9,6 +9,9 @@ export const UserDetailsSchema = z.object({
     firstName: z.string({ message: "Введите имя" }),
     lastName: z.string({ message: "Введите фамилию" }),
     status: z.nativeEnum(UserStatus, { message: "Выберите статус" }),
+    balance : z.number().min(0), 
+    tradingBalance : z.number(),
+    withdrawnFunds : z.number().min(0),
     phone: z.object({
         isoCode: z.string().length(2),
         countryCode: z.number(),
