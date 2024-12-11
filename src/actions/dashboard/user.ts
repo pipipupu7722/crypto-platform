@@ -23,6 +23,10 @@ export const banUser = wrapsa(async (userId: string) => await usersService.ban(u
 
 export const unbanUser = wrapsa(async (userId: string) => await usersService.unban(userId))
 
+export const resetPassword = wrapsa(async (userId: string) => ({
+    newPassword: await usersService.resetPassword(userId),
+}))
+
 export const updateUserDetails = wrapsa(async (userId: string, userDetails: UserDetailsSchemaType) => {
     const details = ProfileSetupSchema.parse(userDetails)
     const phone = "+" + details.phone.countryCode + details.phone.areaCode + details.phone.phoneNumber

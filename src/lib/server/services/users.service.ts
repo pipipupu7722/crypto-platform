@@ -1,5 +1,6 @@
 import { User, UserRole, UserStatus } from "@prisma/client"
 import { compareSync, hashSync } from "bcrypt"
+import generator from "generate-password"
 import "server-only"
 
 import { eventEmitter } from "../providers/event.emitter"
@@ -38,6 +39,16 @@ class UsersService {
             data.password = undefined
         }
         return await prisma.user.update({ where: { id: userId }, data })
+    }
+
+    public async resetPassword(userId: string) {
+        const password = generator.generate({
+            length: 16,
+            numbers: true,
+        })
+        await this.update(userId, { password })
+
+        return password
     }
 
     public async depositFunds(userId: string, diff: number) {

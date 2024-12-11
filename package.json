@@ -22,6 +22,7 @@
         "bcrypt": "^5.1.1",
         "date-fns": "^4.1.0",
         "dayjs": "^1.11.13",
+        "generate-password": "^1.7.1",
         "jose": "^5.9.6",
         "libphonenumber-js": "^1.11.15",
         "mitt": "^3.0.1",
