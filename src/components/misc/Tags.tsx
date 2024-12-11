@@ -27,7 +27,7 @@ const TagWithIcon = ({
     children,
 }: {
     color: TagProps["color"]
-    icon: TagProps["icon"]
+    icon?: TagProps["icon"]
     children: ReactNode
 }) => {
     return (
