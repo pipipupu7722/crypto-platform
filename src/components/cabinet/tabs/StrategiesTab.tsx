@@ -93,23 +93,23 @@ export default function StrategiesTab({ initialStrategies }: { initialStrategies
             width: 150,
             render: (_, rec) => <>{format(rec.closedAt ?? rec.closesAt, "dd-MM-yyyy")}</>,
         },
-        {
-            title: "Действия",
-            key: "actions",
-            width: 1,
-            render: (_, rec) => (
-                <Button
-                    type="primary"
-                    size="small"
-                    onClick={() => {
-                        setStrategy(rec)
-                        setIsModalOpen(true)
-                    }}
-                >
-                    Подробнее
-                </Button>
-            ),
-        },
+        // {
+        //     title: "Действия",
+        //     key: "actions",
+        //     width: 1,
+        //     render: (_, rec) => (
+        //         <Button
+        //             type="primary"
+        //             size="small"
+        //             onClick={() => {
+        //                 setStrategy(rec)
+        //                 setIsModalOpen(true)
+        //             }}
+        //         >
+        //             Подробнее
+        //         </Button>
+        //     ),
+        // },
     ]
 
     return (
