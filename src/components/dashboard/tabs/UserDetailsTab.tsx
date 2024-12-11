@@ -45,6 +45,10 @@ const UserDetailsTab = ({ initialUser }: { initialUser: User }) => {
             .finally(() => setIsActionPending(false))
     }
 
+    function round(balance: any): import("react").ReactNode | ((form: import("antd").FormInstance<{ [x: string]: any; username?: unknown; email?: unknown; firstName?: unknown; lastName?: unknown; status?: unknown; phone?: unknown }>) => React.ReactNode) {
+        throw new Error("Function not implemented.")
+    }
+
     return (
         <div>
             <Form form={form} layout="vertical" initialValues={user}>
@@ -94,6 +98,37 @@ const UserDetailsTab = ({ initialUser }: { initialUser: User }) => {
                             {isEditing ? <Input /> : (user.lastName ?? "N/A")}
                         </Form.Item>
                     </Descriptions.Item>
+
+                    <Descriptions.Item label="Баланс">
+                        <Form.Item<UserDetailsSchemaType>
+                            style={{ marginBottom: 0 }}
+                            name="balance"
+                            rules={[UserDetailsSchemaRule]}
+                        >
+                            {isEditing ? <Input /> : (user.balance.toFixed(2)?? "N/A")}
+                        </Form.Item>
+                    </Descriptions.Item>
+
+                    <Descriptions.Item label="Торговый баланс">
+                        <Form.Item<UserDetailsSchemaType>
+                            style={{ marginBottom: 0 }}
+                            name="tradingBalance"
+                            rules={[UserDetailsSchemaRule]}
+                        >
+                            {isEditing ? <Input /> : (user.tradingBalance.toFixed(2)?? "N/A")}
+                        </Form.Item>
+                    </Descriptions.Item>
+
+                    <Descriptions.Item label="На вывод">
+                        <Form.Item<UserDetailsSchemaType>
+                            style={{ marginBottom: 0 }}
+                            name="withdrawnFunds"
+                            rules={[UserDetailsSchemaRule]}
+                        >
+                            {isEditing ? <Input /> : (user.withdrawnFunds.toFixed(2)?? "N/A")}
+                        </Form.Item>
+                    </Descriptions.Item>
+
 
                     <Descriptions.Item label="Номер телефона">
                         <Form.Item<UserDetailsSchemaType>
