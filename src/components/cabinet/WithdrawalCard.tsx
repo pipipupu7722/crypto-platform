@@ -30,11 +30,7 @@ export default function WithdrawalCard({ cryptos }: { cryptos: Cryptocurrency[] 
     }
 
     return (
-<<<<<<< HEAD
-        <Card title="Вывод средств" bordered={true} style={{ minWidth: 350 }}>
-=======
         <Card title="Вывод средств" bordered={true}>
->>>>>>> ff3eb2c (feat: responsiveness + design tweaks)
             <Form
                 form={form}
                 layout="horizontal"
@@ -116,33 +112,21 @@ export default function WithdrawalCard({ cryptos }: { cryptos: Cryptocurrency[] 
                             name="bankName"
                             rules={[WithdrawalTransactionSchemaRule]}
                         >
-<<<<<<< HEAD
-                            <Input placeholder="Имя банка" />
-=======
                             <Input disabled={!symbol} placeholder="Имя банка" />
->>>>>>> ff3eb2c (feat: responsiveness + design tweaks)
                         </Form.Item>
 
                         <Form.Item<WithdrawalTransactionSchemaType>
                             name="cardNumber"
                             rules={[WithdrawalTransactionSchemaRule]}
                         >
-<<<<<<< HEAD
-                            <Input placeholder="Номер карты" />
-=======
                             <Input disabled={!symbol} placeholder="Номер карты" />
->>>>>>> ff3eb2c (feat: responsiveness + design tweaks)
                         </Form.Item>
 
                         <Form.Item<WithdrawalTransactionSchemaType>
                             name="cardDate"
                             rules={[WithdrawalTransactionSchemaRule]}
                         >
-<<<<<<< HEAD
-                            <Input placeholder="Дата карты (MM/YYYY)" />
-=======
                             <Input disabled={!symbol} placeholder="Дата карты (MM/YYYY)" />
->>>>>>> ff3eb2c (feat: responsiveness + design tweaks)
                         </Form.Item>
 
                         <Form.Item<WithdrawalTransactionSchemaType>
@@ -168,15 +152,11 @@ export default function WithdrawalCard({ cryptos }: { cryptos: Cryptocurrency[] 
                                 }),
                             ]}
                         >
-<<<<<<< HEAD
-                            <InputNumber placeholder="Сумма вывода в USD" style={{ width: "100%" }} />
-=======
                             <InputNumber
                                 disabled={!symbol}
                                 placeholder="Сумма вывода в USD"
                                 style={{ width: "100%" }}
                             />
->>>>>>> ff3eb2c (feat: responsiveness + design tweaks)
                         </Form.Item>
                     </>
                 )}

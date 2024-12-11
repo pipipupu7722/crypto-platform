@@ -100,7 +100,7 @@ export default function Sidebar({ items }: { items: MenuProps["items"] }) {
             collapsed={collapsed}
             onCollapse={setCollapsed}
             onBreakpoint={setCollapsed}
-            style={{ backgroundColor: "#17181E" }}
+            style={{ backgroundColor: (token as any).colorBgHeader }}
             className={css`
                 .ant-layout-sider-zero-width-trigger {
                     display: none;
@@ -147,7 +147,7 @@ export default function Sidebar({ items }: { items: MenuProps["items"] }) {
                 style={{
                     height: "calc(100% - 64px)",
                     border: 0,
-                    backgroundColor: "#2C2E30",
+                    backgroundColor: (token as any).colorBgSider,
                 }}
                 items={allItems}
             />

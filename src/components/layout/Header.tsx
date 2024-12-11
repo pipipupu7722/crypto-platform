@@ -3,7 +3,6 @@
 import { BellOutlined, SettingOutlined } from "@ant-design/icons"
 import { css } from "@emotion/css"
 import { Avatar, Badge, Button, Layout, Tooltip, theme } from "antd"
-import { CustomToken, GlobalToken } from "antd/es/theme/interface"
 import { redirect } from "next/navigation"
 import { PropsWithChildren } from "react"
 
@@ -24,7 +23,7 @@ export default function Header({ children }: PropsWithChildren) {
                 padding: 0;
                 display: flex;
                 justify-content: space-around;
-                background-color: #17181e;
+                background-color: ${(token as any).colorBgHeader};
             `}
         >
             <div
@@ -123,8 +122,8 @@ export default function Header({ children }: PropsWithChildren) {
                                     shape="circle"
                                     icon={<BellOutlined />}
                                     style={{
-                                        backgroundColor: "#121214",
-                                        borderColor: "#121214",
+                                        backgroundColor: (token as any).colorBgHeaderButton,
+                                        borderColor: (token as any).colorBgHeaderButton,
                                         color: token.colorTextLightSolid,
                                     }}
                                 />
@@ -138,8 +137,8 @@ export default function Header({ children }: PropsWithChildren) {
                                 icon={<SettingOutlined />}
                                 onClick={() => redirect("/cabinet/settings")}
                                 style={{
-                                    backgroundColor: "#121214",
-                                    borderColor: "#121214",
+                                    backgroundColor: (token as any).colorBgHeaderButton,
+                                    borderColor: (token as any).colorBgHeaderButton,
                                     color: token.colorTextLightSolid,
                                 }}
                             />
