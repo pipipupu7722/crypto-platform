@@ -56,12 +56,10 @@ export default function StrategiesTab({ initialStrategies }: { initialStrategies
         {
             title: "PnL",
             key: "fakeProfitMin",
+          
             render: (_, rec) => (
                 <>
-                    <article style={{ textWrap: "nowrap" }}>
-                        {(rec.fakeProfitMin * 100).toFixed(0)}%{" - "}
-                    </article>
-                    {(rec.fakeProfitMax * 100).toFixed(0)}%
+                        {(rec.fakeProfitMin * 100).toFixed(0)}%{" - "}{(rec.fakeProfitMax * 100).toFixed(0)}%
                 </>
             ),
         },
