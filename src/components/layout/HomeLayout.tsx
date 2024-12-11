@@ -34,7 +34,7 @@ const HomeLayout = ({ children }: PropsWithChildren) => {
                     right: 0,
                     height: "60px",
                     color: token.colorTextLightSolid,
-                    background: token.colorBgHeader,
+                    background: "#1b1c1c",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "space-between",
