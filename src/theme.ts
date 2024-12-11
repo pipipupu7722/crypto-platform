@@ -1,11 +1,12 @@
 // src/theme.ts
-
-import { theme } from "antd"
+import { GlobalToken, theme } from "antd"
+import "antd/es/theme/interface"
+import { CustomToken } from "antd/es/theme/interface"
 
 declare module "antd/es/theme/interface" {
-    interface CustomToken extends GlobalToken {
-        colorBgHeader?: string;
-        colorBgHeaderButton?: string;
+    export interface CustomToken extends GlobalToken {
+        colorBgHeader?: string
+        colorBgHeaderButton?: string
         // другие кастомные токены
     }
 }
@@ -20,9 +21,9 @@ export const themeConfig = {
         colorBgSolid: "#111111",
         colorBgLayout: "#F5F7FA",
         colorBgSider: "#2C2E30",
-        colorBgHeader: "#17181E", 
-        colorBgHeaderButton: "#121214", 
-    } as CustomToken, 
+        colorBgHeader: "#17181E",
+        colorBgHeaderButton: "#121214",
+    } as unknown as CustomToken,
 }
 
 export const breakpoints = {
