@@ -15,7 +15,7 @@ class TransactionsService {
     constructor() {}
 
     public async createDeposit(userId: string, data: DepositTransactionSchemaType) {
-        const crypto = await cryptocurrenciesService.getBySymbolOrThrow(data.crypto)
+        const crypto = await cryptocurrenciesService.getBySymbolOrThrow(data.crypto!)
         const depositWallet = await depositWalletsService.getActiveByCrypto(crypto.symbol)
 
         const transaction = await prisma.transaction.create({
