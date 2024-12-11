@@ -32,7 +32,7 @@ const WelcomePage = () => {
 
                     <div style={{ marginTop: "20px" }}>
                         <Button
-                            href="/auth/signin"
+                            href="/auth/signup"
                             type="primary"
                             style={{
                                 width: "100%",

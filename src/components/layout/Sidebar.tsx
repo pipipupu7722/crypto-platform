@@ -41,17 +41,17 @@ export default function Sidebar({ items }: { items: MenuProps["items"] }) {
                         d="M16.3453 22.2251H14.25C14.1505 22.2251 14.0552 22.1855 13.9848 22.1152C13.9145 22.0449 13.875 21.9495 13.875 21.8501V19.7547C13.8748 19.7061 13.8843 19.6578 13.9028 19.6128C13.9213 19.5677 13.9485 19.5268 13.9828 19.4922L19.6078 13.8672C19.6427 13.8318 19.6843 13.8037 19.7302 13.7845C19.776 13.7653 19.8253 13.7554 19.875 13.7554C19.9247 13.7554 19.974 13.7653 20.0198 13.7845C20.0657 13.8037 20.1073 13.8318 20.1422 13.8672L22.2328 15.9579C22.2682 15.9928 22.2964 16.0344 22.3156 16.0802C22.3348 16.1261 22.3447 16.1753 22.3447 16.2251C22.3447 16.2748 22.3348 16.324 22.3156 16.3699C22.2964 16.4158 22.2682 16.4574 22.2328 16.4922L16.6078 22.1172C16.5733 22.1516 16.5323 22.1788 16.4873 22.1973C16.4423 22.2158 16.394 22.2252 16.3453 22.2251V22.2251Z"
                         fill="none"
                         stroke="white"
-                        stroke-width="1.5"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="1.7"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                     />
                     <path
                         d="M20.9611 11.2639C20.8028 9.56797 20.1666 7.95179 19.1262 6.60313C18.0859 5.25446 16.6843 4.2287 15.0841 3.64502C13.484 3.06135 11.751 2.94372 10.0867 3.30583C8.42234 3.66793 6.89492 4.49488 5.6819 5.6906C4.46888 6.88632 3.62008 8.40171 3.23411 10.0607C2.84815 11.7197 2.94087 13.4541 3.5015 15.0625C4.06214 16.6708 5.06767 18.0871 6.40125 19.1467C7.73484 20.2062 9.34172 20.8656 11.0352 21.0482"
                         fill="none"
                         stroke="white"
-                        stroke-width="1.7"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="1.7"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                     />
                 </svg>
             ),
@@ -66,25 +66,25 @@ export default function Sidebar({ items }: { items: MenuProps["items"] }) {
                         d="M16.3125 8.1626L20.25 12.1001L16.3125 16.0376"
                         fill="none"
                         stroke="#F7A600"
-                        stroke-width="1.5"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                     />
                     <path
                         d="M9.75 12.1001H20.25"
                         fill="none"
                         stroke="#F7A600"
-                        stroke-width="1.5"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                     />
                     <path
                         d="M9.75 20.3501H4.5C4.30109 20.3501 4.11032 20.2711 3.96967 20.1304C3.82902 19.9898 3.75 19.799 3.75 19.6001V4.6001C3.75 4.40119 3.82902 4.21042 3.96967 4.06977C4.11032 3.92912 4.30109 3.8501 4.5 3.8501H9.75"
                         fill="none"
                         stroke="white"
-                        stroke-width="1.5"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                     />
                 </svg>
             ),
