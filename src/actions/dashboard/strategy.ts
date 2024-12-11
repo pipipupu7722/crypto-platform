@@ -16,6 +16,10 @@ export const updateStrategy = wrapsa(
         await strategiesService.update(strategyId, StrategySchema.parse(payload))
 )
 
+export const startStrategy = wrapsa(
+    async (strategyId: string, amount: number) => await strategiesService.start(strategyId, amount)
+)
+
 export const closeStrategy = wrapsa(async (strategyId: string) => {
     await ProtectSa([UserRole.ADMIN])
 

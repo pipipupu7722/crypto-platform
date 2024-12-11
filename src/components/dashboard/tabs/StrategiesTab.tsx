@@ -1,16 +1,17 @@
 "use client"
 
 import { Strategy, StrategyStatus, UserRole } from "@prisma/client"
-import { Button, Popconfirm, Table, TableProps } from "antd"
+import { Button, Form, InputNumber, Modal, Popconfirm, Table, TableProps } from "antd"
 import { format } from "date-fns"
 import { useState } from "react"
 
 import StrategyModal from "../StrategyModal"
-import { closeStrategy, createStrategy, updateStrategy } from "@/actions/dashboard/strategy"
+import { closeStrategy, createStrategy, startStrategy, updateStrategy } from "@/actions/dashboard/strategy"
 import ClickToCopy from "@/components/misc/ClickToCopy"
 import { StrategyStatusTag } from "@/components/misc/Tags"
 import { useNotify } from "@/providers/NotifyProvider"
 import { useSession } from "@/providers/SessionProvider"
+import { StrategyStartSchemaRule, StrategyStartSchemaType } from "@/schemas/cabinet/strategy.schemas"
 
 export default function StrategiesTab({
     userId,
@@ -19,7 +20,9 @@ export default function StrategiesTab({
     userId: string
     initialStrategies: Strategy[]
 }) {
+    const [form] = Form.useForm<StrategyStartSchemaType>()
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const [isInvestModalOpen, setIsInvestModalOpen] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [strategies, setStrategies] = useState(initialStrategies)
     const [selectedStrategy, setSelectedStrategy] = useState<Strategy | undefined>(undefined)
@@ -97,6 +100,22 @@ export default function StrategiesTab({
                             </Button>
                         </Popconfirm>
                     )}
+
+                    {rec.status === StrategyStatus.AVAILABLE && (
+                        <Button
+                            type="primary"
+                            size="small"
+                            ghost
+                            loading={isLoading}
+                            onClick={() => {
+                                setSelectedStrategy(rec)
+                                setIsInvestModalOpen(true)
+                            }}
+                        >
+                            Старт
+                        </Button>
+                    )}
+
                     <Button
                         type="primary"
                         size="small"
@@ -161,6 +180,61 @@ export default function StrategiesTab({
                     setIsModalOpen(false)
                 }}
             />
+
+            <Modal
+                open={isInvestModalOpen}
+                title={"Инвестировать в стратегию"}
+                onClose={() => {
+                    setIsModalOpen(false)
+                    setSelectedStrategy(undefined)
+                }}
+                footer={[
+                    selectedStrategy?.status === StrategyStatus.AVAILABLE && (
+                        <Button
+                            key="submit"
+                            type="primary"
+                            loading={isLoading}
+                            onClick={() => {
+                                setIsLoading(true)
+                                form.validateFields()
+                                    .then((values) => startStrategy(selectedStrategy?.id, values.amount))
+                                    .then((res) => {
+                                        if (res.success) {
+                                            const { success, ...updated } = res
+                                            setStrategies(
+                                                strategies.map((row) => (row.id === updated.id ? updated : row))
+                                            )
+                                        } else {
+                                            notify.error({ message: res.error })
+                                        }
+                                    })
+                                    .catch(() => notify.error({ message: "Что-то пошло не так" }))
+                                    .finally(() => {
+                                        setIsLoading(false)
+                                        setIsInvestModalOpen(false)
+                                    })
+                            }}
+                        >
+                            Инвестировать
+                        </Button>
+                    ),
+                    <Button key="cancel" style={{ marginLeft: 8 }} onClick={() => setIsInvestModalOpen(false)}>
+                        Закрыть
+                    </Button>,
+                ]}
+            >
+                {selectedStrategy && (
+                    <Form style={{ marginTop: 36, width: "100%" }} form={form} layout="inline">
+                        <Form.Item<StrategyStartSchemaType>
+                            name="amount"
+                            rules={[StrategyStartSchemaRule]}
+                            style={{ width: "100%" }}
+                        >
+                            <InputNumber placeholder="Сумма инвестиции" style={{ width: "100%" }} />
+                        </Form.Item>
+                    </Form>
+                )}
+            </Modal>
         </>
     )
 }

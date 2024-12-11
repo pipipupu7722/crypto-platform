@@ -100,6 +100,7 @@ export default function TradeRobotsTab({ initialTradeRobots }: { initialTradeRob
             width: 1,
             render: (_, rec) => (
                 <Button
+                    ghost
                     type="primary"
                     size="small"
                     onClick={() => {

@@ -76,7 +76,7 @@ const User = async ({
                     },
                     {
                         key: "wallets",
-                        label: "Кошельки для пополнения",
+                        label: "Кошельки",
                         children: (
                             <DepositWalletsTab
                                 userId={userId}
@@ -84,11 +84,6 @@ const User = async ({
                                 initialAddresses={depositWallets}
                             />
                         ),
-                    },
-                    {
-                        key: "authlog",
-                        label: "История доступа",
-                        children: <AuthLogTab initial={userAuthLogs} />,
                     },
                     {
                         key: "documents",
@@ -99,6 +94,11 @@ const User = async ({
                         key: "notifications",
                         label: "Нотификации",
                         children: <NotificationTab userId={user.id} />,
+                    },
+                    {
+                        key: "authlog",
+                        label: "История доступа",
+                        children: <AuthLogTab initial={userAuthLogs} />,
                     },
                 ]}
             />

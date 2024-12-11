@@ -75,7 +75,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
         >
             <Form form={form} layout="horizontal">
                 <Descriptions bordered column={1} size="small">
-                    {transaction.wallet && (
+                    {(transaction.wallet || !isEditing) && (
                         <Descriptions.Item label="Криптовалюта">
                             <Form.Item<DepositTransactionSchemaType>
                                 name="crypto"
@@ -103,7 +103,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
                         </Descriptions.Item>
                     )}
 
-                    {transaction.wallet && (
+                    {(transaction.wallet || !isEditing) && (
                         <Descriptions.Item label="Хэш транзакции">
                             <Form.Item<DepositTransactionSchemaType>
                                 name="txHash"
@@ -115,7 +115,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
                         </Descriptions.Item>
                     )}
 
-                    {!transaction.wallet && (
+                    {transaction.cardNumber && (
                         <Descriptions.Item label="Банк">
                             <Form.Item
                                 name="bankName"
@@ -127,7 +127,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
                         </Descriptions.Item>
                     )}
 
-                    {!transaction.wallet && (
+                    {transaction.cardNumber && (
                         <Descriptions.Item label="Номер карты">
                             <Form.Item
                                 name="cardNumber"
@@ -139,7 +139,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
                         </Descriptions.Item>
                     )}
 
-                    {!transaction.wallet && (
+                    {transaction.cardNumber && (
                         <Descriptions.Item label="Действительна до">
                             <Form.Item
                                 name="cardDate"
