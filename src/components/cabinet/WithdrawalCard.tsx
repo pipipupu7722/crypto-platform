@@ -30,7 +30,7 @@ export default function WithdrawalCard({ cryptos }: { cryptos: Cryptocurrency[] 
     }
 
     return (
-        <Card title="Вывод средств" bordered={true}>
+        <Card title="Вывод средств" bordered={true} style={{ minWidth: 350 }}>
             <Form
                 form={form}
                 layout="horizontal"
@@ -112,21 +112,21 @@ export default function WithdrawalCard({ cryptos }: { cryptos: Cryptocurrency[] 
                             name="bankName"
                             rules={[WithdrawalTransactionSchemaRule]}
                         >
-                            <Input disabled={!symbol} placeholder="Имя банка" />
+                            <Input placeholder="Имя банка" />
                         </Form.Item>
 
                         <Form.Item<WithdrawalTransactionSchemaType>
                             name="cardNumber"
                             rules={[WithdrawalTransactionSchemaRule]}
                         >
-                            <Input disabled={!symbol} placeholder="Номер карты" />
+                            <Input placeholder="Номер карты" />
                         </Form.Item>
 
                         <Form.Item<WithdrawalTransactionSchemaType>
                             name="cardDate"
                             rules={[WithdrawalTransactionSchemaRule]}
                         >
-                            <Input disabled={!symbol} placeholder="Дата карты (MM/YYYY)" />
+                            <Input placeholder="Дата карты (MM/YYYY)" />
                         </Form.Item>
 
                         <Form.Item<WithdrawalTransactionSchemaType>
@@ -152,11 +152,7 @@ export default function WithdrawalCard({ cryptos }: { cryptos: Cryptocurrency[] 
                                 }),
                             ]}
                         >
-                            <InputNumber
-                                disabled={!symbol}
-                                placeholder="Сумма вывода в USD"
-                                style={{ width: "100%" }}
-                            />
+                            <InputNumber placeholder="Сумма вывода в USD" style={{ width: "100%" }} />
                         </Form.Item>
                     </>
                 )}
