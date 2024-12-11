@@ -25,6 +25,7 @@ export default function Header({ children }: PropsWithChildren) {
                 display: flex;
                 justify-content: space-around;
                 background-color: #1b1c1c;
+                fontFamily: "IBM Plex Sans";
             `}
         >
             <div
