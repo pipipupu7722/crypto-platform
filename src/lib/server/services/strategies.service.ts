@@ -1,5 +1,5 @@
 import { StrategyStatus } from "@prisma/client"
-import { startOfDay } from "date-fns"
+import { endOfDay } from "date-fns"
 
 import { getRandomFloat } from "../helpers"
 import { eventEmitter } from "../providers/event.emitter"
@@ -17,7 +17,7 @@ class StrategiesService {
         if (!payload.closesAt) {
             throw Error("ClosesAt not specified")
         }
-        const closesAt = startOfDay(new Date(payload.closesAt))
+        const closesAt = endOfDay(new Date(payload.closesAt))
 
         const strategy = await prisma.strategy.create({ data: { ...payload, closesAt, userId } })
 
@@ -34,7 +34,7 @@ class StrategiesService {
 
     public async update(id: string, strategy: StrategySchemaType) {
         strategy = StrategySchema.parse(strategy)
-        const closesAt = strategy.closesAt ? startOfDay(new Date(strategy.closesAt)) : undefined
+        const closesAt = strategy.closesAt ? endOfDay(new Date(strategy.closesAt)) : undefined
 
         return await prisma.strategy.update({ where: { id }, data: { ...strategy, closesAt } })
     }

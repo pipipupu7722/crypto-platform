@@ -5,6 +5,7 @@ import { Button, DatePicker, Descriptions, Form, Input, InputNumber, Modal } fro
 import { format } from "date-fns"
 import { useEffect } from "react"
 
+import DatePickerUtc from "../misc/DatePickerUtc"
 import { StrategyStatusTag } from "../misc/Tags"
 import { StrategySchemaRule, StrategySchemaType } from "@/schemas/dashboard/strategy.schemas"
 
@@ -143,7 +144,7 @@ const StrategyModal: React.FC<StrategyModalProps> = ({
                             {strategy?.closesAt ? (
                                 format(strategy.closesAt, "dd-MM-yyyy")
                             ) : (
-                                <DatePicker style={{ width: "100%" }} />
+                                <DatePickerUtc style={{ width: "100%" }} />
                             )}
                         </Form.Item>
                     </Descriptions.Item>

@@ -55,10 +55,12 @@ export default function StrategiesTab({
             render: (_, rec) => <StrategyStatusTag status={rec.status} />,
         },
         {
-            title: "Дата добавления",
+            title: "Дата закрытия",
             key: "date",
-            width: 175,
-            render: (_, rec) => <>{format(new Date(rec.createdAt), "dd-MM-yyyy HH:mm:ss")}</>,
+            width: 140,
+            render: (_, rec) => (
+                <>{format(rec.closedAt ? new Date(rec.closedAt) : new Date(rec.closesAt), "dd-MM-yyyy")}</>
+            ),
         },
     ]
 
