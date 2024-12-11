@@ -1,8 +1,8 @@
 "use server"
 
 import { wrapsa } from "@/lib/server/helpers"
-import { strategiesService } from "@/lib/server/services/strategies.service"
+import { tradeRobotsService } from "@/lib/server/services/tradeRobots.service"
 
 export const startTradeRobot = wrapsa(
-    async (tradeRobotId: string, amount: number) => await strategiesService.start(tradeRobotId, amount)
+    async (tradeRobotId: string, amount: number) => await tradeRobotsService.start(tradeRobotId, amount)
 )

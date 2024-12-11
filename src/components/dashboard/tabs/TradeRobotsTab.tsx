@@ -73,7 +73,7 @@ export default function TradeRobotsTab({
                 <div style={{ display: "flex", justifyContent: "end", gap: 8 }}>
                     {rec.status === TradeRobotStatus.ACTIVE && (
                         <Popconfirm
-                            title="Досрочно закрыть стратегию?"
+                            title="Досрочно остановить робота?"
                             placement="topLeft"
                             okText="Подтвердить"
                             cancelText="Отмена"
@@ -124,7 +124,7 @@ export default function TradeRobotsTab({
 
             <div style={{ width: "100%", marginTop: 24, display: "flex", justifyContent: "end" }}>
                 <Button type="primary" onClick={() => setIsModalOpen(true)} style={{ marginBottom: 16 }}>
-                    Добавить стратегию
+                    Добавить робота
                 </Button>
             </div>
 

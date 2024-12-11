@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { logger } from "@/lib/server/providers/logger"
 import { strategiesService } from "@/lib/server/services/strategies.service"
 import { tokensService } from "@/lib/server/services/tokens.service"
+import { tradeRobotsService } from "@/lib/server/services/tradeRobots.service"
 
 // endpoint required for instrumentation.ts
 export const POST = async (req: NextRequest) => {
@@ -17,6 +18,9 @@ export const POST = async (req: NextRequest) => {
     try {
         await strategiesService.checkAndClose()
         await strategiesService.calcPnlForAll()
+
+        await tradeRobotsService.checkAndClose()
+        await tradeRobotsService.calcPnlForAll()
 
         return NextResponse.json({}, { status: 200 })
     } catch (error) {

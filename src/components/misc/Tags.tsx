@@ -176,19 +176,19 @@ export const TradeRobotStatusTag = ({ status }: { status: TradeRobotStatus }) =>
     if (status === TradeRobotStatus.ACTIVE) {
         return (
             <TagWithIcon icon={<SyncOutlined spin />} color="processing">
-                В работе
+                Работает
             </TagWithIcon>
         )
     } else if (status === TradeRobotStatus.AVAILABLE) {
         return (
             <TagWithIcon icon={<PlusCircleOutlined />} color="gold">
-                Доступна
+                Доступен
             </TagWithIcon>
         )
     } else if (status === TradeRobotStatus.CLOSED) {
         return (
             <TagWithIcon icon={<CheckCircleOutlined />} color="success">
-                Закрыта
+                Остановлен
             </TagWithIcon>
         )
     }

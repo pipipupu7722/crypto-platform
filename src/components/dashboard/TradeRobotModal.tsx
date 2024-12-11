@@ -46,7 +46,7 @@ const TradeRobotModal: React.FC<TradeRobotModalProps> = ({
     return (
         <Modal
             open={open}
-            title={isEditing ? "Редактирование стратегии" : "Создание стратегии"}
+            title={isEditing ? "Редактирование торгового робота" : "Создание торгового робота"}
             onCancel={() => {
                 form.resetFields()
                 onClose()

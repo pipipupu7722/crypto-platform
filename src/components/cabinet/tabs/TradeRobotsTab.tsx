@@ -126,7 +126,7 @@ export default function TradeRobotsTab({ initialTradeRobots }: { initialTradeRob
 
             <Modal
                 open={isModalOpen}
-                title={"О стратегии"}
+                title={"О торговом роботе"}
                 onCancel={() => setIsModalOpen(false)}
                 footer={[
                     tradeRobot?.status === TradeRobotStatus.AVAILABLE && (
