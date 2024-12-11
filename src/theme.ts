@@ -3,11 +3,12 @@
 import { theme } from "antd"
 
 declare module "antd/es/theme/interface" {
-  interface GlobalToken {
-    colorBgHeader?: string;
-    colorBgHeaderButton?: string;
-    // другие кастомные токены
-  }
+    interface CustomToken extends GlobalToken {
+        colorBgHeader?: string;
+        colorBgHeaderButton?: string;
+        // другие кастомные токены
+    }
+}
 
 export const themeConfig = {
     algorithm: theme.defaultAlgorithm,
